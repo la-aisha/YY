@@ -1,15 +1,14 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-// ignore: depend_on_referenced_packages
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:pin_code_fields/pin_code_fields.dart' as pc;
 import 'package:pinput/pinput.dart';
 import 'package:provider/provider.dart';
 import 'package:yy/provider/auth_provider.dart';
 import 'package:yy/screen/ScreenCustomer/HomeScreenCustomer.dart';
+import 'package:yy/utils/utils.dart';
 import 'package:yy/widgets/custom_button.dart';
-
 import '../model/user_model.dart';
 
 class RegisterCostumer extends StatefulWidget {
@@ -26,14 +25,10 @@ class _RegisterCostumerState extends State<RegisterCostumer> {
   _RegisterCostumerState({required this.user});
 
   /* ----- les controllers */
-  /* UserModel user = new UserModel(
-      firstname: "", lastname: "", createdAt: "", phoneNumber: "", uid: ""); */
   TextEditingController firstNameController = new TextEditingController();
   TextEditingController lastNameController = new TextEditingController();
   TextEditingController phoneController = new TextEditingController();
 
-  bool _isObscure = true;
-  bool _isObscure3 = true;
   bool isChecked = false;
   String otpPin = "";
   String countryDial = "+221";
@@ -158,26 +153,6 @@ class _RegisterCostumerState extends State<RegisterCostumer> {
               SizedBox(height: 30),
               Center(),
               stateRegister()
-
-              /* GestureDetector(
-                onTap: (){
-                  if(screenState == 0) {
-                              if(firstNameController.text.isEmpty || lastNameController.text.isEmpty ) {
-                                showSnackBarText("Username is still empty!");
-                              } else if(phoneController.text.isEmpty) {
-                                showSnackBarText("Phone number is still empty!");
-                              } else {
-                                verifyNumber(countryDial + phoneController.text);
-                              }
-                            } else {
-                              if(otpPin.length >= 6) {
-                                //verifyOTP();
-                              } else {
-                                showSnackBarText("Enter OTP correctly!");
-                              }
-                            }
-                },
-              )  */
             ],
           ),
         ),
@@ -187,35 +162,40 @@ class _RegisterCostumerState extends State<RegisterCostumer> {
 
   ElevatedButton register() {
     return ElevatedButton(
-        onPressed: () {
-          user = UserModel(
-            firstname: firstNameController.text,
-            lastname: lastNameController.text,
-            phoneNumber: phoneController.text.trim(),
-            createdAt: '',
-            uid: '',
-          );
-          sendphonenumber();
-
-          print('registerscreen');
-          print(user.firstname);
-        },
-        child: Text('Inscription',
-            style: GoogleFonts.breeSerif(
-              textStyle: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.normal,
-              ),
-            )),
-        style: ElevatedButton.styleFrom(
-          primary: Color.fromRGBO(189, 22, 22, 1),
-          // Background color
-          onPrimary: Colors.white, // Text color
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10.0), // Border radius
+    onPressed: () {
+    if(firstNameController.text.isEmpty || lastNameController.text.isEmpty ) {
+      ("Username is still empty!");
+    } else if(phoneController.text.isEmpty || phoneController.length != 9) {
+      showSnackBar(context ,"Phone number is not correct!");
+    } else {
+      sendphonenumber();
+    }                 
+    user = UserModel(
+      firstname: firstNameController.text,
+      lastname: lastNameController.text,
+      phoneNumber: phoneController.text.trim(),
+      createdAt: '',
+      uid: phoneController.text.trim(),
+    );
+    print('registerscreen');
+    print(user.firstname);
+    },
+    child: Text('Inscription',
+        style: GoogleFonts.breeSerif(
+          textStyle: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.normal,
           ),
-          elevation: 3.0, // Button shadow,
-        ));
+        )),
+    style: ElevatedButton.styleFrom(
+      primary: Color.fromRGBO(189, 22, 22, 1),
+      // Background color
+      onPrimary: Colors.white, // Text color
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10.0), // Border radius
+      ),
+      elevation: 3.0, // Button shadow,
+    ));
   }
 
   ElevatedButton registerGoogle(
@@ -243,44 +223,17 @@ class _RegisterCostumerState extends State<RegisterCostumer> {
         ],
       ),
       style: ButtonStyle(
-          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-            RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-              side: const BorderSide(color: Color(0xFF1E3148), width: 2),
-            ),
-          ),
-          backgroundColor: MaterialStateProperty.all(Colors.white)),
-    );
+      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+        RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+          side: const BorderSide(color: Color(0xFF1E3148), width: 2),
+        ),
+      ),
+      backgroundColor: MaterialStateProperty.all(Colors.white)),
+);
   }
 
-  TextField textfieldmdp() {
-    return TextField(
-      obscureText: _isObscure,
-      decoration: InputDecoration(
-          hintText: 'Mot de passe',
-          labelStyle: GoogleFonts.poppins(
-            fontSize: 16,
-            color: Color.fromRGBO(0, 0, 0, 0.2),
-          ),
-          border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-              borderSide: BorderSide(
-                color: Color(0xFF1E3148),
-                width: 3.0,
-              )),
-          //labelText: 'Password',
-          // this button is used to toggle the password visibility
-          suffixIcon: IconButton(
-              icon: Icon(_isObscure ? Icons.visibility : Icons.visibility_off,
-                  color: Color(0xFFBD1616)),
-              onPressed: () {
-                setState(() {
-                  _isObscure = !_isObscure;
-                });
-              })),
-    );
-  }
-
+ 
   Row check() {
     return Row(
       children: [
@@ -308,35 +261,6 @@ class _RegisterCostumerState extends State<RegisterCostumer> {
     );
   }
 
-  TextField textfieldmdp2() {
-    return TextField(
-      obscureText: _isObscure,
-      decoration: InputDecoration(
-          hintText: 'Mot de passe',
-          labelStyle: GoogleFonts.poppins(
-            fontSize: 16,
-            color: Color.fromRGBO(0, 0, 0, 0.2),
-          ),
-          border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-              borderSide: BorderSide(
-                color: Color(0xFF1E3148),
-                width: 3.0,
-              )),
-          //labelText: 'Password',
-          // this button is used to toggle the password visibility
-          suffixIcon: IconButton(
-              icon: Icon(
-                _isObscure3 ? Icons.visibility : Icons.visibility_off,
-                color: Color(0xFFBD1616),
-              ),
-              onPressed: () {
-                setState(() {
-                  _isObscure3 = !_isObscure3;
-                });
-              })),
-    );
-  }
 }
 
 Row welcomeText() {

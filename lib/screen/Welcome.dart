@@ -94,7 +94,6 @@ class _WelcomeState extends State<Welcome> {
       body: Container(
         color: Colors.white,
         child: Column(
-          //crossAxisAlignment: CrossAxisAlignment.start, // Adjust this line
           children: [
             Spacer(),
             Image.asset('images/yobal.png', width: 50, height: 50),
@@ -103,8 +102,7 @@ class _WelcomeState extends State<Welcome> {
               padding: EdgeInsets.all(40),
               child: Column(
                 crossAxisAlignment:
-                    CrossAxisAlignment.start, // Adjust this line
-
+                  CrossAxisAlignment.start, 
                 children: [
                   Container(
                     //color: Colors.blue,
@@ -154,7 +152,7 @@ class _WelcomeState extends State<Welcome> {
               ),
             ),
            // SizedBox(height: 200,),
-            //Spacer(),
+            Spacer(),
             client(width * 3 / 4, 50),
             SizedBox(
               height: 15,
@@ -167,4 +165,4 @@ class _WelcomeState extends State<Welcome> {
     );
   }
 
-  }
+}

@@ -16,11 +16,8 @@ class AuthProvider extends ChangeNotifier {
   bool get isSignedIn => _isSignedIn;
   bool _isloading = false;
   bool get isLoading => _isloading;
-
   UserModel? _userModel;
   UserModel get userModel => _userModel!;
-  
-
   String? _uid;
   String get uid => _uid!;
 
@@ -106,7 +103,7 @@ void signInWithPhone(BuildContext context, String phonenumber, UserModel user) a
  // DATABASE OPERTAIONS
   Future<bool> checkExistingUser() async {
     DocumentSnapshot snapshot =
-        await _firebaseFirestore.collection("users").doc(_uid).get();
+        await _firebaseFirestore.collection("clients").doc(_uid).get();
     if (snapshot.exists) {
       print("USER EXISTS");
       return true;
@@ -158,6 +155,27 @@ void signInWithPhone(BuildContext context, String phonenumber, UserModel user) a
     SharedPreferences s = await SharedPreferences.getInstance();
     await s.setString("user_model", jsonEncode(userModel.toMap()));
   }
+
+
+   Future getDataFromFirestore() async {
+    await _firebaseFirestore
+        .collection("clients")
+        .doc(_firebaseAuth.currentUser!.uid)
+        .get()
+        .then((DocumentSnapshot snapshot) {
+      _userModel = UserModel(
+        firstname: snapshot['firstname'],
+        lastname: snapshot['lastname'],
+        createdAt: snapshot['createdAt'],
+        //bio: snapshot['bio'],
+        uid: snapshot['uid'],
+       // profilePic: snapshot['profilePic'],
+        phoneNumber: snapshot['phoneNumber'],
+      );
+      _uid = userModel.uid;
+    });
+  }
+
 
 
 }

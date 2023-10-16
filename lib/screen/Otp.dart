@@ -76,14 +76,15 @@ class _OtpState extends State<Otp> {
   void storeData() async {
     final ap = Provider.of<AuthProvider>(context, listen: false);
     UserModel userModel = UserModel(
-      firstname: firstNameController.text.trim(),
-      lastname: lastNameController.text.trim(),
-      createdAt: "",
-      phoneNumber: phoneController.text,
-      uid: "",
+      firstname: user.firstname,
+      lastname: user.lastname.trim(),
+      createdAt: DateTime.now().millisecondsSinceEpoch.toString(),
+      phoneNumber: user.phoneNumber,
+      uid: user.phoneNumber,
       //firstname: '',
       //lastname: '',
     );
+    print(userModel.phoneNumber);
     // if (image != null) {
     ap.saveUserDataToFirebase(
       context: context,
@@ -119,20 +120,21 @@ class _OtpState extends State<Otp> {
           (value) async {
             if (value == true) {
               // user exists in our app
-              /* ap.getDataFromFirestore().then(
+               ap.getDataFromFirestore().then(
                     (value) => ap.saveUserDataToSP().then(
                           (value) => ap.setSignIn().then(
                                 (value) => Navigator.pushAndRemoveUntil(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => const HomeScreen(),
+                                      builder: (context) => const Homescreencustomer(),
                                     ),
                                     (route) => false),
                               ),
                         ),
-                  ); */
+                  ); 
             } else {
               // new user
+              storeData();
               Navigator.pushAndRemoveUntil(
                   context,
                   MaterialPageRoute(
@@ -214,9 +216,14 @@ class _OtpState extends State<Otp> {
                   onPressed: () {
                     print(otpCode);
                     if (otpCode != null) {
+                      //storeData();
+
                       verifyOtp(context, otpCode!);
 
-                      storeData();
+                      //if(verifyOtp(context, otpCode)){
+
+                    
+
                     } else {
                       showSnackBar(context, "Enter 6-Digit code");
                     }
@@ -247,14 +254,14 @@ class _OtpState extends State<Otp> {
 
     return Scaffold(
       body: Container(
-        child: SingleChildScrollView(
-          child: isloading == true
+        child:  isloading == true
               ? const Center(
                   child: CircularProgressIndicator(
                     color: Colors.purple,
                   ),
                 )
-              : Column(
+              :  SingleChildScrollView(
+          child:Column(
                   children: [
                     Align(
                       alignment: Alignment.topLeft,
@@ -279,271 +286,84 @@ class _OtpState extends State<Otp> {
     );
   }
 
-  ElevatedButton register() {
-    return ElevatedButton(
-        onPressed: () {
-          if (screenState == 0) {
-            /*  if (firstNameController.text.isEmpty ||
-                lastNameController.text.isEmpty) {
-              showSnackBarText("Username is still empty!");
-            } else if (phoneController.text.isEmpty) {
-              showSnackBarText("Phone number is still empty!");
-            } else {
-              verifyNumber(countryDial + phoneController.text);
-              print('$countryDial${phoneController.text}');
-            } */
-            sendphonenumber();
-          } else {
-            /* if (otpPin.length >= 6) {
-              verifyOTP();
-            } else {
-              showSnackBarText("Enter OTP correctly!");
-            } */
-          }
-        },
-        child: Text('Inscription',
-            style: GoogleFonts.breeSerif(
-              textStyle: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.normal,
-              ),
-            )),
-        style: ElevatedButton.styleFrom(
-          primary: Color.fromRGBO(189, 22, 22, 1),
-          // Background color
-          onPrimary: Colors.white, // Text color
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10.0), // Border radius
-          ),
-          elevation: 3.0, // Button shadow,
-        ));
-  }
-
-  ElevatedButton registerGoogle(
-      {String? path, required String text, IconData? icon}) {
-    return ElevatedButton(
-      onPressed: () {},
-      child: Row(
-        children: [
-          Image.asset(
-            '$path',
-            width: 23,
-            height: 23,
-          ),
-          Padding(
-            padding: EdgeInsets.only(left: 10),
-            child: Text(
-              text,
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-                color: Colors.black,
-              ),
-            ),
-          )
-        ],
-      ),
-      style: ButtonStyle(
-          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-            RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-              side: const BorderSide(color: Color(0xFF1E3148), width: 2),
-            ),
-          ),
-          backgroundColor: MaterialStateProperty.all(Colors.white)),
-    );
-  }
-
-  TextField textfieldmdp() {
-    return TextField(
-      obscureText: _isObscure,
-      decoration: InputDecoration(
-          hintText: 'Mot de passe',
-          labelStyle: GoogleFonts.poppins(
-            fontSize: 16,
-            color: Color.fromRGBO(0, 0, 0, 0.2),
-          ),
-          border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-              borderSide: BorderSide(
-                color: Color(0xFF1E3148),
-                width: 3.0,
-              )),
-          //labelText: 'Password',
-          // this button is used to toggle the password visibility
-          suffixIcon: IconButton(
-              icon: Icon(_isObscure ? Icons.visibility : Icons.visibility_off,
-                  color: Color(0xFFBD1616)),
-              onPressed: () {
-                setState(() {
-                  _isObscure = !_isObscure;
-                });
-              })),
-    );
-  }
-
-  Row check() {
-    return Row(
+  Center logoContainer() {
+    return Center(
+        child: Column(
       children: [
-        Checkbox(
-          checkColor:
-              isChecked ? Colors.white : null, // Red background when checked
-          activeColor: Colors.red,
-          //hoverColor: Color.fromRGBO(40, 0, 81, 1),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-
-          value: isChecked,
-          onChanged: (value) {
-            setState(() {
-              isChecked = value ?? false;
-            });
-          },
-        ),
+        Image.asset('images/yobal.png', width: 50, height: 50),
         Text(
-          'J\'accepte les conditions.',
-          style: TextStyle(
-            color: Colors.black, // Adjust text color as needed
+          'Inscription',
+          style: GoogleFonts.breeSerif(
+            textStyle: TextStyle(
+              fontSize: 20,
+              color: Color.fromRGBO(40, 0, 81, 1),
+              fontWeight: FontWeight.bold,
+              decorationColor: Color.fromRGBO(40, 0, 81, 1),
+            ),
           ),
         ),
       ],
-    );
+    )
+
+        // height: 100, width: 208, child: Image.asset('images/yobal.png')),
+        );
   }
 
-  TextField textfieldmdp2() {
+/* ---- champs text --- */
+
+  TextField textfield(
+      {required String placeHolder,
+      bool isHide = false,
+      controller,
+      TextInputType? textInputType}) {
     return TextField(
-      obscureText: _isObscure,
+      controller: controller,
       decoration: InputDecoration(
-          hintText: 'Mot de passe',
           labelStyle: GoogleFonts.poppins(
             fontSize: 16,
             color: Color.fromRGBO(0, 0, 0, 0.2),
           ),
+          hintText: placeHolder,
           border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
               borderSide: BorderSide(
                 color: Color(0xFF1E3148),
                 width: 3.0,
-              )),
-          //labelText: 'Password',
-          // this button is used to toggle the password visibility
-          suffixIcon: IconButton(
-              icon: Icon(
-                _isObscure3 ? Icons.visibility : Icons.visibility_off,
-                color: Color(0xFFBD1616),
-              ),
-              onPressed: () {
-                setState(() {
-                  _isObscure3 = !_isObscure3;
-                });
-              })),
+              ))),
+      obscureText: isHide,
+      keyboardType: textInputType,
     );
   }
-}
 
-Row welcomeText() {
-  return Row(
-    children: [
-      Text(
-        'BIENVENUE CLIENT,',
-        style: GoogleFonts.breeSerif(
-          fontWeight: FontWeight.w700,
-          color: Color(0xFFBD1616),
-          fontSize: 15,
-          decoration: TextDecoration.underline,
-          decorationColor: Color(0xFFBD1616),
-        ),
-        textAlign: TextAlign.center,
-      ),
-      Text(
-        'Pret ?',
-        style: GoogleFonts.montserrat(
-          fontWeight: FontWeight.w700,
-          color: Color.fromRGBO(40, 0, 81, 1),
-          fontSize: 15,
-        ),
-        textAlign: TextAlign.center,
-      ),
-    ],
-  );
-}
-
-Center logoContainer() {
-  return Center(
-      child: Column(
-    children: [
-      Image.asset('images/yobal.png', width: 50, height: 50),
-      Text(
-        'Inscription',
-        style: GoogleFonts.breeSerif(
-          textStyle: TextStyle(
-            fontSize: 20,
-            color: Color.fromRGBO(40, 0, 81, 1),
-            fontWeight: FontWeight.bold,
-            decorationColor: Color.fromRGBO(40, 0, 81, 1),
+  TextField textfieldnumber(
+      {required String placeHolder,
+      bool isHide = false,
+      controller,
+      TextInputType? textInputType}) {
+    return TextField(
+      controller: controller,
+      decoration: InputDecoration(
+        labelText: 'Telephone',
+        prefixIcon: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Image.asset(
+            'assets/flags/sn.png', // Replace with the path to the Senegal flag image
+            package: 'intl_phone_number_input',
+            height: 24,
+            width: 24,
           ),
         ),
-      ),
-    ],
-  )
-
-      // height: 100, width: 208, child: Image.asset('images/yobal.png')),
-      );
-}
-
-/* ---- champs text --- */
-
-TextField textfield(
-    {required String placeHolder,
-    bool isHide = false,
-    controller,
-    TextInputType? textInputType}) {
-  return TextField(
-    controller: controller,
-    decoration: InputDecoration(
-        labelStyle: GoogleFonts.poppins(
-          fontSize: 16,
-          color: Color.fromRGBO(0, 0, 0, 0.2),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: BorderSide(
+            color: Color(0xFF1E3148),
+            width: 3.0,
+          ),
         ),
         hintText: placeHolder,
-        border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
-            borderSide: BorderSide(
-              color: Color(0xFF1E3148),
-              width: 3.0,
-            ))),
-    obscureText: isHide,
-    keyboardType: textInputType,
-  );
-}
-
-TextField textfieldnumber(
-    {required String placeHolder,
-    bool isHide = false,
-    controller,
-    TextInputType? textInputType}) {
-  return TextField(
-    controller: controller,
-    decoration: InputDecoration(
-      labelText: 'Telephone',
-      prefixIcon: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Image.asset(
-          'assets/flags/sn.png', // Replace with the path to the Senegal flag image
-          package: 'intl_phone_number_input',
-          height: 24,
-          width: 24,
-        ),
       ),
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(10),
-        borderSide: BorderSide(
-          color: Color(0xFF1E3148),
-          width: 3.0,
-        ),
-      ),
-      hintText: placeHolder,
-    ),
-    obscureText: isHide,
-    keyboardType: textInputType,
-  );
+      obscureText: isHide,
+      keyboardType: textInputType,
+    );
+  }
 }
