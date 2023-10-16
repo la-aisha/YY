@@ -61,7 +61,7 @@ class _OtpState extends State<Otp> {
     String phonenumber = countryDial + phoneController.text.trim();
     ap.signInWithPhone(context, phonenumber, user);
     print(phonenumber);
-    //print(user.firstname);
+    print(user.firstname);
   }
 
   void showSnackBarText(String text) {
@@ -76,7 +76,7 @@ class _OtpState extends State<Otp> {
   void storeData() async {
     final ap = Provider.of<AuthProvider>(context, listen: false);
     UserModel userModel = UserModel(
-      firstname: user.firstname,
+      firstname: user.firstname.trim(),
       lastname: user.lastname.trim(),
       createdAt: DateTime.now().millisecondsSinceEpoch.toString(),
       phoneNumber: user.phoneNumber,
@@ -84,7 +84,10 @@ class _OtpState extends State<Otp> {
       //firstname: '',
       //lastname: '',
     );
+    print(user.firstname);
     print(userModel.phoneNumber);
+    print(userModel.firstname);
+
     // if (image != null) {
     ap.saveUserDataToFirebase(
       context: context,
@@ -120,18 +123,19 @@ class _OtpState extends State<Otp> {
           (value) async {
             if (value == true) {
               // user exists in our app
-               ap.getDataFromFirestore().then(
+              ap.getDataFromFirestore().then(
                     (value) => ap.saveUserDataToSP().then(
                           (value) => ap.setSignIn().then(
                                 (value) => Navigator.pushAndRemoveUntil(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => const Homescreencustomer(),
+                                      builder: (context) =>
+                                          const Homescreencustomer(),
                                     ),
                                     (route) => false),
                               ),
                         ),
-                  ); 
+                  );
             } else {
               // new user
               storeData();
@@ -221,9 +225,6 @@ class _OtpState extends State<Otp> {
                       verifyOtp(context, otpCode!);
 
                       //if(verifyOtp(context, otpCode)){
-
-                    
-
                     } else {
                       showSnackBar(context, "Enter 6-Digit code");
                     }
@@ -254,14 +255,14 @@ class _OtpState extends State<Otp> {
 
     return Scaffold(
       body: Container(
-        child:  isloading == true
-              ? const Center(
-                  child: CircularProgressIndicator(
-                    color: Colors.purple,
-                  ),
-                )
-              :  SingleChildScrollView(
-          child:Column(
+        child: isloading == true
+            ? const Center(
+                child: CircularProgressIndicator(
+                  color: Colors.purple,
+                ),
+              )
+            : SingleChildScrollView(
+                child: Column(
                   children: [
                     Align(
                       alignment: Alignment.topLeft,
@@ -281,7 +282,7 @@ class _OtpState extends State<Otp> {
                     stateOTP(),
                   ],
                 ),
-        ),
+              ),
       ),
     );
   }

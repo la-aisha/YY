@@ -162,40 +162,49 @@ class _RegisterCostumerState extends State<RegisterCostumer> {
 
   ElevatedButton register() {
     return ElevatedButton(
-    onPressed: () {
-    if(firstNameController.text.isEmpty || lastNameController.text.isEmpty ) {
-      ("Username is still empty!");
-    } else if(phoneController.text.isEmpty || phoneController.length != 9) {
-      showSnackBar(context ,"Phone number is not correct!");
-    } else {
-      sendphonenumber();
-    }                 
-    user = UserModel(
-      firstname: firstNameController.text,
-      lastname: lastNameController.text,
-      phoneNumber: phoneController.text.trim(),
-      createdAt: '',
-      uid: phoneController.text.trim(),
-    );
-    print('registerscreen');
-    print(user.firstname);
-    },
-    child: Text('Inscription',
-        style: GoogleFonts.breeSerif(
-          textStyle: TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.normal,
+        onPressed: () {
+          if (firstNameController.text.isEmpty ||
+              lastNameController.text.isEmpty) {
+            ("Username is still empty!");
+          } else if (phoneController.text.isEmpty ||
+              phoneController.length != 9) {
+            showSnackBar(context, "Phone number is not correct!");
+          }else if(isChecked == false){
+
+            showSnackBar(context, "Accept condition!");
+
+
+          }
+          
+           else {
+            sendphonenumber();
+          }
+          user = UserModel(
+            firstname: firstNameController.text,
+            lastname: lastNameController.text,
+            phoneNumber: phoneController.text.trim(),
+            createdAt: '',
+            uid: phoneController.text.trim(),
+          );
+          print('registerscreen');
+          print(user.firstname);
+        },
+        child: Text('Inscription',
+            style: GoogleFonts.breeSerif(
+              textStyle: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.normal,
+              ),
+            )),
+        style: ElevatedButton.styleFrom(
+          primary: Color.fromRGBO(189, 22, 22, 1),
+          // Background color
+          onPrimary: Colors.white, // Text color
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10.0), // Border radius
           ),
-        )),
-    style: ElevatedButton.styleFrom(
-      primary: Color.fromRGBO(189, 22, 22, 1),
-      // Background color
-      onPrimary: Colors.white, // Text color
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10.0), // Border radius
-      ),
-      elevation: 3.0, // Button shadow,
-    ));
+          elevation: 3.0, // Button shadow,
+        ));
   }
 
   ElevatedButton registerGoogle(
@@ -223,17 +232,16 @@ class _RegisterCostumerState extends State<RegisterCostumer> {
         ],
       ),
       style: ButtonStyle(
-      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-        RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
-          side: const BorderSide(color: Color(0xFF1E3148), width: 2),
-        ),
-      ),
-      backgroundColor: MaterialStateProperty.all(Colors.white)),
-);
+          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+            RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+              side: const BorderSide(color: Color(0xFF1E3148), width: 2),
+            ),
+          ),
+          backgroundColor: MaterialStateProperty.all(Colors.white)),
+    );
   }
 
- 
   Row check() {
     return Row(
       children: [
@@ -249,6 +257,7 @@ class _RegisterCostumerState extends State<RegisterCostumer> {
             setState(() {
               isChecked = value ?? false;
             });
+            print(value);
           },
         ),
         Text(
@@ -260,7 +269,6 @@ class _RegisterCostumerState extends State<RegisterCostumer> {
       ],
     );
   }
-
 }
 
 Row welcomeText() {
@@ -323,6 +331,7 @@ TextField textfield(
   return TextField(
     controller: controller,
     decoration: InputDecoration(
+        contentPadding: EdgeInsets.all(20.0),
         labelStyle: GoogleFonts.poppins(
           fontSize: 16,
           color: Color.fromRGBO(0, 0, 0, 0.2),
