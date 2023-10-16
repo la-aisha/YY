@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "343178898215",
+    "project_id": "myyobulyobal",
+    "storage_bucket": "myyobulyobal.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:343178898215:android:c367651c6bf52c26131702",
+        "android_client_info": {
+          "package_name": "com.rh.yy"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCARMHiwfQ0LGnuzRfJG42eHI71U9n6HiQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
