@@ -169,14 +169,9 @@ class _RegisterCostumerState extends State<RegisterCostumer> {
           } else if (phoneController.text.isEmpty ||
               phoneController.length != 9) {
             showSnackBar(context, "Phone number is not correct!");
-          }else if(isChecked == false){
-
+          } else if (isChecked == false) {
             showSnackBar(context, "Accept condition!");
-
-
-          }
-          
-           else {
+          } else {
             sendphonenumber();
           }
           user = UserModel(
@@ -210,7 +205,10 @@ class _RegisterCostumerState extends State<RegisterCostumer> {
   ElevatedButton registerGoogle(
       {String? path, required String text, IconData? icon}) {
     return ElevatedButton(
-      onPressed: () {},
+      onPressed: () {
+        final provider = Provider.of<AuthProvider>(context, listen: false);
+        provider.googleLogin();
+      },
       child: Row(
         children: [
           Image.asset(
