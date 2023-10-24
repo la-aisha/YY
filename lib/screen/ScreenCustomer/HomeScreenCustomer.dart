@@ -15,8 +15,8 @@ class _HomescreencustomerState extends State<Homescreencustomer> {
   Widget build(BuildContext context) {
     //final user = FirebaseAuth.instance.currentUser;
     final ap = Provider.of<AuthProvider>(context, listen: false);
-    return Container(
-      color: Colors.white,
+    /* return Container(
+      color: Colors.blue,
       child : Column(
         children: [
           Text(ap.userModel.firstname),
@@ -26,6 +26,31 @@ class _HomescreencustomerState extends State<Homescreencustomer> {
 
 
         ],
+      )
+    ); */
+    return Scaffold(
+      body: Container(
+         height: double.infinity,
+          width: double.infinity,
+          decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            colors: [
+              Color.fromRGBO(40, 0, 81, 1),
+             //Color.fromRGBO(115, 51, 100, 1),
+              Color.fromRGBO(115, 51, 100, 1),
+              Color.fromRGBO(115, 51, 100, 1),
+
+            ]
+            
+          ),
+          
+        ),
+        child: SingleChildScrollView(
+          child: Column(
+            
+          ),
+        ),
       )
     );
   }

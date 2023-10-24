@@ -46,15 +46,15 @@ class _WelcomeState extends State<Welcome> {
               builder: (context) => Homescreencustomer())); */
             } else {
               Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => RegisterCostumer(
-                        user: new UserModel(
-                            firstname: "",
-                            lastname: "",
-                            createdAt: "",
-                            phoneNumber: "",
-                            uid: ""),
-                      )));
-            }
+                builder: (context) => RegisterCostumer(
+                      user: new UserModel(
+                          firstname: "",
+                          lastname: "",
+                          createdAt: "",
+                          phoneNumber: "",
+                          uid: ""),
+                    )));
+          }
           },
           style: ButtonStyle(
               shape: MaterialStateProperty.all<RoundedRectangleBorder>(
