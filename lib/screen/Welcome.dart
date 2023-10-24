@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -37,12 +36,25 @@ class _WelcomeState extends State<Welcome> {
             style:
                 GoogleFonts.poppins(fontWeight: FontWeight.w400, fontSize: 12),
           ),
-          onPressed: () {
-            ap.isSignedIn == true 
-            ?  Navigator.of(context).push(
-              MaterialPageRoute(builder: (context) => Homescreencustomer())) 
-            : Navigator.of(context).push(
-              MaterialPageRoute(builder: (context) => RegisterCostumer(user: new UserModel(firstname: "", lastname: "", createdAt: "", phoneNumber: "", uid: ""),))) ;
+          onPressed: () async {
+            if (ap.isSignedIn == true) {
+              await ap.getDataFromSP().whenComplete(() => Navigator.of(context)
+              .push(MaterialPageRoute(
+              builder: (context) => Homescreencustomer())));
+
+              /*  Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => Homescreencustomer())); */
+            } else {
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => RegisterCostumer(
+                        user: new UserModel(
+                            firstname: "",
+                            lastname: "",
+                            createdAt: "",
+                            phoneNumber: "",
+                            uid: ""),
+                      )));
+            }
           },
           style: ButtonStyle(
               shape: MaterialStateProperty.all<RoundedRectangleBorder>(
@@ -55,40 +67,40 @@ class _WelcomeState extends State<Welcome> {
     }
 
     Container convoyeur(double width, double height) {
-    return Container(
-        width: width * 3 / 4,
-        height: height,
-        child: ElevatedButton(
-          child: Text(
-            'Je suis un convoyeur',
-            style: GoogleFonts.poppins(
-              fontWeight: FontWeight.w400,
-              fontSize: 12,
-              color:
-                  Color.fromRGBO(40, 0, 81, 1), // Set your desired color here
+      return Container(
+          width: width * 3 / 4,
+          height: height,
+          child: ElevatedButton(
+            child: Text(
+              'Je suis un convoyeur',
+              style: GoogleFonts.poppins(
+                fontWeight: FontWeight.w400,
+                fontSize: 12,
+                color:
+                    Color.fromRGBO(40, 0, 81, 1), // Set your desired color here
+              ),
             ),
-          ),
-          onPressed: () {
-             ap.isSignedIn == true // then display shared pref data
-            ?  Navigator.of(context).push(
-              MaterialPageRoute(builder: (context) => Homescreendriver())) 
-            : Navigator.of(context).push(
-              MaterialPageRoute(builder: (context) => Welcome())) ;
-          },
-          style: ButtonStyle(
-            backgroundColor: MaterialStateProperty.all(Colors.white),
-            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-              RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(15),
-                side: const BorderSide(
-                  color: Color.fromRGBO(40, 0, 81, 1),
-                  //color: Color.fromRGBO(40, 0, 81, 1),
+            onPressed: () {
+              ap.isSignedIn == true // then display shared pref data
+                  ? Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => Homescreendriver()))
+                  : Navigator.of(context)
+                      .push(MaterialPageRoute(builder: (context) => Welcome()));
+            },
+            style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.all(Colors.white),
+              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15),
+                  side: const BorderSide(
+                    color: Color.fromRGBO(40, 0, 81, 1),
+                    //color: Color.fromRGBO(40, 0, 81, 1),
+                  ),
                 ),
               ),
             ),
-          ),
-        ));
-  }
+          ));
+    }
 
     return Scaffold(
       body: Container(
@@ -101,8 +113,7 @@ class _WelcomeState extends State<Welcome> {
             Padding(
               padding: EdgeInsets.all(40),
               child: Column(
-                crossAxisAlignment:
-                  CrossAxisAlignment.start, 
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Container(
                     //color: Colors.blue,
@@ -151,7 +162,7 @@ class _WelcomeState extends State<Welcome> {
                 ],
               ),
             ),
-           // SizedBox(height: 200,),
+            // SizedBox(height: 200,),
             Spacer(),
             client(width * 3 / 4, 50),
             SizedBox(
@@ -164,5 +175,4 @@ class _WelcomeState extends State<Welcome> {
       ),
     );
   }
-
 }

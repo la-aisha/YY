@@ -8,6 +8,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:yy/screen/Otp.dart';
 import 'package:yy/screen/RegisterCostumer.dart';
+import 'package:yy/screen/ScreenCustomer/HomeScreenCustomer.dart';
 import 'package:yy/utils/utils.dart';
 
 import '../model/user_model.dart';
@@ -33,8 +34,9 @@ class AuthProvider extends ChangeNotifier {
   final FirebaseStorage _firebaseStorage = FirebaseStorage.instance;
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
-  Future googleLogin() async {
-    final googleUser = await googleSignIn.signIn();
+  Future googleLogin( BuildContext context,
+  ) async {
+    /*  final googleUser = await googleSignIn.signIn();
     if (googleUser == null) return;
     _user = googleUser;
 
@@ -44,8 +46,28 @@ class AuthProvider extends ChangeNotifier {
     accessToken: googleAuth.accessToken, idToken: googleAuth.idToken);
 
     await FirebaseAuth.instance.signInWithCredential(credential);
-    notifyListeners();
+    notifyListeners(); */
 
+    try {
+      final googleUser = await googleSignIn.signIn();
+      if (googleUser == null) return;
+      _user = googleUser;
+
+      final googleAuth = await googleUser.authentication;
+
+      final credential = GoogleAuthProvider.credential(
+       accessToken: googleAuth.accessToken, idToken: googleAuth.idToken);
+
+      await FirebaseAuth.instance.signInWithCredential(credential);
+      notifyListeners();
+      Navigator.push(context,
+          MaterialPageRoute(builder: (context) => Homescreencustomer()));
+    } catch (error) {
+      // Handle the error here
+      print('Error during Google login: $error');
+
+
+    }
   }
 
   AuthProvider() {
@@ -193,4 +215,15 @@ class AuthProvider extends ChangeNotifier {
       _uid = userModel.uid;
     });
   }
+
+
+  Future getDataFromSP() async {
+    SharedPreferences s = await SharedPreferences.getInstance();
+    String data = s.getString("user_model") ?? '';
+    _userModel = UserModel.fromMap(jsonDecode(data));
+    _uid = _userModel!.uid;
+    notifyListeners();
+  }
+
+
 }

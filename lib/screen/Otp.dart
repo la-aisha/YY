@@ -155,8 +155,8 @@ class _OtpState extends State<Otp> {
   Widget build(BuildContext context) {
     final isloading =
         Provider.of<AuthProvider>(context, listen: true).isLoading;
-    print("otp");
-    print(user.firstname);
+   // print("otp");
+    print(" my otp ${user.firstname} ${user.lastname}${user.phoneNumber}");
 
     var size = MediaQuery.of(context).size;
     var width = size.width;

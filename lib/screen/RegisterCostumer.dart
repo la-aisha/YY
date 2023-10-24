@@ -38,8 +38,8 @@ class _RegisterCostumerState extends State<RegisterCostumer> {
     final ap = Provider.of<AuthProvider>(context, listen: false);
     String phonenumber = countryDial + phoneController.text.trim();
     ap.signInWithPhone(context, phonenumber, user);
-    print(phonenumber);
-    print(user.firstname);
+    //print(phonenumber);
+    print(" REGISTER ${user.firstname} ${user.lastname}${user.phoneNumber}");
   }
 
   @override
@@ -163,6 +163,13 @@ class _RegisterCostumerState extends State<RegisterCostumer> {
   ElevatedButton register() {
     return ElevatedButton(
         onPressed: () {
+           user = UserModel(
+            firstname: firstNameController.text,
+            lastname: lastNameController.text,
+            phoneNumber: phoneController.text.trim(),
+            createdAt: '',
+            uid: phoneController.text.trim(),
+          );
           if (firstNameController.text.isEmpty ||
               lastNameController.text.isEmpty) {
             ("Username is still empty!");
@@ -173,16 +180,11 @@ class _RegisterCostumerState extends State<RegisterCostumer> {
             showSnackBar(context, "Accept condition!");
           } else {
             sendphonenumber();
+            
           }
-          user = UserModel(
-            firstname: firstNameController.text,
-            lastname: lastNameController.text,
-            phoneNumber: phoneController.text.trim(),
-            createdAt: '',
-            uid: phoneController.text.trim(),
-          );
-          print('registerscreen');
-          print(user.firstname);
+          
+          //print('registerscreen');
+          //print(user.firstname);
         },
         child: Text('Inscription',
             style: GoogleFonts.breeSerif(
@@ -207,7 +209,7 @@ class _RegisterCostumerState extends State<RegisterCostumer> {
     return ElevatedButton(
       onPressed: () {
         final provider = Provider.of<AuthProvider>(context, listen: false);
-        provider.googleLogin();
+        //provider.googleLogin();
       },
       child: Row(
         children: [
