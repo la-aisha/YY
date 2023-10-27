@@ -31,7 +31,7 @@ class App extends StatelessWidget {
 
         // child: SignIn(),
         //home: Welcome(role_id: 0) ,
-        home:Welcome(),
+        home:Homescreencustomer(),
       ),
     );
   }

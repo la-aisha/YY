@@ -53,6 +53,8 @@ dependencies:
   image_picker: ^1.0.4
   google_sign_in: ^6.1.5
   carousel_slider: ^4.2.1
+  another_carousel_pro: ^1.0.0
+
 
 
 
@@ -92,6 +94,16 @@ flutter:
     - images/1.png
     - images/2.png
     - images/3.png
+    - images/home1.png
+    - images/home2.png
+    - images/home3.png
+    - images/home4.png
+    - images/home5.png
+    - images/app.png
+    - images/menu.png
+
+
+
 
 
 
