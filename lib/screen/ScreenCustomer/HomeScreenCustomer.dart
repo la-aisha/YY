@@ -2,9 +2,12 @@ import 'package:carousel_slider/carousel_controller.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:provider/provider.dart';
 import 'package:yy/provider/auth_provider.dart';
 import 'package:yy/screen/RegisterCostumer.dart';
+import 'package:yy/widgets/card.dart';
+import 'package:line_icons/line_icons.dart';
 
 class Homescreencustomer extends StatefulWidget {
   const Homescreencustomer({Key? key}) : super(key: key);
@@ -21,105 +24,127 @@ class _HomescreencustomerState extends State<Homescreencustomer> {
     double width = size.width;
     var height = size.height;
     Color myColor1 = Color.fromRGBO(40, 0, 81, 1);
+        Color myColor = Color.fromRGBO(40, 0, 81, 0.1);
+
     Color myColor2 = Color.fromRGBO(189, 22, 22, 1);
 
     final List<String> imgList = [
-      'images/1.png',
-      'images/2.png',
-      'images/3.png',
+      'images/slider.png',
+      'images/slider.png',
+      'images/slider.png',
     ];
+int _selectedIndex = 0;
+       const TextStyle optionStyle =
+      TextStyle(fontSize: 30, fontWeight: FontWeight.w600);
+
+    const List<Widget> _widgetOptions = <Widget>[
+    Text(
+      'Home',
+      style: optionStyle,
+    ),
+    Text(
+      'Likes',
+      style: optionStyle,
+    ),
+    Text(
+      'Search',
+      style: optionStyle,
+    ),
+    Text(
+      'Profile',
+      style: optionStyle,
+    ),
+  ];
 
     int currentIndex = 0;
     return Scaffold(
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(
+              blurRadius: 20,
+              color: Colors.black.withOpacity(.1),
+            )
+          ],
+        ),
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 8),
+            child: GNav(
+              rippleColor: Colors.grey[300]!,
+              hoverColor: Colors.grey[100]!,
+              gap: 8,
+              activeColor: Colors.black,
+              iconSize: 24,
+              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+              duration: Duration(milliseconds: 400),
+              tabBackgroundColor: Colors.grey[100]!,
+              color: Colors.black,
+              tabs: [
+                GButton(
+                  icon: LineIcons.map,
+                  text: 'livraison',
+                ),
+                GButton(
+                  icon: LineIcons.home,
+                  text: 'accueil',
+                ),
+               
+                GButton(
+                  icon: LineIcons.envelope,
+                  text: 'notification',
+                ),
+              ],
+              selectedIndex: _selectedIndex,
+              onTabChange: (index) {
+                setState(() {
+                  _selectedIndex = index;
+                });
+              },
+            ),
+          ),),),
       body: Stack(
         children: [
           Container(
             height: double.infinity,
             width: double.infinity,
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                colors: [
-                  Color.fromRGBO(40, 0, 81, 1),
-                  Color.fromRGBO(115, 51, 100, 1),
-                  Color.fromRGBO(115, 51, 100, 1),
-                ],
-              ),
-            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              
               children: [
-                Padding(padding: EdgeInsets.all(15) ,
-                  child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  //crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [                
-                    Image.asset(
-                      'images/app.png',
-                      height: 45,
-                      //color: Colors.grey[800],
-                    ),
-                    Icon(
-                      Icons.person,
-                      size: 45,
-                      color: Colors.white,
-                    )
-                  ],)
-                ),
-                const SizedBox(height: 10),
-
-                  // welcome home
-                Padding(
-                  padding: EdgeInsets.all(5),
-                  child: Column(
-                    //crossAxisAlignment: CrossAxisAlignment.start,
-                   // mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Dalal ak jamm,",
-                        style: TextStyle(fontSize: 20, color: Colors.white),
-                      ),
-                      Text(
-                        'Aissatou seye',
-                        style: GoogleFonts.bebasNeue(fontSize: 30 ,color: Colors.white),
-                      ),
-                    ],
+              Padding(
+              padding: const EdgeInsets.only(top: 40 ,left: 40 ,right: 40),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [                
+                  Image.asset(
+                    'images/app.png',
+                    height: 30,
                   ),
-                ),
-
-                
-                Container(
-                  child: Padding(
-                    padding: EdgeInsets.only(top: 80),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          'Hello,',
-                          style: GoogleFonts.breeSerif(
-                            fontWeight: FontWeight.w700,
-                            color: Colors.white,
-                            fontSize: 18,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                        Text(
-                          'hello boy',
-                          //'${ap.userModel.firstname} ${ap.userModel.lastname}',
-                          style: GoogleFonts.breeSerif(
-                            fontWeight: FontWeight.w700,
-                            color: Colors.white,
-                            fontSize: 22,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                      ],
+                  Icon(
+                    Icons.person,
+                    size: 45,
+                    color: myColor1,
+                  )
+                ],),
+              ),
+              Padding(
+                padding: EdgeInsets.only(top:35 ,left: 35),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      "Dalal ak jamm,",
+                      style: TextStyle(fontSize: 15, color: myColor1),
                     ),
-                  ),
+                    Text(
+                      'Aissatou seye',
+                      style: GoogleFonts.bebasNeue(fontSize: 20 ,color: Colors.black),
+                    ),
+                  ],
                 ),
-              ],
+              ),
+            ],
             ),
           ),
           Positioned(
@@ -128,350 +153,128 @@ class _HomescreencustomerState extends State<Homescreencustomer> {
             left: 0,
             right: 0,
             child: SingleChildScrollView(
-              child: Container(
-                height: height,
-                width: width ,
-                decoration: const BoxDecoration(
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(40),
-                      topRight: Radius.circular(40),
+              child: Column(
+              children: [ 
+                ActivityListTile(
+                title: 'Running',
+                subtitle: 'Build Strong bones by running',
+                trailingImage:
+                  Image.asset('images/femme.png', height: 170),
+                color:  Color.fromRGBO(115, 51, 100, 0.3),
+                gradient: Color.fromRGBO(115, 51, 100, 0.7),
+              ),
+              
+              SizedBox(height: 20,),
+              Center(
+                child: Text(
+                  "tanal lo beug",
+                  style: GoogleFonts.montserrat(
+                    textStyle: TextStyle(
+                      fontSize: 18,
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
                     ),
-                    color: Colors.white),
-                child: Column(
-                  children: [
-                   /*  SizedBox(
-                      height: 10,
-                    ),
-
-                    Container(
-                      height: 230,
-                      child: Stack(
-                        children: [
-                          
-                        ],
-                      ),
-
-                    ), */
-
-                     SizedBox(
-                      height: 10,
-                    ),
-
-
-                    // Add your scrollable content here
-                    CarouselSlider(
-                      options: CarouselOptions(
-                        height: 200,
-                        initialPage: 0,
-                        enableInfiniteScroll: true,
-                        reverse: false,
-                        autoPlay: true,
-                        autoPlayInterval: Duration(seconds: 3),
-                        autoPlayAnimationDuration: Duration(milliseconds: 800),
-                        autoPlayCurve: Curves.fastOutSlowIn,
-                        enlargeCenterPage: true,
-                        scrollDirection: Axis.horizontal,
-                      ),
-                      items: imgList.map((item) {
-                        return Builder(
-                          builder: (BuildContext context) {
-                            return Container(
-                              width: width * 0.8,
-                              margin: EdgeInsets.symmetric(horizontal: 10.0),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                //color: Colors.pink,
-                              ),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(20),
-                                child: Image.asset(
-                                  width: width * 0.8,
-                                  item,
-                                  fit: BoxFit.fill,
-                                ),
-                              ),
-                            );
-                          },
-                        );
-                      }).toList(),
-                    ),
-                    SizedBox(
-                      height: 30,
-                    ),
-
-                    Center(
-                      child : Text(
-                        "tanal lo beug",
-                        style: GoogleFonts.montserrat(
-                          textStyle: TextStyle(
-                            fontSize: 18,
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
-                            //decoration: TextDecoration.underline,
-                            // decorationColor: Color.fromRGBO(40, 0, 81, 1),
-                          ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 10,) ,
-                   
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        icon(width, height, 'images/home1.png', 'livraison', context) ,
-                        icon(width, height, 'images/home4.png', 'Depot', context) ,
-                      ],
-                    ),
-                    SizedBox(height: 20,) ,
-                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        icon(width, height, 'images/home5.png', 'Partenaires', context) ,
-                        icon(width, height, 'images/home3.png', 'Tarif', context) ,
-                      ],
-                    ),
-                     Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 24),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        RichText(
-                          text: TextSpan(
-                           // style: Theme.of(context).textTheme.display1,
-                            children: [
-                              TextSpan(text: "Best of the "),
-                              TextSpan(
-                                text: "day",
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ]
-                    ),)
-                     ,                       bestOfTheDayCard(size*0.8, context),
-
-                  ],
+                  ),
                 ),
               ),
+              SizedBox(height: 10,),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  icon(width, height, 'images/box.png', 'livraison', context ,myColor),
+                  icon(width, height, 'images/home.png', 'Depot', context,myColor),
+                ],
+              ),
+              SizedBox(height: 20,),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  icon(width, height, 'images/partners.png', 'Partenaires', context ,myColor),
+                  icon(width, height, 'images/money.png', 'Tarif', context,myColor),
+                ],
+              ),
+              SizedBox(height: 40,),
+                Center(
+                child: Text(
+                  "You bess !",
+                  style: GoogleFonts.montserrat(
+                    textStyle: TextStyle(
+                      fontSize: 18,
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(height: 20,),
+              CarouselSlider(
+              options: CarouselOptions(
+                height: 200,
+                initialPage: 0,
+                enableInfiniteScroll: true,
+                reverse: false,
+                autoPlay: true,
+                autoPlayInterval: Duration(seconds: 3),
+                autoPlayAnimationDuration: Duration(milliseconds: 800),
+                autoPlayCurve: Curves.fastOutSlowIn,
+                enlargeCenterPage: true,
+                scrollDirection: Axis.horizontal,
+              ),
+              items: imgList.map((item) {
+                return Builder(
+                  builder: (BuildContext context) {
+                    return Container(
+                      width: width * 0.8,
+                      margin: EdgeInsets.symmetric(horizontal: 10.0),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(20),
+                        child: Image.asset(
+                          item,
+                          fit: BoxFit.fill,
+                        ),
+                      ),
+                    );
+                  },
+                );
+              }).toList(),
             ),
+                
+
+    ],
+  ),
+)
           ),
         ],
       ),
-    );
+     );
   }
 }
- Container bestOfTheDayCard(Size size, BuildContext context) {
-    return Container(
-      margin: EdgeInsets.symmetric(vertical: 20),
-      width: double.infinity,
-      height: 245,
-      child: Stack(
-        children: <Widget>[
-          Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: Container(
-              padding: EdgeInsets.only(
-                left: 24,
-                top: 24,
-                right: size.width * .35,
-              ),
-              height: 230,
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: Color(0xFFEAEAEA).withOpacity(.45),
-                borderRadius: BorderRadius.circular(29),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Container(
-                    margin: EdgeInsets.only(top: 10.0, bottom: 10.0),
-                    child: Text(
-                      "New York Time Best For 11th March 2020",
-                      style: TextStyle(
-                        fontSize: 9,
-                        //color: kLightBlackColor,
-                      ),
-                    ),
-                  ),
-                  Text(
-                    "How To Win \nFriends &  Influence",
-                    //style: Theme.of(context).textTheme.title,
-                  ),
-                  Text(
-                    "Gary Venchuk",
-                    style: TextStyle(color: Colors.black),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(top: 10, bottom: 10.0),
-                    child: Row(
-                      children: <Widget>[
-                        /* Padding(
-                          padding: EdgeInsets.only(right: 10.0), 
-                          child: BookRating(score: 4.9),
-                        ),
-                        Expanded(
-                          child: Text(
-                            "When the earth was flat and everyone wanted to win the game of the best and people….",
-                            maxLines: 3,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                              fontSize: 10,
-                              color: kLightBlackColor,
-                            ),
-                          ),
-                        ), */
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          Positioned(
-            right: 0,
-            top: 0,
-            child: Image.asset(
-              "images/femme.png",
-              width: size.width * .37,
-            ),
-          ),
-          Positioned(
-            bottom: 0,
-            right: 0,
-            child: SizedBox(
-              height: 40,
-              width: size.width * .3,
-              /* child: TwoSideRoundedButton(
-                text: "Read",
-                radious: 24,
-                press: () {},
-              ), */
-            ),
-          ),
-        ],
-      ),
-    );
-  }
- /*  Container bestOfTheDayCard(Size size, BuildContext context) {
-    return Container(
-      margin: EdgeInsets.symmetric(vertical: 20),
-      width: double.infinity,
-      height: 245,
-      child: Stack(
-        children: <Widget>[
-          Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: Container(
-              padding: EdgeInsets.only(
-                left: 24,
-                top: 24,
-                right: size.width * .35,
-              ),
-              height: 230,
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: Color(0xFFEAEAEA).withOpacity(.45),
-                borderRadius: BorderRadius.circular(29),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Container(
-                    margin: EdgeInsets.only(top: 10.0, bottom: 10.0),
-                    child: Text(
-                      "New York Time Best For 11th March 2020",
-                      style: TextStyle(
-                        fontSize: 9,
-                        //color: kLightBlackColor,
-                      ),
-                    ),
-                  ),
-                  Text(
-                    "How To Win \nFriends &  Influence",
-                    //style: Theme.of(context).textTheme.title,
-                  ),
-                  Text(
-                    "Gary Venchuk",
-                    //style: TextStyle(color: kLightBlackColor),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(top: 10, bottom: 10.0),
-                    child: Row(
-                      children: <Widget>[
-                        Padding(
-                          padding: EdgeInsets.only(right: 10.0), 
-                          child:  textfield(placeHolder: "")//BookRating(score: 4.9),
-                        ),
-                        Expanded(
-                          child: Text(
-                            "When the earth was flat and everyone wanted to win the game of the best and people….",
-                            maxLines: 3,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                              fontSize: 10,
-                              //color: kLightBlackColor,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          Positioned(
-            right: 0,
-            top: 0,
-            child: Image.asset(
-              "images/femme.png",
-              width: size.width * .37,
-            ),
-          ),
-          Positioned(
-            bottom: 0,
-            right: 0,
-            child: SizedBox(
-              height: 40,
-              width: size.width * .3,
-              child: Text('hello') /* TwoSideRoundedButton(
-                text: "Read",
-                radious: 24,
-                press: () {}, */
-              
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
- */
-Container icon(double width, double height , String path ,String text ,BuildContext context) {
+  
+Container icon(double width, double height , String path ,String text ,BuildContext context ,Color color) {
   return Container(
     height: 130,
     width: width * 1 / 3,
     decoration: BoxDecoration(
       borderRadius: BorderRadius.circular(10),
-      //color: Colors.white,
+      color: color,
     ),
     child: ElevatedButton(
       onPressed: () {
         print('hello');
       },
       style: ButtonStyle(
-        backgroundColor: MaterialStateProperty.all(Colors.white),
+        backgroundColor: MaterialStateProperty.all(Color.fromRGBO(40,0,81,0.7)),
+        
         shape: MaterialStateProperty.all<RoundedRectangleBorder>(
           RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15),
+            
+            
             side: const BorderSide(
-              color: Color.fromRGBO(40, 0, 81, 1),
+              color: Color.fromRGBO(40, 0, 81, 0.3),
               //color: Color.fromRGBO(40, 0, 81, 1),
             ),
           ),
