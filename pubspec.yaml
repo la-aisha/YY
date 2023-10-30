@@ -109,18 +109,8 @@ flutter:
     - images/money.png
     - images/box.png
     - images/slider.png
-
-
-
-
-
-
-
-
-
-
-
-
+    - images/previous.png
+    - images/success.png
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

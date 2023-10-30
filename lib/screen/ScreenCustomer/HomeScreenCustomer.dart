@@ -155,14 +155,23 @@ int _selectedIndex = 0;
             child: SingleChildScrollView(
               child: Column(
               children: [ 
-                ActivityListTile(
-                title: 'Running',
-                subtitle: 'Build Strong bones by running',
-                trailingImage:
-                  Image.asset('images/femme.png', height: 170),
-                color:  Color.fromRGBO(115, 51, 100, 0.3),
+                Wrap(
+            alignment: WrapAlignment.center,
+            spacing: 8.0,
+            runSpacing: 8.0,
+            children: [
+              ActivityListTile(
+                title: 'Yobul yobal',
+                subtitle:
+                    'devenir convoyeur',
+                trailingImage: Image.asset('images/femme.png', height: 170),
+                color: Color.fromRGBO(115, 51, 100, 0.3),
                 gradient: Color.fromRGBO(115, 51, 100, 0.7),
+                context: context,
               ),
+              // Add more ActivityListTile widgets as needed
+            ],
+          ),
               
               SizedBox(height: 20,),
               Center(

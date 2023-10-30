@@ -5,6 +5,7 @@ import 'package:yy/screen/RegisterDriver.dart';
 import 'package:provider/provider.dart';
 
 import 'package:firebase_core/firebase_core.dart';
+import 'package:yy/screen/ScreenCustomer/Becomedriver.dart';
 import 'package:yy/screen/ScreenCustomer/HomeScreenCustomer.dart';
 import 'package:yy/screen/Welcome.dart';
 import 'firebase_options.dart';
@@ -31,7 +32,9 @@ class App extends StatelessWidget {
 
         // child: SignIn(),
         //home: Welcome(role_id: 0) ,
-        home:Homescreencustomer(),
+        home:Homescreencustomer(
+
+        ),
       ),
     );
   }
