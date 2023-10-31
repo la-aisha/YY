@@ -111,6 +111,14 @@ flutter:
     - images/slider.png
     - images/previous.png
     - images/success.png
+    - images/driver2.png
+    - images/file.png
+    - images/car.png
+    - images/car2.png
+
+
+
+
 
 
   # An image asset can refer to one or more resolution-specific "variants", see
