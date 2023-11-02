@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:yy/utils/utils.dart';
+import 'package:yy/utils/utils.dart';
 
 class Becomecustomer extends StatefulWidget {
   const Becomecustomer({Key? key}) : super(key: key);
@@ -32,8 +33,6 @@ class _BecomecustomerState extends State<Becomecustomer> {
   final addressController = TextEditingController();
   final emailController = TextEditingController();
 
-  // final immatriculationController = TextEditingController();
-
   @override
   void dispose() {
     super.dispose();
@@ -45,11 +44,19 @@ class _BecomecustomerState extends State<Becomecustomer> {
   }
 
   void selectImage() async {
-    imagevehicule = await pickImage(context);
+   /*  imagevehicule = await pickImage(context);
     cartegrise = await pickImage(context);
     permisconduire = await pickImage(context);
-    controletechnique = await pickImage(context);
+    controletechnique = await pickImage(context); */
     imageConducteur = await pickImage(context);
+    setState(() {});
+  }
+   void selectImageVehicule() async {
+    imagevehicule = await pickImage(context);
+    /* cartegrise = await pickImage(context);
+    permisconduire = await pickImage(context);
+    controletechnique = await pickImage(context);
+    imageConducteur = await pickImage(context); */
     setState(() {});
   }
 
@@ -57,7 +64,7 @@ class _BecomecustomerState extends State<Becomecustomer> {
         Step(
           state: currentStep >= 0 ? StepState.complete : StepState.indexed,
           isActive: currentStep >= 0,
-          title: Text('Vehicule'),
+          title: Text('Infos'),
           content: Container(
             child: Column(
               children: [
@@ -65,19 +72,83 @@ class _BecomecustomerState extends State<Becomecustomer> {
                   onTap: () {
                     selectImage();
                   },
-                  child: imagevehicule == null
-                    ? CircleAvatar(
-                        child: Image.asset(
-                          'images/car2.png',
-                          width: 60,
-                          height: 60,
+                  child: imageConducteur == null
+                      ? CircleAvatar(
+                          child: Image.asset(
+                            'images/driver2.png',
+                            width: 60,
+                            height: 60,
+                          ),
+                          //backgroundColor: Colors.,
+                        )
+                      : CircleAvatar(
+                          backgroundImage: FileImage(imageConducteur!),
+                          radius: 60,
                         ),
-                        //backgroundColor: Colors.,
-                      )
-                    : CircleAvatar(
-                        backgroundImage: FileImage(imagevehicule!),
-                        radius: 60,
+                ),
+                Container(
+                  width: MediaQuery.of(context).size.width,
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
+                  margin: const EdgeInsets.only(top: 20),
+                  child: Column(
+                    children: [
+                      // name field
+                      textFeld(
+                        hintText: "address",
+                        icon: Icons.home_rounded,
+                        inputType: TextInputType.text,
+                        maxLines: 1,
+                        controller: addressController,
                       ),
+
+                      // email
+                      textFeld(
+                        hintText: "email",
+                        icon: Icons.email,
+                        inputType: TextInputType.emailAddress,
+                        maxLines: 1,
+                        controller: emailController,
+                      ),
+
+                      /* textFeld(
+                      hintText: "immatriculation",
+                      icon: Icons.numbers,
+                      inputType: TextInputType.text,
+                      maxLines: 1,
+                      controller: typeController,
+                    ), */
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        Step(
+          state: currentStep >= 1 ? StepState.complete : StepState.indexed,
+          isActive: currentStep >= 1,
+          title: Text('Vehicule'),
+          content: Container(
+            child: Column(
+              children: [
+                InkWell(
+                  onTap: () {
+                    selectImageVehicule();
+                  },
+                  child: imagevehicule == null
+                      ? CircleAvatar(
+                          child: Image.asset(
+                            'images/car2.png',
+                            width: 60,
+                            height: 60,
+                          )
+                          //backgroundColor: Colors.,
+                        )
+                      : CircleAvatar(
+                          backgroundImage: FileImage(imagevehicule!),
+                          radius: 60,
+                        ),
                 ),
                 Container(
                   width: MediaQuery.of(context).size.width,
@@ -109,7 +180,7 @@ class _BecomecustomerState extends State<Becomecustomer> {
                         icon: Icons.numbers,
                         inputType: TextInputType.text,
                         maxLines: 1,
-                        controller: typeController,
+                        controller: immatriculationController,
                       ),
                     ],
                   ),
@@ -119,8 +190,8 @@ class _BecomecustomerState extends State<Becomecustomer> {
           ),
         ),
         Step(
-          state: currentStep >= 1 ? StepState.complete : StepState.indexed,
-          isActive: currentStep >= 1,
+          state: currentStep >= 2 ? StepState.complete : StepState.indexed,
+          isActive: currentStep >= 2,
           title: Text('Pieces'),
           content: Container(
             child: Row(
@@ -132,7 +203,7 @@ class _BecomecustomerState extends State<Becomecustomer> {
                       Text('Permis'),
                       InkWell(
                         onTap: selectImage,
-                        child: imagevehicule == null
+                        child: permisconduire == null
                             ? Container(
                                 child: Image.asset(
                                   'images/file.png',
@@ -158,7 +229,7 @@ class _BecomecustomerState extends State<Becomecustomer> {
                       Text('CG'),
                       InkWell(
                         onTap: selectImage,
-                        child: imagevehicule == null
+                        child: controletechnique == null
                             ? Container(
                                 child: Image.asset(
                                   'images/file.png',
@@ -184,7 +255,7 @@ class _BecomecustomerState extends State<Becomecustomer> {
                       Text('CT'),
                       InkWell(
                         onTap: selectImage,
-                        child: imagevehicule == null
+                        child: cartegrise == null
                             ? Container(
                                 child: Image.asset(
                                   'images/file.png',
@@ -209,81 +280,78 @@ class _BecomecustomerState extends State<Becomecustomer> {
           ),
         ),
         Step(
-          state: currentStep >= 2 ? StepState.complete : StepState.indexed,
-          isActive: currentStep >= 2,
-          title: Text('Infos'),
-          content: Container(
-            child: Column(
-              children: [
-                InkWell(
-                  onTap: () {
-                    selectImage();
-                  },
-                  child: imagevehicule == null
-                    ? CircleAvatar(
-                        child: Image.asset(
-                          'images/driver2.png',
-                          width: 60,
-                          height: 60,
-                        ),
-                        //backgroundColor: Colors.,
-                      )
-                    : CircleAvatar(
-                        backgroundImage: FileImage(imagevehicule!),
-                        radius: 60,
-                      ),
-                ),
-                Container(
-                  width: MediaQuery.of(context).size.width,
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
-                  margin: const EdgeInsets.only(top: 20),
-                  child: Column(
-                    children: [
-                      // name field
-                      textFeld(
-                        hintText: "address",
-                        icon: Icons.home_rounded,
-                        inputType: TextInputType.text,
-                        maxLines: 1,
-                        controller: nomvehiculeController,
-                      ),
-
-                      // email
-                      textFeld(
-                        hintText: "email",
-                        icon: Icons.email,
-                        inputType: TextInputType.emailAddress,
-                        maxLines: 1,
-                        controller: typeController,
-                      ),
-
-                      /* textFeld(
-                        hintText: "immatriculation",
-                        icon: Icons.numbers,
-                        inputType: TextInputType.text,
-                        maxLines: 1,
-                        controller: typeController,
-                      ), */
-                    ],
-                  ),
-                ),
-              
-                
-              ],
-            ),
-          ),
-        ),
-        Step(
           state: currentStep >= 3 ? StepState.complete : StepState.indexed,
           isActive: currentStep >= 3,
           title: Text('Complete'),
-          content: Container(),
+          content: Container(
+            width: 300,
+            height: 100,
+            child: Card(
+             // margin: EdgeInsets.all(5),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                    Padding(padding: EdgeInsets.all(5)),
+                    Text('Address: ${addressController.text.toString()}'),
+                    Text('Email: ${emailController.text.toString()}'),
+                    Text('Nom: ${nomvehiculeController.text.toString()}'),
+                    Text('Type: ${typeController.text.toString()}'),
+                    Text('Type: ${immatriculationController.text.toString()}'), 
+                  ],
+                ),
+
+              ],
+              )
+                
+            ),
+          ),
         ),
       ];
- 
- 
- 
+
+  /* validation */
+  bool validateCurrentStep() {
+    switch (currentStep) {
+      case 0:
+        return validateStep0();
+      case 1:
+        return validateStep1();
+    /*   case 2:
+        return validateStep2(); */
+      // Add more cases for other steps if needed
+      default:
+        return true; // Return true by default
+    }
+  }
+
+  bool validateStep0() {
+    if (addressController.text.isNotEmpty && emailController.text.isNotEmpty) {
+      return true;
+    } else {
+      showSnackBar(context, "Veillez remplir tous les champs!");
+      return false;
+    }
+  }
+
+  bool validateStep1() {
+    if (nomvehiculeController.text.isNotEmpty &&
+        typeController.text.isNotEmpty &&
+        immatriculationController
+            .text.isNotEmpty /* && imagevehicule != null */) {
+      return true;
+    } else {
+      showSnackBar(context, "Veillez remplir tous les champs!");
+      return false;
+    }
+  }
+
+  /* bool validateStep2() {
+    return // Add validation conditions for Step 2 fields
+        true; // Return true if all fields are valid
+  } */
+
   // stocker les informations dans la cage convoyeurs
   //stocker les fichiers
   @override
@@ -336,17 +404,33 @@ class _BecomecustomerState extends State<Becomecustomer> {
                         type: StepperType.vertical,
                         steps: getSteps(),
                         currentStep: currentStep,
-                        onStepContinue: () {
+                        /* onStepContinue: () {
                           final isLastStep =
                               currentStep == getSteps().length - 1;
                           if (isLastStep) {
                             setState(() {
-                              isCompleted =
-                                  true; // Use the assignment operator '=' instead of '=='
+                              isCompleted = true; // Use the assignment operator '=' instead of '=='
                               print('iscompleted');
                             });
                           } else {
                             setState(() => currentStep += 1);
+                          }
+                        }, */
+                        onStepContinue: () {
+                          bool isValid = validateCurrentStep();
+                          if (isValid) {
+                            final isLastStep =
+                                currentStep == getSteps().length - 1;
+                            if (isLastStep) {
+                              setState(() {
+                                isCompleted = true;
+                                print('iscompleted');
+                              });
+                            } else {
+                              setState(() => currentStep += 1);
+                            }
+                          } else {
+                            // Show an error message or handle the case where fields are not valid
                           }
                         },
                         onStepCancel: () {
