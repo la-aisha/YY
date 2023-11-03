@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -6,6 +7,8 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:yy/model/car_model.dart';
+import 'package:yy/model/driver_model.dart';
 import 'package:yy/screen/Otp.dart';
 import 'package:yy/screen/RegisterCostumer.dart';
 import 'package:yy/screen/ScreenCustomer/HomeScreenCustomer.dart';
@@ -22,6 +25,12 @@ class AuthProvider extends ChangeNotifier {
 
   UserModel? _userModel;
   UserModel get userModel => _userModel!;
+
+  DriverModel? _driverModel;
+  get driverModel => _driverModel!;
+  
+  CarModel? _carModel;
+  get carModel => _carModel!;
 
   String? _uid;
   String get uid => _uid!;
@@ -189,6 +198,91 @@ class AuthProvider extends ChangeNotifier {
       _isloading = false;
       notifyListeners();
     }
+  }
+
+  //save customer
+   void saveDriverDataToFirebase({
+    required BuildContext context,
+    required DriverModel driverModel,
+    required CarModel carModel,
+    required File profilePic,
+    required File profileVoiture,
+    required File permis,
+    required File CG,
+    required File CT,
+    required Function onSuccess,
+  }) async {
+    _isloading = true;
+    notifyListeners();
+    try {
+      // uploading image to firebase storage.
+       await storeFileToStorage("profilePic/$_uid", profilePic).then((value) {
+        driverModel.profilePic = value;
+        driverModel.createdAt = DateTime.now().millisecondsSinceEpoch.toString();
+        driverModel.phoneNumber = _firebaseAuth.currentUser!.phoneNumber!;
+        driverModel.uid = _firebaseAuth.currentUser!.phoneNumber!;
+      }); 
+       // uploading image to firebase storage.
+        await storeFileToStorage("profileVoiture/$_uid", profileVoiture).then((value) {
+        driverModel.profilePic = value;
+        driverModel.createdAt = DateTime.now().millisecondsSinceEpoch.toString();
+        driverModel.phoneNumber = _firebaseAuth.currentUser!.phoneNumber!;
+        driverModel.uid = _firebaseAuth.currentUser!.phoneNumber!;
+      });  
+       await storeFileToStorage("permis/$_uid", permis).then((value) {
+        driverModel.profilePermis = value;
+        driverModel.createdAt = DateTime.now().millisecondsSinceEpoch.toString();
+        driverModel.phoneNumber = _firebaseAuth.currentUser!.phoneNumber!;
+        driverModel.uid = _firebaseAuth.currentUser!.phoneNumber!;
+      }); 
+       await storeFileToStorage("ct/$_uid", CT).then((value) {
+        carModel.profileCT = value;
+        driverModel.createdAt = DateTime.now().millisecondsSinceEpoch.toString();
+        driverModel.phoneNumber = _firebaseAuth.currentUser!.phoneNumber!;
+        driverModel.uid = _firebaseAuth.currentUser!.phoneNumber!;
+      }); 
+       await storeFileToStorage("cg/$_uid", CG).then((value) {
+        carModel.profileCG = value;
+        driverModel.createdAt = DateTime.now().millisecondsSinceEpoch.toString();
+        driverModel.phoneNumber = _firebaseAuth.currentUser!.phoneNumber!;
+        driverModel.uid = _firebaseAuth.currentUser!.phoneNumber!;
+      });  
+      _driverModel = driverModel;
+      _carModel = carModel;
+
+
+      // uploading to database
+      await _firebaseFirestore
+          .collection("drivers")
+          .doc(_uid)
+          .set(driverModel.toMap())
+          .then((value) {
+        onSuccess();
+        _isloading = false;
+        notifyListeners();
+      });
+       // uploading to database
+      await _firebaseFirestore
+          .collection("cars")
+          .doc(_uid)
+          .set(carModel.toMap())
+          .then((value) {
+        onSuccess();
+        _isloading = false;
+        notifyListeners();
+      });
+    } on FirebaseAuthException catch (e) {
+      showSnackBar(context, e.message.toString());
+      _isloading = false;
+      notifyListeners();
+    }
+  }
+  //store date
+   Future<String> storeFileToStorage(String ref, File file) async {
+    UploadTask uploadTask = _firebaseStorage.ref().child(ref).putFile(file);
+    TaskSnapshot snapshot = await uploadTask;
+    String downloadUrl = await snapshot.ref.getDownloadURL();
+    return downloadUrl;
   }
 
   // STORING DATA LOCALLY

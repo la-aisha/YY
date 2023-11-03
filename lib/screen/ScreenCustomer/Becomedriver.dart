@@ -1,10 +1,17 @@
 import 'dart:io';
 
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:yy/model/car_model.dart';
+import 'package:yy/model/driver_model.dart';
+import 'package:yy/provider/auth_provider.dart';
+import 'package:yy/screen/ScreenCustomer/HomeScreenCustomer.dart';
 import 'package:yy/utils/utils.dart';
 import 'package:yy/utils/utils.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:yy/widgets/buttonwidget.dart';
 
 class Becomecustomer extends StatefulWidget {
   const Becomecustomer({Key? key}) : super(key: key);
@@ -19,6 +26,8 @@ class _BecomecustomerState extends State<Becomecustomer> {
   bool isCompleted = false;
   Color myColor1 = Color.fromRGBO(40, 0, 81, 1);
   Color myColor2 = Color.fromRGBO(189, 22, 22, 1);
+
+  UploadTask? task;
 
   File? cartegrise;
   File? controletechnique;
@@ -44,19 +53,35 @@ class _BecomecustomerState extends State<Becomecustomer> {
   }
 
   void selectImage() async {
-   /*  imagevehicule = await pickImage(context);
+    /*  imagevehicule = await pickImage(context);
     cartegrise = await pickImage(context);
     permisconduire = await pickImage(context);
     controletechnique = await pickImage(context); */
     imageConducteur = await pickImage(context);
     setState(() {});
   }
-   void selectImageVehicule() async {
+
+  void selectImageVehicule() async {
     imagevehicule = await pickImage(context);
-    /* cartegrise = await pickImage(context);
+
+    setState(() {});
+  }
+
+  void selectImageP() async {
     permisconduire = await pickImage(context);
+
+    setState(() {});
+  }
+
+  void selectImagecg() async {
+    cartegrise = await pickImage(context);
+
+    setState(() {});
+  }
+
+  void selectImagect() async {
     controletechnique = await pickImage(context);
-    imageConducteur = await pickImage(context); */
+
     setState(() {});
   }
 
@@ -139,12 +164,12 @@ class _BecomecustomerState extends State<Becomecustomer> {
                   child: imagevehicule == null
                       ? CircleAvatar(
                           child: Image.asset(
-                            'images/car2.png',
-                            width: 60,
-                            height: 60,
-                          )
-                          //backgroundColor: Colors.,
+                          'images/car2.png',
+                          width: 60,
+                          height: 60,
                         )
+                          //backgroundColor: Colors.,
+                          )
                       : CircleAvatar(
                           backgroundImage: FileImage(imagevehicule!),
                           radius: 60,
@@ -165,7 +190,6 @@ class _BecomecustomerState extends State<Becomecustomer> {
                         maxLines: 1,
                         controller: nomvehiculeController,
                       ),
-
                       // email
                       textFeld(
                         hintText: "type",
@@ -174,7 +198,6 @@ class _BecomecustomerState extends State<Becomecustomer> {
                         maxLines: 1,
                         controller: typeController,
                       ),
-
                       textFeld(
                         hintText: "immatriculation",
                         icon: Icons.numbers,
@@ -197,12 +220,17 @@ class _BecomecustomerState extends State<Becomecustomer> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
+                /* ButtonWidget(
+                  text: 'Select File',
+                  icon: Icons.attach_file,
+                  onClicked: selectFile,
+                ), */
                 Container(
                   child: Column(
                     children: [
                       Text('Permis'),
                       InkWell(
-                        onTap: selectImage,
+                        onTap: selectImageP,
                         child: permisconduire == null
                             ? Container(
                                 child: Image.asset(
@@ -228,33 +256,7 @@ class _BecomecustomerState extends State<Becomecustomer> {
                     children: [
                       Text('CG'),
                       InkWell(
-                        onTap: selectImage,
-                        child: controletechnique == null
-                            ? Container(
-                                child: Image.asset(
-                                  'images/file.png',
-                                  width: 80,
-                                  height: 80,
-                                ),
-                                //backgroundColor: Colors.,
-                              )
-                            : Container(
-                                width: 80,
-                                height: 80,
-                                decoration: BoxDecoration(
-                                    image: DecorationImage(
-                                        image: FileImage(permisconduire!))),
-                              ),
-                      ),
-                    ],
-                  ),
-                ),
-                Container(
-                  child: Column(
-                    children: [
-                      Text('CT'),
-                      InkWell(
-                        onTap: selectImage,
+                        onTap: selectImagecg,
                         child: cartegrise == null
                             ? Container(
                                 child: Image.asset(
@@ -269,7 +271,33 @@ class _BecomecustomerState extends State<Becomecustomer> {
                                 height: 80,
                                 decoration: BoxDecoration(
                                     image: DecorationImage(
-                                        image: FileImage(permisconduire!))),
+                                        image: FileImage(cartegrise!))),
+                              ),
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+                  child: Column(
+                    children: [
+                      Text('CT'),
+                      InkWell(
+                        onTap: selectImagect,
+                        child: controletechnique == null
+                            ? Container(
+                                child: Image.asset(
+                                  'images/file.png',
+                                  width: 80,
+                                  height: 80,
+                                ),
+                                //backgroundColor: Colors.,
+                              )
+                            : Container(
+                                width: 80,
+                                height: 80,
+                                decoration: BoxDecoration(
+                                    image: DecorationImage(
+                                        image: FileImage(controletechnique!))),
                               ),
                       ),
                     ],
@@ -287,26 +315,23 @@ class _BecomecustomerState extends State<Becomecustomer> {
             width: 300,
             height: 100,
             child: Card(
-             // margin: EdgeInsets.all(5),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
+                // margin: EdgeInsets.all(5),
+                child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
                     Padding(padding: EdgeInsets.all(5)),
                     Text('Address: ${addressController.text.toString()}'),
                     Text('Email: ${emailController.text.toString()}'),
                     Text('Nom: ${nomvehiculeController.text.toString()}'),
                     Text('Type: ${typeController.text.toString()}'),
-                    Text('Type: ${immatriculationController.text.toString()}'), 
+                    Text('Type: ${immatriculationController.text.toString()}'),
                   ],
                 ),
-
               ],
-              )
-                
-            ),
+            )),
           ),
         ),
       ];
@@ -318,7 +343,7 @@ class _BecomecustomerState extends State<Becomecustomer> {
         return validateStep0();
       case 1:
         return validateStep1();
-    /*   case 2:
+      /*   case 2:
         return validateStep2(); */
       // Add more cases for other steps if needed
       default:
@@ -356,6 +381,8 @@ class _BecomecustomerState extends State<Becomecustomer> {
   //stocker les fichiers
   @override
   Widget build(BuildContext context) {
+    // final fileName = permisconduire != null ? basename(permisconduire!.path) : 'No File Selected';
+
     return Scaffold(
       appBar: AppBar(
         leading: ElevatedButton(
@@ -425,6 +452,8 @@ class _BecomecustomerState extends State<Becomecustomer> {
                               setState(() {
                                 isCompleted = true;
                                 print('iscompleted');
+                                //send date to the server
+                                storeData();
                               });
                             } else {
                               setState(() => currentStep += 1);
@@ -505,6 +534,93 @@ class _BecomecustomerState extends State<Becomecustomer> {
       ),
     );
   }
+
+  Future selectFile() async {
+    final result = await FilePicker.platform.pickFiles(allowMultiple: false);
+
+    if (result == null) return;
+    final path = result.files.single.path!;
+
+    setState(() => permisconduire = File(path));
+  }
+
+  // store user data to database
+  void storeData() async {
+    final ap = Provider.of<AuthProvider>(context, listen: false);
+    DriverModel driverModel = DriverModel(
+      //bio: bioController.text.trim(),
+      profilePic: "",
+      /* profileVoiture: "",
+      profilePermis: "",
+      profileCG: "",
+      profileCT: "", */
+      createdAt: "",
+      phoneNumber: ap.userModel.phoneNumber,
+      uid: ap.userModel.uid,
+      firstname: ap.userModel.firstname,
+      lastname: ap.userModel.lastname,
+      email: emailController.text,
+      address: addressController.text,
+      profilePermis: '',
+    );
+    CarModel carModel = CarModel(
+        createdAt: "",
+        uid: ap.userModel.uid,
+        profileVoiture: "",
+        profileCT: "",
+        profileCG: "");
+    if (imageConducteur != null ) {
+      ap.saveDriverDataToFirebase(
+        context: context,
+        driverModel: driverModel,
+        profilePic: imageConducteur!,
+        onSuccess: () {
+          Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const Homescreencustomer(),
+              ),
+              (route) => false);
+
+          /*  ap.saveUserDataToSP().then(
+                (value) => ap.setSignIn().then(
+                      (value) => Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const HomeScreen(),
+                          ),
+                          (route) => false),
+                    ),
+              ); */
+        },
+        permis: permisconduire!,
+        carModel: carModel,
+        profileVoiture: imagevehicule!,
+        CG: cartegrise!,
+        CT: controletechnique!,
+        //CG: cartegrise!, CT: context!,
+        // profileVoiture: imagevehicule!,
+      );
+    } else {
+      showSnackBar(context, "Please upload your profile photo");
+    }
+  }
+  /* Future uploadFile() async {
+    if (file == null) return;
+
+    final fileName = basename(file!.path);
+    final destination = 'files/$fileName';
+
+    task = FirebaseApi.uploadFile(destination, file!);
+    setState(() {});
+
+    if (task == null) return;
+
+    final snapshot = await task!.whenComplete(() {});
+    final urlDownload = await snapshot.ref.getDownloadURL();
+
+    print('Download-Link: $urlDownload');
+  } */
 
   Widget textFeld({
     required String hintText,

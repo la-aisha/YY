@@ -2,6 +2,7 @@ class UserModel {
   String firstname;
   String lastname;
   
+  
   String createdAt;
   String phoneNumber;
   String uid;

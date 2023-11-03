@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:provider/provider.dart';
+import 'package:yy/model/user_model.dart';
 import 'package:yy/provider/auth_provider.dart';
 import 'package:yy/screen/RegisterCostumer.dart';
 import 'package:yy/widgets/card.dart';
@@ -19,13 +20,12 @@ class Homescreencustomer extends StatefulWidget {
 class _HomescreencustomerState extends State<Homescreencustomer> {
   @override
   Widget build(BuildContext context) {
-    // final ap = Provider.of<AuthProvider>(context, listen: false);
+    final ap = Provider.of<AuthProvider>(context, listen: false);
     var size = MediaQuery.of(context).size;
     double width = size.width;
     var height = size.height;
     Color myColor1 = Color.fromRGBO(40, 0, 81, 1);
-        Color myColor = Color.fromRGBO(40, 0, 81, 0.1);
-
+    Color myColor = Color.fromRGBO(40, 0, 81, 0.1);
     Color myColor2 = Color.fromRGBO(189, 22, 22, 1);
 
     final List<String> imgList = [
@@ -132,13 +132,14 @@ int _selectedIndex = 0;
                 padding: EdgeInsets.only(top:35 ,left: 35),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       "Dalal ak jamm,",
                       style: TextStyle(fontSize: 15, color: myColor1),
                     ),
                     Text(
-                      'Aissatou seye',
+                      '${ap.userModel.firstname} ${ap.userModel.firstname}',
                       style: GoogleFonts.bebasNeue(fontSize: 20 ,color: Colors.black),
                     ),
                   ],
@@ -251,7 +252,6 @@ int _selectedIndex = 0;
               }).toList(),
             ),
                 
-
     ],
   ),
 )
