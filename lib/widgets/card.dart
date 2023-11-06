@@ -57,7 +57,7 @@ class ActivityListTile extends StatelessWidget {
                         height: 30,
                         child: ElevatedButton(
                           onPressed: () {
-                            Navigator.of(context).push(MaterialPageRoute(builder: (context)=>Becomecustomer()));
+                            Navigator.of(context).push(MaterialPageRoute(builder: (context)=>Becomedriver()));
                           },
                           child: Text(
                             'devenir',

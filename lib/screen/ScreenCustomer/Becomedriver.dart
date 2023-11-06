@@ -13,14 +13,14 @@ import 'package:yy/utils/utils.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:yy/widgets/buttonwidget.dart';
 
-class Becomecustomer extends StatefulWidget {
-  const Becomecustomer({Key? key}) : super(key: key);
+class Becomedriver extends StatefulWidget {
+  const Becomedriver({Key? key}) : super(key: key);
 
   @override
-  State<Becomecustomer> createState() => _BecomecustomerState();
+  State<Becomedriver> createState() => _BecomedriverState();
 }
 
-class _BecomecustomerState extends State<Becomecustomer> {
+class _BecomedriverState extends State<Becomedriver> {
   int currentStep = 0;
   Color myCustomColor = Color.fromRGBO(40, 0, 81, 1);
   bool isCompleted = false;
@@ -53,35 +53,27 @@ class _BecomecustomerState extends State<Becomecustomer> {
   }
 
   void selectImage() async {
-    /*  imagevehicule = await pickImage(context);
-    cartegrise = await pickImage(context);
-    permisconduire = await pickImage(context);
-    controletechnique = await pickImage(context); */
     imageConducteur = await pickImage(context);
     setState(() {});
   }
 
   void selectImageVehicule() async {
     imagevehicule = await pickImage(context);
-
     setState(() {});
   }
 
   void selectImageP() async {
     permisconduire = await pickImage(context);
-
     setState(() {});
   }
 
   void selectImagecg() async {
     cartegrise = await pickImage(context);
-
     setState(() {});
   }
 
   void selectImagect() async {
     controletechnique = await pickImage(context);
-
     setState(() {});
   }
 
@@ -312,26 +304,88 @@ class _BecomecustomerState extends State<Becomecustomer> {
           isActive: currentStep >= 3,
           title: Text('Complete'),
           content: Container(
+            // color: Color.fromRGBO(40, 0, 81, 0.04),
             width: 300,
             height: 100,
             child: Card(
                 // margin: EdgeInsets.all(5),
+                color: Colors.white10,
+                margin: EdgeInsets.all(10),
                 child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  // crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Padding(padding: EdgeInsets.all(5)),
+                    Container(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        //mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Text('Address: '),
+                          Text('Email: '),
+                          Text('Nom:'),
+                          Text('Type:'),
+                          Text('Immatriculation:'),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(' ${addressController.text.toString()}'),
+                          Text(' ${emailController.text.toString()}'),
+                          Text(' ${nomvehiculeController.text.toString()}'),
+                          Text(' ${typeController.text.toString()}'),
+                          Text(' ${immatriculationController.text.toString()}'),
+                        ],
+                      ),
+                    ),
+                    /* Row(
+                      //crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceAround ,
+                      children: [
+                        Text('Address: '),
+                        Text(' ${addressController.text.toString()}'),
+
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround ,
+                      children: [
+                        Text('Email: '),
+                        Text(' ${emailController.text.toString()}'),
+
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround ,
+                      children: [
+                        Text('Nom:'),
+                        Text('Nom: ${nomvehiculeController.text.toString()}'),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround ,
+                      children: [
+                        Text('Type:'),
+                        Text('${typeController.text.toString()}'),
+                      ],
+                    ),
+                     Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround ,
+                      children: [
+                        Text('Immatriculation:'),
+                        Text('${immatriculationController.text.toString()}'),
+                      ],
+                    ), */
+                    /*  Padding(padding: EdgeInsets.all(5)),
                     Text('Address: ${addressController.text.toString()}'),
                     Text('Email: ${emailController.text.toString()}'),
                     Text('Nom: ${nomvehiculeController.text.toString()}'),
                     Text('Type: ${typeController.text.toString()}'),
-                    Text('Type: ${immatriculationController.text.toString()}'),
+                    Text('Type: ${immatriculationController.text.toString()}'), */
                   ],
-                ),
-              ],
-            )),
+                )),
           ),
         ),
       ];
@@ -409,29 +463,26 @@ class _BecomecustomerState extends State<Becomecustomer> {
           ],
         ),
       ),
-      body: isCompleted
-          ? buildCompleted()
-          : Container(
-              color: Colors.white,
-              child: Theme(
-                data: ThemeData(
-                  primarySwatch:
-                      Colors.deepPurple, // Change this to the color you want
-                  //accentColor: Colors.blueAccent, // Change this to the color you want
-                  textTheme: TextTheme(
-                    bodyText2: TextStyle(
-                        color:
-                            Colors.black), // Change this to the color you want
-                  ),
-                ),
-                child: Column(
-                  children: [
-                    Expanded(
-                      child: Stepper(
-                        type: StepperType.vertical,
-                        steps: getSteps(),
-                        currentStep: currentStep,
-                        /* onStepContinue: () {
+      body: Container(
+        color: Colors.white,
+        child: Theme(
+          data: ThemeData(
+            primarySwatch:
+                Colors.deepPurple, // Change this to the color you want
+            //accentColor: Colors.blueAccent, // Change this to the color you want
+            textTheme: TextTheme(
+              bodyText2: TextStyle(
+                  color: Colors.black), // Change this to the color you want
+            ),
+          ),
+          child: Column(
+            children: [
+              Expanded(
+                child: Stepper(
+                  type: StepperType.vertical,
+                  steps: getSteps(),
+                  currentStep: currentStep,
+                  /* onStepContinue: () {
                           final isLastStep =
                               currentStep == getSteps().length - 1;
                           if (isLastStep) {
@@ -443,71 +494,112 @@ class _BecomecustomerState extends State<Becomecustomer> {
                             setState(() => currentStep += 1);
                           }
                         }, */
-                        onStepContinue: () {
-                          bool isValid = validateCurrentStep();
-                          if (isValid) {
-                            final isLastStep =
-                                currentStep == getSteps().length - 1;
-                            if (isLastStep) {
-                              setState(() {
-                                isCompleted = true;
-                                print('iscompleted');
-                                //send date to the server
-                                storeData();
-                              });
-                            } else {
-                              setState(() => currentStep += 1);
-                            }
-                          } else {
-                            // Show an error message or handle the case where fields are not valid
-                          }
-                        },
-                        onStepCancel: () {
-                          if (currentStep > 0) {
-                            setState(() => currentStep -= 1);
-                          }
-                        },
-                        onStepTapped: (step) => setState(() {
-                          currentStep = step;
-                        }),
-                        controlsBuilder: (BuildContext context,
-                            ControlsDetails controlsDetails) {
-                          final isLastStep =
-                              currentStep == getSteps().length - 1;
-                          return Container(
-                            margin: EdgeInsets.only(top: 50),
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: ElevatedButton(
-                                    onPressed: controlsDetails
-                                        .onStepContinue, // Corrected line
+                  onStepContinue: () {
+                    bool isValid = validateCurrentStep();
+                    if (isValid) {
+                      final isLastStep = currentStep == getSteps().length - 1;
+                      if (isLastStep) {
+                        setState(() {
+                          isCompleted = true;
+                          print('iscompleted');
+                          //send date to the server
+                          storeData();
+                        });
+                      } else {
+                        setState(() => currentStep += 1);
+                      }
+                    } else {
+                      // Show an error message or handle the case where fields are not valid
+                    }
+                  },
+                  onStepCancel: () {
+                    if (currentStep > 0) {
+                      setState(() => currentStep -= 1);
+                    }
+                  },
+                  onStepTapped: (step) => setState(() {
+                    currentStep = step;
+                  }),
+                  controlsBuilder:
+                      (BuildContext context, ControlsDetails controlsDetails) {
+                    final isLastStep = currentStep == getSteps().length - 1;
+                    return Container(
+                      margin: EdgeInsets.only(top: 50),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: ElevatedButton(
+                              onPressed: controlsDetails
+                                  .onStepContinue, // Corrected line
 
-                                    child:
-                                        Text(isLastStep ? 'Confirm' : 'Next'),
-                                  ),
-                                ),
-                                const SizedBox(
-                                  width: 12,
-                                ),
-                                if (currentStep != 0)
-                                  Expanded(
-                                    child: ElevatedButton(
-                                      onPressed: controlsDetails
-                                          .onStepCancel, // Corrected line
-                                      child: Text('Previous'), // Corrected text
-                                    ),
-                                  ),
-                              ],
+                              child: Text(isLastStep ? 'Confirm' : 'Next'),
                             ),
-                          );
-                        },
+                          ),
+                          const SizedBox(
+                            width: 12,
+                          ),
+                          if (currentStep != 0)
+                            Expanded(
+                              child: ElevatedButton(
+                                onPressed: controlsDetails
+                                    .onStepCancel, // Corrected line
+                                child: Text('Previous'), // Corrected text
+                              ),
+                            ),
+                        ],
                       ),
-                    ),
-                  ],
+                    );
+                  },
                 ),
               ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  StatelessWidget buildIncompleted() {
+    return Container(
+      color: Colors.white,
+      child: Column(
+        //mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Image.asset('images/unsuccess.png', width: 200, height: 200),
+          ),
+          Card(
+            // color: Colors.blue,
+            margin: EdgeInsets.all(20),
+            child: Text(
+              'Nous avons une erreur !',
+              style: GoogleFonts.poppins(
+                  fontWeight: FontWeight.w400, fontSize: 12),
             ),
+          ),
+          ElevatedButton(
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all(Colors.white),
+                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15),
+                    side: const BorderSide(
+                      color: Colors.red,
+                      //color: Color.fromRGBO(40, 0, 81, 1),
+                    ),
+                  ),
+                ),
+              ),
+              onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => Homescreencustomer()));
+              },
+              child: Text('dieuredieuf'))
+          //clear textfiel
+        ],
+      ),
     );
   }
 
@@ -523,12 +615,32 @@ class _BecomecustomerState extends State<Becomecustomer> {
             child: Image.asset('images/success.png', width: 200, height: 200),
           ),
           Card(
-            color: Colors.blue,
-            child: Column(
-              children: [],
+            // color: Colors.blue,
+            margin: EdgeInsets.all(20),
+            child: Text(
+              'Inscription bien reussi ! nous allons vous revenir pour les derniers modalites',
+              style: GoogleFonts.poppins(
+                  fontWeight: FontWeight.w400, fontSize: 12),
             ),
           ),
-          ElevatedButton(onPressed: () {}, child: Text('reset'))
+          ElevatedButton(
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all(Colors.white),
+                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15),
+                    side: const BorderSide(
+                      color: Color.fromRGBO(40, 0, 81, 1),
+                      //color: Color.fromRGBO(40, 0, 81, 1),
+                    ),
+                  ),
+                ),
+              ),
+              onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => Homescreencustomer()));
+              },
+              child: Text('dieuredieuf'))
           //clear textfiel
         ],
       ),
@@ -547,40 +659,45 @@ class _BecomecustomerState extends State<Becomecustomer> {
   // store user data to database
   void storeData() async {
     final ap = Provider.of<AuthProvider>(context, listen: false);
+    var status = 0;
     DriverModel driverModel = DriverModel(
-      //bio: bioController.text.trim(),
-      profilePic: "",
-      /* profileVoiture: "",
+        //bio: bioController.text.trim(),
+        profilePic: "",
+        /* profileVoiture: "",
       profilePermis: "",
       profileCG: "",
       profileCT: "", */
-      createdAt: "",
-      phoneNumber: ap.userModel.phoneNumber,
-      uid: ap.userModel.uid,
-      firstname: ap.userModel.firstname,
-      lastname: ap.userModel.lastname,
-      email: emailController.text,
-      address: addressController.text,
-      profilePermis: '',
-    );
+        createdAt: DateTime.now().millisecondsSinceEpoch.toString(),
+        phoneNumber: ap.userModel.phoneNumber,
+        uid: ap.userModel.uid,
+        firstname: ap.userModel.firstname,
+        lastname: ap.userModel.lastname,
+        email: emailController.text,
+        address: addressController.text,
+        profilePermis: '',
+        status: status);
     CarModel carModel = CarModel(
-        createdAt: "",
+        createdAt: DateTime.now().millisecondsSinceEpoch.toString(),
         uid: ap.userModel.uid,
         profileVoiture: "",
         profileCT: "",
         profileCG: "");
-    if (imageConducteur != null ) {
+    if (imageConducteur != null) {
       ap.saveDriverDataToFirebase(
         context: context,
         driverModel: driverModel,
         profilePic: imageConducteur!,
+        onFailure: () {
+          buildIncompleted();
+        },
         onSuccess: () {
-          Navigator.pushAndRemoveUntil(
+          buildCompleted();
+          /*  Navigator.pushAndRemoveUntil(
               context,
               MaterialPageRoute(
-                builder: (context) => const Homescreencustomer(),
+                builder: (context) => const buildC(),
               ),
-              (route) => false);
+              (route) => false); */
 
           /*  ap.saveUserDataToSP().then(
                 (value) => ap.setSignIn().then(

@@ -1,16 +1,14 @@
+import 'dart:ffi';
+
 class DriverModel {
   String firstname;
   String lastname;
   String email;
   String address;
   String profilePermis;
+  int status;
 
   String profilePic;
-  /*
-   String profileVoiture;
-  String profileCT;
-  String profileCG; */
-
   String createdAt;
   String phoneNumber;
   String uid;
@@ -21,17 +19,12 @@ class DriverModel {
     required this.email,
     required this.address,
     required this.profilePermis,
-
-
     required this.createdAt,
     required this.phoneNumber,
     required this.profilePic,
     required this.uid,
-    /* required this.profileVoiture,
+    required this.status
     
-    required this.profileCT,
-    required this.profileCG, */
-
   });
 
   // from map
@@ -40,16 +33,14 @@ class DriverModel {
       firstname: map['firstname'] ?? '',
       lastname: map['lastname'] ?? '',
       email: map['email'] ?? '',
+      status: map['status'] ?? '',
       address: map['address'] ?? '',
       uid: map['uid'] ?? '',
       phoneNumber: map['phoneNumber'] ?? '',
       createdAt: map['createdAt'] ?? '',
       profilePic: map['profilePic'] ?? '',
-       profilePermis: map['profilePermis'] ?? '',
-    /*   profileVoiture: map['profileVoiture'] ?? '',
+      profilePermis: map['profilePermis'] ?? '',
      
-      profileCG: map['profileCG'] ?? '',
-      profileCT: map['profileCT'] ?? '', */
     );
   }
 
@@ -59,6 +50,8 @@ class DriverModel {
       "firstname": firstname,
       "lastname": lastname,
       "email": email,
+      "status": status,
+
       "address": address,
       "uid": uid,
       "phoneNumber": phoneNumber,
@@ -66,7 +59,7 @@ class DriverModel {
       "profilePic": profilePic,
       "profilePermis": profilePermis,
 
-     /*  "profileVoiture": profileVoiture,
+      /*  "profileVoiture": profileVoiture,
       "profileCG": profileCG,
       "profileCT": profileCT,
  */

@@ -211,6 +211,8 @@ class AuthProvider extends ChangeNotifier {
     required File CG,
     required File CT,
     required Function onSuccess,
+    Function? onFailure, // New parameter for handling failure
+
   }) async {
     _isloading = true;
     notifyListeners();
@@ -237,15 +239,21 @@ class AuthProvider extends ChangeNotifier {
       }); 
        await storeFileToStorage("ct/$_uid", CT).then((value) {
         carModel.profileCT = value;
-        driverModel.createdAt = DateTime.now().millisecondsSinceEpoch.toString();
-        driverModel.phoneNumber = _firebaseAuth.currentUser!.phoneNumber!;
-        driverModel.uid = _firebaseAuth.currentUser!.phoneNumber!;
+        carModel.createdAt = DateTime.now().millisecondsSinceEpoch.toString();
+        //carModel.phoneNumber = _firebaseAuth.currentUser!.phoneNumber!;
+        carModel.uid = _firebaseAuth.currentUser!.phoneNumber!;
       }); 
        await storeFileToStorage("cg/$_uid", CG).then((value) {
         carModel.profileCG = value;
-        driverModel.createdAt = DateTime.now().millisecondsSinceEpoch.toString();
-        driverModel.phoneNumber = _firebaseAuth.currentUser!.phoneNumber!;
-        driverModel.uid = _firebaseAuth.currentUser!.phoneNumber!;
+        carModel.createdAt = DateTime.now().millisecondsSinceEpoch.toString();
+        //carModel.phoneNumber = _firebaseAuth.currentUser!.phoneNumber!;
+        carModel.uid = _firebaseAuth.currentUser!.phoneNumber!;
+      });  
+       await storeFileToStorage("cg/$_uid", profileVoiture).then((value) {
+        carModel.profileVoiture = value;
+        carModel.createdAt = DateTime.now().millisecondsSinceEpoch.toString();
+        //carModel.phoneNumber = _firebaseAuth.currentUser!.phoneNumber!;
+        carModel.uid = _firebaseAuth.currentUser!.phoneNumber!;
       });  
       _driverModel = driverModel;
       _carModel = carModel;
@@ -275,6 +283,10 @@ class AuthProvider extends ChangeNotifier {
       showSnackBar(context, e.message.toString());
       _isloading = false;
       notifyListeners();
+
+      if (onFailure != null) {
+      onFailure(); 
+    }
     }
   }
   //store date

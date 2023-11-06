@@ -3,7 +3,6 @@ class CarModel {
   String profileVoiture;
   String profileCT;
   String profileCG;
-
   String createdAt;
   String uid;
 
