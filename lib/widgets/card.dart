@@ -52,9 +52,10 @@ class ActivityListTile extends StatelessWidget {
                           ),
                         ),
                       ),
+                      Padding(padding: EdgeInsets.only(left: 10)),
                       Container(
                         width: 80,
-                        height: 30,
+                        height: 20,
                         child: ElevatedButton(
                           onPressed: () {
                             Navigator.of(context).push(MaterialPageRoute(builder: (context)=>Becomedriver()));

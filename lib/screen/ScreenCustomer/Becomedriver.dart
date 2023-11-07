@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:yy/model/car_model.dart';
-import 'package:yy/model/driver_model.dart';
+import 'package:yy/model/convoyeur_model.dart';
 import 'package:yy/provider/auth_provider.dart';
 import 'package:yy/screen/ScreenCustomer/HomeScreenCustomer.dart';
 import 'package:yy/utils/utils.dart';
@@ -660,7 +660,7 @@ class _BecomedriverState extends State<Becomedriver> {
   void storeData() async {
     final ap = Provider.of<AuthProvider>(context, listen: false);
     var status = 0;
-    DriverModel driverModel = DriverModel(
+    ConvoyeurModel driverModel = ConvoyeurModel(
         //bio: bioController.text.trim(),
         profilePic: "",
         /* profileVoiture: "",
@@ -685,7 +685,7 @@ class _BecomedriverState extends State<Becomedriver> {
     if (imageConducteur != null) {
       ap.saveDriverDataToFirebase(
         context: context,
-        driverModel: driverModel,
+        convoyeurModel: driverModel,
         profilePic: imageConducteur!,
         onFailure: () {
           buildIncompleted();

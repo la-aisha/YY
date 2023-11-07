@@ -4,9 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:provider/provider.dart';
+import 'package:yy/model/barchoice.dart';
 import 'package:yy/model/user_model.dart';
 import 'package:yy/provider/auth_provider.dart';
 import 'package:yy/screen/RegisterCostumer.dart';
+import 'package:yy/screen/ScreenCustomer/Accueilcustomer.dart';
+import 'package:yy/screen/ScreenCustomer/livraison/Destinationcustomer.dart';
+
 import 'package:yy/widgets/card.dart';
 import 'package:line_icons/line_icons.dart';
 
@@ -18,6 +22,50 @@ class Homescreencustomer extends StatefulWidget {
 }
 
 class _HomescreencustomerState extends State<Homescreencustomer> {
+ int currentIndex = 1;
+  List<Barchoice> items = [];
+
+  void barTapedd(int index) {
+    setState(() {
+      currentIndex = index;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    items = [
+      Barchoice(
+        label: "livraison",
+        imagePath: 'images/locbar2.png',
+        selectedImagePath: 'images/locbar1.png',
+        page: DestinationCustomer(),
+        imageWidth: 30.0,
+        imageHeight: 30
+
+      ),
+      Barchoice(
+        label: "accueil",
+        imagePath: 'images/homebar2.png',
+        selectedImagePath: 'images/homebar1.png',
+        page: AccueilCustomer(),
+        imageWidth: 30.0,
+        imageHeight: 30
+      ),
+      Barchoice(
+        label: "message",
+        imagePath: 'images/emailbar2.png',
+        selectedImagePath: 'images/emailbar1.png',
+        page: Container(),
+        imageWidth: 30.0,
+        imageHeight: 30
+
+      ),
+    ];
+  }
+
+
   @override
   Widget build(BuildContext context) {
     final ap = Provider.of<AuthProvider>(context, listen: false);
@@ -33,236 +81,20 @@ class _HomescreencustomerState extends State<Homescreencustomer> {
       'images/slider.png',
       'images/slider.png',
     ];
-int _selectedIndex = 0;
-       const TextStyle optionStyle =
-      TextStyle(fontSize: 30, fontWeight: FontWeight.w600);
-
-    const List<Widget> _widgetOptions = <Widget>[
-    Text(
-      'Home',
-      style: optionStyle,
-    ),
-    Text(
-      'Likes',
-      style: optionStyle,
-    ),
-    Text(
-      'Search',
-      style: optionStyle,
-    ),
-    Text(
-      'Profile',
-      style: optionStyle,
-    ),
-  ];
-
-    int currentIndex = 0;
     return Scaffold(
-      bottomNavigationBar: Container(
-        decoration: BoxDecoration(
-          color: Colors.white,
-          boxShadow: [
-            BoxShadow(
-              blurRadius: 20,
-              color: Colors.black.withOpacity(.1),
-            )
-          ],
-        ),
-        child: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 8),
-            child: GNav(
-              rippleColor: Colors.grey[300]!,
-              hoverColor: Colors.grey[100]!,
-              gap: 8,
-              activeColor: Colors.black,
-              iconSize: 24,
-              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-              duration: Duration(milliseconds: 400),
-              tabBackgroundColor: Colors.grey[100]!,
-              color: Colors.black,
-              tabs: [
-                GButton(
-                  icon: LineIcons.map,
-                  text: 'livraison',
-                ),
-                GButton(
-                  icon: LineIcons.home,
-                  text: 'accueil',
-                ),
-               
-                GButton(
-                  icon: LineIcons.envelope,
-                  text: 'notification',
-                ),
-              ],
-              selectedIndex: _selectedIndex,
-              onTabChange: (index) {
-                setState(() {
-                  _selectedIndex = index;
-                });
-              },
-            ),
-          ),),),
-      body: Stack(
-        children: [
-          Container(
-            height: double.infinity,
-            width: double.infinity,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-              Padding(
-              padding: const EdgeInsets.only(top: 40 ,left: 40 ,right: 40),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [                
-                  Image.asset(
-                    'images/app.png',
-                    height: 30,
-                  ),
-                  Icon(
-                    Icons.person,
-                    size: 45,
-                    color: myColor1,
-                  )
-                ],),
-              ),
-              Padding(
-                padding: EdgeInsets.only(top:35 ,left: 35),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Dalal ak jamm,",
-                      style: TextStyle(fontSize: 15, color: myColor1),
-                    ),
-                    Text(
-                      '${ap.userModel.firstname} ${ap.userModel.firstname}',
-                      style: GoogleFonts.bebasNeue(fontSize: 20 ,color: Colors.black),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-            ),
-          ),
-          Positioned(
-            top: 160, // Adjust the top position as needed
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: SingleChildScrollView(
-              child: Column(
-              children: [ 
-                Wrap(
-            alignment: WrapAlignment.center,
-            spacing: 8.0,
-            runSpacing: 8.0,
-            children: [
-              ActivityListTile(
-                title: 'Yobul yobal',
-                subtitle:
-                    'devenir convoyeur',
-                trailingImage: Image.asset('images/femme.png', height: 170),
-                color: Color.fromRGBO(115, 51, 100, 0.3),
-                gradient: Color.fromRGBO(115, 51, 100, 0.7),
-                context: context,
-              ),
-              // Add more ActivityListTile widgets as needed
-            ],
-          ),
-              
-              SizedBox(height: 20,),
-              Center(
-                child: Text(
-                  "tanal lo beug",
-                  style: GoogleFonts.montserrat(
-                    textStyle: TextStyle(
-                      fontSize: 18,
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(height: 10,),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  icon(width, height, 'images/box.png', 'livraison', context ,myColor),
-                  icon(width, height, 'images/home.png', 'Depot', context,myColor),
-                ],
-              ),
-              SizedBox(height: 20,),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  icon(width, height, 'images/partners.png', 'Partenaires', context ,myColor),
-                  icon(width, height, 'images/money.png', 'Tarif', context,myColor),
-                ],
-              ),
-              SizedBox(height: 40,),
-                Center(
-                child: Text(
-                  "You bess !",
-                  style: GoogleFonts.montserrat(
-                    textStyle: TextStyle(
-                      fontSize: 18,
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(height: 20,),
-              CarouselSlider(
-              options: CarouselOptions(
-                height: 200,
-                initialPage: 0,
-                enableInfiniteScroll: true,
-                reverse: false,
-                autoPlay: true,
-                autoPlayInterval: Duration(seconds: 3),
-                autoPlayAnimationDuration: Duration(milliseconds: 800),
-                autoPlayCurve: Curves.fastOutSlowIn,
-                enlargeCenterPage: true,
-                scrollDirection: Axis.horizontal,
-              ),
-              items: imgList.map((item) {
-                return Builder(
-                  builder: (BuildContext context) {
-                    return Container(
-                      width: width * 0.8,
-                      margin: EdgeInsets.symmetric(horizontal: 10.0),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(20),
-                        child: Image.asset(
-                          item,
-                          fit: BoxFit.fill,
-                        ),
-                      ),
-                    );
-                  },
-                );
-              }).toList(),
-            ),
-                
-    ],
-  ),
-)
-          ),
-        ],
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: currentIndex,
+        items: items.map((i) => i.item).toList(),
+        onTap: barTapedd,
+        iconSize: 10,
       ),
-     );
+      body:items[currentIndex].page 
+    );
   }
 }
-  
-Container icon(double width, double height , String path ,String text ,BuildContext context ,Color color) {
+
+Container icon(double width, double height, String path, String text,
+    BuildContext context, Color color) {
   return Container(
     height: 130,
     width: width * 1 / 3,
@@ -275,13 +107,11 @@ Container icon(double width, double height , String path ,String text ,BuildCont
         print('hello');
       },
       style: ButtonStyle(
-        backgroundColor: MaterialStateProperty.all(Color.fromRGBO(40,0,81,0.7)),
-        
+        backgroundColor:
+            MaterialStateProperty.all(Color.fromRGBO(40, 0, 81, 0.7)),
         shape: MaterialStateProperty.all<RoundedRectangleBorder>(
           RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15),
-            
-            
             side: const BorderSide(
               color: Color.fromRGBO(40, 0, 81, 0.3),
               //color: Color.fromRGBO(40, 0, 81, 1),
@@ -290,7 +120,7 @@ Container icon(double width, double height , String path ,String text ,BuildCont
         ),
       ),
       child: Padding(
-        padding: EdgeInsets.only(top: 5 ,bottom: 5),
+        padding: EdgeInsets.only(top: 5, bottom: 5),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -300,33 +130,26 @@ Container icon(double width, double height , String path ,String text ,BuildCont
               width: 70,
             ),
             Container(
-              //color: Color.fromRGBO(40, 0, 81, 1) ,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(5) ,
-                color: Color.fromRGBO(40, 0, 81, 1) ,
-
-              ),
-              width: width,
-              child:  Center(
-                child:  Text(
-              text,
-              style: GoogleFonts.montserrat(
-                textStyle: TextStyle(
-                  fontSize: 15,
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  //decoration: TextDecoration.underline,
-                  // decorationColor: Color.fromRGBO(40, 0, 81, 1),
+                //color: Color.fromRGBO(40, 0, 81, 1) ,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(5),
+                  color: Color.fromRGBO(40, 0, 81, 1),
                 ),
-              ),
-            ),
-
-              )
-              
-             
-
-            )
-           
+                width: width,
+                child: Center(
+                  child: Text(
+                    text,
+                    style: GoogleFonts.montserrat(
+                      textStyle: TextStyle(
+                        fontSize: 15,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        //decoration: TextDecoration.underline,
+                        // decorationColor: Color.fromRGBO(40, 0, 81, 1),
+                      ),
+                    ),
+                  ),
+                ))
           ],
         ),
       ),

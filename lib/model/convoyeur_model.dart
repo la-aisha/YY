@@ -1,6 +1,6 @@
 import 'dart:ffi';
 
-class DriverModel {
+class ConvoyeurModel {
   String firstname;
   String lastname;
   String email;
@@ -13,7 +13,7 @@ class DriverModel {
   String phoneNumber;
   String uid;
 
-  DriverModel({
+  ConvoyeurModel({
     required this.firstname,
     required this.lastname,
     required this.email,
@@ -28,8 +28,8 @@ class DriverModel {
   });
 
   // from map
-  factory DriverModel.fromMap(Map<String, dynamic> map) {
-    return DriverModel(
+  factory ConvoyeurModel.fromMap(Map<String, dynamic> map) {
+    return ConvoyeurModel(
       firstname: map['firstname'] ?? '',
       lastname: map['lastname'] ?? '',
       email: map['email'] ?? '',

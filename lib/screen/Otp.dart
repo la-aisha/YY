@@ -119,7 +119,7 @@ class _OtpState extends State<Otp> {
       userOtp: userOtp,
       onSuccess: () {
         // checking whether user exists in the db
-        ap.checkExistingUser().then(
+        ap.checkExistingUser(context).then(
           (value) async {
             if (value == true) {
               // user exists in our app

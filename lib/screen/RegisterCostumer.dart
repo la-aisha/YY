@@ -5,6 +5,7 @@ import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:pin_code_fields/pin_code_fields.dart' as pc;
 import 'package:pinput/pinput.dart';
 import 'package:provider/provider.dart';
+import 'package:yy/methods/common_methods.dart';
 import 'package:yy/provider/auth_provider.dart';
 import 'package:yy/screen/ScreenCustomer/HomeScreenCustomer.dart';
 import 'package:yy/utils/utils.dart';
@@ -29,6 +30,8 @@ class _RegisterCostumerState extends State<RegisterCostumer> {
   TextEditingController lastNameController = new TextEditingController();
   TextEditingController phoneController = new TextEditingController();
 
+  CommonMethods cMethods = CommonMethods();
+
   bool isChecked = false;
   String otpPin = "";
   String countryDial = "+221";
@@ -40,6 +43,12 @@ class _RegisterCostumerState extends State<RegisterCostumer> {
     ap.signInWithPhone(context, phonenumber, user);
     //print(phonenumber);
     print(" REGISTER ${user.firstname} ${user.lastname}${user.phoneNumber}");
+  }
+
+  checkNetworkAvaible() {
+    cMethods.checkConnectivity(context);
+    sendphonenumber();
+    print(true);
   }
 
   @override
@@ -163,7 +172,7 @@ class _RegisterCostumerState extends State<RegisterCostumer> {
   ElevatedButton register() {
     return ElevatedButton(
         onPressed: () {
-           user = UserModel(
+          user = UserModel(
             firstname: firstNameController.text,
             lastname: lastNameController.text,
             phoneNumber: phoneController.text.trim(),
@@ -179,10 +188,10 @@ class _RegisterCostumerState extends State<RegisterCostumer> {
           } else if (isChecked == false) {
             showSnackBar(context, "Accept condition!");
           } else {
-            sendphonenumber();
-            
+            //sendphonenumber();
+            checkNetworkAvaible();
           }
-          
+
           //print('registerscreen');
           //print(user.firstname);
         },

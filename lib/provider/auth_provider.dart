@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:yy/model/car_model.dart';
-import 'package:yy/model/driver_model.dart';
+import 'package:yy/model/convoyeur_model.dart';
 import 'package:yy/screen/Otp.dart';
 import 'package:yy/screen/RegisterCostumer.dart';
 import 'package:yy/screen/ScreenCustomer/HomeScreenCustomer.dart';
@@ -26,8 +26,8 @@ class AuthProvider extends ChangeNotifier {
   UserModel? _userModel;
   UserModel get userModel => _userModel!;
 
-  DriverModel? _driverModel;
-  get driverModel => _driverModel!;
+  ConvoyeurModel? _convoyeurModel;
+  get convoyeurModel => _convoyeurModel!;
   
   CarModel? _carModel;
   get carModel => _carModel!;
@@ -153,12 +153,17 @@ class AuthProvider extends ChangeNotifier {
   }
 
   // DATABASE OPERTAIONS
-  Future<bool> checkExistingUser() async {
+  Future checkExistingUser(BuildContext context) async {
     DocumentSnapshot snapshot =
         await _firebaseFirestore.collection("clients").doc(_uid).get();
     if (snapshot.exists) {
       print("USER EXISTS");
+      print(userModel.uid);
+
+     
       return true;
+
+      
     } else {
       print("NEW USER");
       return false;
@@ -203,7 +208,7 @@ class AuthProvider extends ChangeNotifier {
   //save customer
    void saveDriverDataToFirebase({
     required BuildContext context,
-    required DriverModel driverModel,
+    required ConvoyeurModel convoyeurModel,
     required CarModel carModel,
     required File profilePic,
     required File profileVoiture,
@@ -219,23 +224,23 @@ class AuthProvider extends ChangeNotifier {
     try {
       // uploading image to firebase storage.
        await storeFileToStorage("profilePic/$_uid", profilePic).then((value) {
-        driverModel.profilePic = value;
-        driverModel.createdAt = DateTime.now().millisecondsSinceEpoch.toString();
-        driverModel.phoneNumber = _firebaseAuth.currentUser!.phoneNumber!;
-        driverModel.uid = _firebaseAuth.currentUser!.phoneNumber!;
+       convoyeurModel.profilePic = value;
+       convoyeurModel.createdAt = DateTime.now().millisecondsSinceEpoch.toString();
+       convoyeurModel.phoneNumber = _firebaseAuth.currentUser!.phoneNumber!;
+       convoyeurModel.uid = _firebaseAuth.currentUser!.phoneNumber!;
       }); 
        // uploading image to firebase storage.
         await storeFileToStorage("profileVoiture/$_uid", profileVoiture).then((value) {
-        driverModel.profilePic = value;
-        driverModel.createdAt = DateTime.now().millisecondsSinceEpoch.toString();
-        driverModel.phoneNumber = _firebaseAuth.currentUser!.phoneNumber!;
-        driverModel.uid = _firebaseAuth.currentUser!.phoneNumber!;
+       convoyeurModel.profilePic = value;
+       convoyeurModel.createdAt = DateTime.now().millisecondsSinceEpoch.toString();
+       convoyeurModel.phoneNumber = _firebaseAuth.currentUser!.phoneNumber!;
+       convoyeurModel.uid = _firebaseAuth.currentUser!.phoneNumber!;
       });  
        await storeFileToStorage("permis/$_uid", permis).then((value) {
-        driverModel.profilePermis = value;
-        driverModel.createdAt = DateTime.now().millisecondsSinceEpoch.toString();
-        driverModel.phoneNumber = _firebaseAuth.currentUser!.phoneNumber!;
-        driverModel.uid = _firebaseAuth.currentUser!.phoneNumber!;
+       convoyeurModel.profilePermis = value;
+       convoyeurModel.createdAt = DateTime.now().millisecondsSinceEpoch.toString();
+       convoyeurModel.phoneNumber = _firebaseAuth.currentUser!.phoneNumber!;
+       convoyeurModel.uid = _firebaseAuth.currentUser!.phoneNumber!;
       }); 
        await storeFileToStorage("ct/$_uid", CT).then((value) {
         carModel.profileCT = value;
@@ -255,7 +260,7 @@ class AuthProvider extends ChangeNotifier {
         //carModel.phoneNumber = _firebaseAuth.currentUser!.phoneNumber!;
         carModel.uid = _firebaseAuth.currentUser!.phoneNumber!;
       });  
-      _driverModel = driverModel;
+      _convoyeurModel =convoyeurModel;
       _carModel = carModel;
 
 
@@ -263,7 +268,7 @@ class AuthProvider extends ChangeNotifier {
       await _firebaseFirestore
           .collection("drivers")
           .doc(_uid)
-          .set(driverModel.toMap())
+          .set(convoyeurModel.toMap())
           .then((value) {
         onSuccess();
         _isloading = false;
