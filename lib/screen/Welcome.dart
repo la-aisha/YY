@@ -32,7 +32,7 @@ class _WelcomeState extends State<Welcome> {
         height: height,
         child: ElevatedButton(
           child: Text(
-            'Je cherche un convoyeur',
+            'Je cherche un livreur',
             style:
                 GoogleFonts.poppins(fontWeight: FontWeight.w400, fontSize: 12),
           ),
@@ -66,40 +66,46 @@ class _WelcomeState extends State<Welcome> {
       );
     }
 
-    Container convoyeur(double width, double height) {
+    Container livreur(double width, double height) {
       return Container(
-          width: width * 3 / 4,
-          height: height,
-          child: ElevatedButton(
-            child: Text(
-              'Je suis un convoyeur',
-              style: GoogleFonts.poppins(
-                fontWeight: FontWeight.w400,
-                fontSize: 12,
-                color:
-                    Color.fromRGBO(40, 0, 81, 1), // Set your desired color here
+      width: width * 3 / 4,
+      height: height,
+      child: ElevatedButton(
+        child: Text(
+          'Je suis un livreur',
+          style: GoogleFonts.poppins(
+            fontWeight: FontWeight.w400,
+            fontSize: 12,
+            color:
+                Color.fromRGBO(40, 0, 81, 1), // Set your desired color here
+          ),
+        ),
+        onPressed: () {
+          ap.isSignedIn == true // then display shared pref data
+          ? Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => Homescreendriver()))
+          : Navigator.of(context)
+          .push(MaterialPageRoute(builder: (context) => RegisterDriver( user:  new UserModel(
+            firstname: "",
+            lastname: "",
+            createdAt: "",
+            phoneNumber: "",
+            uid: ""),
+          )));
+        },
+        style: ButtonStyle(
+          backgroundColor: MaterialStateProperty.all(Colors.white),
+          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+            RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15),
+              side: const BorderSide(
+                color: Color.fromRGBO(40, 0, 81, 1),
+                //color: Color.fromRGBO(40, 0, 81, 1),
               ),
             ),
-            onPressed: () {
-              ap.isSignedIn == true // then display shared pref data
-                  ? Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => Homescreendriver()))
-                  : Navigator.of(context)
-                      .push(MaterialPageRoute(builder: (context) => Welcome()));
-            },
-            style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.all(Colors.white),
-              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15),
-                  side: const BorderSide(
-                    color: Color.fromRGBO(40, 0, 81, 1),
-                    //color: Color.fromRGBO(40, 0, 81, 1),
-                  ),
-                ),
-              ),
-            ),
-          ));
+          ),
+        ),
+      ));
     }
 
     return Scaffold(
@@ -168,7 +174,7 @@ class _WelcomeState extends State<Welcome> {
             SizedBox(
               height: 15,
             ),
-            convoyeur(width * 3 / 4, 50),
+            livreur(width * 3 / 4, 50),
             Spacer()
           ],
         ),

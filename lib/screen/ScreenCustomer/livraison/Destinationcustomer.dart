@@ -1,12 +1,17 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_maps_flutter_platform_interface/google_maps_flutter_platform_interface.dart';
 import 'package:google_maps_flutter_android/google_maps_flutter_android.dart';
 import 'package:yy/global/global_var.dart';
 import 'package:yy/screen/RegisterCostumer.dart';
+//AIzaSyCyQ3HH4EtUSvkw3NsmT6pb0tYbqqv6Iog
 
 class DestinationCustomer extends StatefulWidget {
   const DestinationCustomer({Key? key}) : super(key: key);
@@ -19,6 +24,35 @@ class _DestinationCustomerState extends State<DestinationCustomer> {
   final Completer<GoogleMapController> googleMapCompleterController =
       Completer<GoogleMapController>();
   GoogleMapController? controllerGoogleMap;
+  Position? currentPositonUser;
+
+  void updateMapTheme(GoogleMapController controller) {
+    getJsonFileFromThemes("themes/retro_style.json")
+        .then((value) => setGoogleMapStyle(value, controller));
+  }
+
+  Future<String> getJsonFileFromThemes(String mapStylePath) async {
+    ByteData byteData = await rootBundle.load(mapStylePath);
+    var list = byteData.buffer
+        .asInt8List(byteData.offsetInBytes, byteData.lengthInBytes);
+    return utf8.decode(list);
+  }
+
+  setGoogleMapStyle(String googleMapStyle, GoogleMapController controller) {
+    controller.setMapStyle(googleMapStyle);
+  }
+
+  getCurrentLiveLocationOfUser() async {
+    Position positionOfUser = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.bestForNavigation);
+    currentPositonUser = positionOfUser;
+    LatLng positionUser =
+        LatLng(currentPositonUser!.latitude, currentPositonUser!.longitude);
+    CameraPosition cameraPosition =
+        CameraPosition(target: positionUser, zoom: 15);
+    controllerGoogleMap!
+        .animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,10 +72,16 @@ class _DestinationCustomerState extends State<DestinationCustomer> {
             initialCameraPosition: googlePlexInitialPosition,
             onMapCreated: (GoogleMapController mapController) {
               controllerGoogleMap = mapController;
+              //updateMapTheme(controllerGoogleMap!);
+              getCurrentLiveLocationOfUser();
               googleMapCompleterController.complete();
             },
           ),
-          Positioned.fill(child: DraggableScrollableSheet(
+          Positioned.fill(
+            //height :400 ,
+            top: height*0.5,
+            
+            child: DraggableScrollableSheet(
             builder: (_, controller) {
               return Stack(
                 children: [
@@ -51,8 +91,8 @@ class _DestinationCustomerState extends State<DestinationCustomer> {
                     //height: height/4,
                     decoration: const BoxDecoration(
                       borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(40),
-                        topRight: Radius.circular(40),
+                        topLeft: Radius.circular(20),
+                        topRight: Radius.circular(20),
                       ),
                       color: Colors.white,
                       gradient:
@@ -65,13 +105,13 @@ class _DestinationCustomerState extends State<DestinationCustomer> {
                     ),
                     child: Column(
                       children: [
-                        Padding(padding: EdgeInsets.all(5)),
+                        const Padding(padding: EdgeInsets.all(5)),
                         buildDragHandle(),
-                        Padding(padding: EdgeInsets.all(3)),
+                        const Padding(padding: EdgeInsets.all(5)),
 
                         CircleAvatar(
                           backgroundColor: Colors.white,
-                          minRadius: 20,
+                          minRadius: 13,
                           child: Image.asset(
                             'images/loop.png',
                             width: 20,
@@ -80,7 +120,7 @@ class _DestinationCustomerState extends State<DestinationCustomer> {
                         ),
                         //Spacer(),
                         Padding(padding: EdgeInsets.all(5)),
-                        Text(
+                        /* Text(
                           'Entrez les positions ...',
                           style: GoogleFonts.montserrat(
                             fontWeight: FontWeight.w700,
@@ -88,7 +128,7 @@ class _DestinationCustomerState extends State<DestinationCustomer> {
                             fontSize: 13,
                           ),
                           textAlign: TextAlign.center,
-                        ),
+                        ), */
                         Padding(padding: EdgeInsets.all(2)),
                         /*  Text(
                           'lieu de depart et lieu d arrivee',
@@ -105,22 +145,22 @@ class _DestinationCustomerState extends State<DestinationCustomer> {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(top: 100.0),
+                    padding: const EdgeInsets.only(top: 70.0),
                     child: Container(
                       decoration: const BoxDecoration(
                         color: Colors.white,
                       ),
-                      height: double.infinity,
+                     // height: double.infinity,
                       width: double.infinity,
                       child: Padding(
                         padding: const EdgeInsets.only(top: 20, left: 20),
-                        child: Row(
+                        child: /* Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Image.asset('images/direction1.png', height: 150),
                             SizedBox(
                               width: 20,
-                            ),
+                            ), */
                             Container(
                               // width: ,
                               child: Column(
@@ -131,23 +171,43 @@ class _DestinationCustomerState extends State<DestinationCustomer> {
                                     height: 60,
                                     //color: Color.fromRGBO(40, 0, 81, 10),
                                     child: ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                        primary: Color.fromRGBO(40, 0, 81, 0.6),
-                                      ),
+                                       style: ElevatedButton.styleFrom(
+                                        primary: Color.fromRGBO(40, 0, 81, 0.3),
+                                        elevation: 0
+                                      ), 
                                       onPressed: () {
                                         showModalBottomSheet(
+                                          //isScrollControlled : true ,
                                             context: context,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.vertical(
+                                                top: Radius.circular(20.0),
+                                              ),
+                                            ),
                                             builder: ((context) {
                                               return Container(
-                                                height: 400,
-                                                width: double.infinity,
-                                                //color: Colors.white,
-                                                decoration: BoxDecoration(),
-                                                child: Text('hello'),
-                                              );
-                                            }));
+                                              height: height , // set the height to 7/10 of the screen height
+                                              //child: modalCourse(width ,height/2)
+                                              child: modalPosition(width, height),
+                                            );
+                                        }));
                                       },
-                                      child: Padding(
+                                      child:
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                        children: [
+                                        Text(
+                                          'voulez vous etre livre ? ',
+                                          style: GoogleFonts.montserrat(
+                                            fontWeight: FontWeight.w700,
+                                            color: Colors.black,
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                        Image.asset('images/send.png' ,height: 20,) ,
+                                      ],)
+                                      /*  Padding(
                                         padding: const EdgeInsets.only(left: 2),
                                         child: Text(
                                           'lieu de depart ',
@@ -158,37 +218,14 @@ class _DestinationCustomerState extends State<DestinationCustomer> {
                                           ),
                                           //textAlign: TextAlign.end,
                                         ),
-                                      ),
+                                      ), */
                                     ),
                                   ),
-                                  Padding(padding: EdgeInsets.only(top: 30)),
-                                  Container(
-                                    width: width * 0.7,
-                                    height: 60,
-                                    child: ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                        primary: Color.fromRGBO(40, 0, 81, 0.6),
-                                      ),
-                                      onPressed: () {},
-                                      child: Padding(
-                                        padding: const EdgeInsets.only(left: 2),
-                                        child: Text(
-                                          'lieu de depart ',
-                                          style: GoogleFonts.montserrat(
-                                            fontWeight: FontWeight.w700,
-                                            color: Colors.white,
-                                            fontSize: 13,
-                                          ),
-                                          //textAlign: TextAlign.end,
-                                        ),
-                                      ),
-                                    ),
-                                  )
-                                ],
+                                 ],
                               ),
                             )
-                          ],
-                        ),
+                        /*   ],
+                        ), */
                       ),
                     ),
                   ),
@@ -200,6 +237,225 @@ class _DestinationCustomerState extends State<DestinationCustomer> {
       ),
     );
   }
+
+  Widget modalCourse(double width ,double height){
+     return 
+      Stack(
+        children: [
+          //Padding(padding: EdgeInsets.only())
+          Container(
+            //width: double.infinity,
+            height: double.infinity,
+            decoration: const BoxDecoration(
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(20),
+                topRight: Radius.circular(20),
+              ),
+              color: Colors.white,
+              gradient: LinearGradient(begin: Alignment.topCenter, colors: [
+                Color.fromRGBO(40, 0, 81, 1),
+                //Color.fromRGBO(115, 51, 100, 1),
+                Color.fromRGBO(115, 51, 100, 1),
+                Color.fromRGBO(115, 51, 100, 1),
+              ]),
+            ),
+            child: Column(
+              children: [
+                Padding(padding: EdgeInsets.all(5)),
+                buildDragHandle(),
+                Padding(padding: EdgeInsets.all(3)),
+                CircleAvatar(
+                  backgroundColor: Colors.white,
+                  minRadius: 17,
+                  child: Image.asset(
+                    'images/send.png',
+                    width: 15,
+                    height: 15,
+                  ),
+                ),
+                //Spacer(),
+                Padding(padding: EdgeInsets.all(5)),
+                Padding(padding: EdgeInsets.all(2)),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top: 70.0),
+            child: Container(
+              decoration: const BoxDecoration(
+                color: Colors.white,
+              ),
+              //height: double.infinity,
+              width: double.infinity,
+              child: Padding(
+                padding: const EdgeInsets.only(top: 20, left: 20),
+                child: Container(
+                  
+                  child: Column(
+                    children: [
+                      Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Image.asset('images/direction1.png', height: 80),
+                          SizedBox(
+                            width: 20,
+                          ),
+                          Container(
+                            color: Colors.yellow,
+                            width: 300 ,height: 80,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                               // TextFormField() ,
+                               // TextFormField(),
+                              ],
+                            ),
+                          )
+                        ],
+                      ), 
+                      Expanded(
+                      child: 
+                      ListView(
+                        scrollDirection: Axis.horizontal,
+                       // controller: ,
+                        children: [
+                          Container(
+                            width: 100, 
+                            height: 100,
+                            color: Colors.amber,
+                            //child: ,
+                          ) ,
+                          Container(
+                            width: 100, 
+                            height: 100,
+                            color: Colors.red,
+                            //child: ,
+                          ),
+                          Container(
+                            width: 100, 
+                            height: 100,
+                            color: Colors.black,
+                            //child: ,
+                          ),
+                          Container(
+                            width: 100, 
+                            height: 100,
+                            color: Colors.amber,
+                            //child: ,
+                          )
+
+                        ],
+                      ),
+                      //listview de container
+                      ),
+                      //Padding(padding: EdgeInsets.only(top: 100)),
+                      Container(
+                        color: Colors.amber,
+                        width: 100,
+                        height: 100,
+                        child: ElevatedButton(
+                          onPressed: (){}, child: Image.asset("images/go1.png" ,width: 60,) ,),
+                      )
+                    ],
+                  ),
+                )
+              ),
+            ),
+          ),
+        ],
+      );
+    }
+  
+
+  Widget modalPosition(double width , double height) {
+    return 
+      Stack(
+        children: [
+          //Padding(padding: EdgeInsets.only())
+          Container(
+            //width: double.infinity,
+            height: double.infinity,
+            decoration: const BoxDecoration(
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(20),
+                topRight: Radius.circular(20),
+              ),
+              color: Colors.white,
+              gradient: LinearGradient(begin: Alignment.topCenter, colors: [
+                Color.fromRGBO(40, 0, 81, 1),
+                //Color.fromRGBO(115, 51, 100, 1),
+                Color.fromRGBO(115, 51, 100, 1),
+                Color.fromRGBO(115, 51, 100, 1),
+              ]),
+            ),
+            child: Column(
+              children: [
+                Padding(padding: EdgeInsets.all(5)),
+                buildDragHandle(),
+                Padding(padding: EdgeInsets.all(3)),
+                CircleAvatar(
+                  backgroundColor: Colors.white,
+                  minRadius: 17,
+                  child: Image.asset(
+                    'images/send.png',
+                    width: 15,
+                    height: 15,
+                  ),
+                ),
+                //Spacer(),
+                Padding(padding: EdgeInsets.all(5)),
+                Padding(padding: EdgeInsets.all(2)),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top: 70.0),
+            child: Container(
+              decoration: const BoxDecoration(
+                color: Colors.white,
+              ),
+              //height: double.infinity,
+              width: double.infinity,
+              child: Padding(
+                padding: const EdgeInsets.only(top: 20, left: 20),
+                child: Container(
+                  
+                  child: Column(
+                    children: [
+                      Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Image.asset('images/direction1.png', height: 110),
+                          SizedBox(
+                            width: 20,
+                          ),
+                          Container(
+                            color: Colors.yellow,
+                            width: 300 ,height: 110,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                TextFormField() ,
+                                
+                                TextFormField(),
+                              ],
+                            ),
+                          )
+                        ],
+
+                      ), 
+                      //listview de container
+                    ],
+                  ),
+                )
+                
+                
+              ),
+            ),
+          ),
+        ],
+      );
+    }
 
   Widget buildDragHandle() {
     return Center(

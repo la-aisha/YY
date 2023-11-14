@@ -15,11 +15,11 @@ class _SplashScreenState extends State<SplashScreen> {
    void initState() {
     // TODO: implement initState
     super.initState();
-    Timer(const Duration(seconds: 4), () {
+    Timer(const Duration(seconds: 8), () {
       Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-          builder: (BuildContext context) => OnboardScreen())); //permet de rediriger vers une autre page sans retour
+        builder: (BuildContext context) => OnboardScreen())); //permet de rediriger vers une autre page sans retour
     });
   }
 
@@ -28,16 +28,14 @@ class _SplashScreenState extends State<SplashScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
+        color: Color.fromRGBO(28, 0, 51, 1),
         child: Column(
           children: [
             SizedBox(height: 200,),
             Center(
-              child: Image.asset('images/yobal.png' ,width: 100,height: 100,),
-
+              child: Image.asset('images/logoblanc.png' ,width: 250,height: 250,),
             ),
-            Image.asset('images/yobul.png' ),
-
-
+            //Image.asset('images/yobul.png' ),
           ],
         ),
       )

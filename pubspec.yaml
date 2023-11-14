@@ -60,6 +60,9 @@ dependencies:
   file_picker: ^6.0.0
   connectivity_plus: ^5.0.1
   google_maps_flutter: ^2.5.0
+  permission_handler: ^11.0.1
+  geolocator: ^10.1.0
+  loading_animation_widget: ^1.2.0+4
 
 
 
@@ -130,6 +133,14 @@ flutter:
     - images/loop1.png
     - images/direction1.png
     - images/direction2.png
+    - images/go2.png
+    - images/go1.png
+    - images/send.png
+    - images/logoblanc.png
+    - images/logoblanc1.png
+    - images/delivery.png
+    - images/motorbike.png
+    - themes/
 
 
 

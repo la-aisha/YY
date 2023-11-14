@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:introduction_screen/introduction_screen.dart';
 import 'package:yy/screen/Register.dart';
+import 'package:yy/screen/Welcome.dart';
 //import 'package:yy/screen/Welcome.dart';
 
 
@@ -129,10 +130,10 @@ class _OnboardScreenState extends State<OnboardScreen> {
     );  }
 
   void onDone(context) async{
-    /* final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('ON_BOARDING', false); */
+     final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('ON_BOARDING', false);
 
-   // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>Welcome(),));
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>Welcome(),));
 
   }
 }

@@ -6,33 +6,23 @@ class Barchoice {
   Widget page;
   String imagePath;
   String selectedImagePath;
-    double imageWidth;
-    double imageHeight;
-
-
-
+  double imageWidth;
+  double imageHeight;
   ImageProvider<Object> get image => AssetImage(imagePath );
   ImageProvider<Object> get selectedImage => AssetImage(selectedImagePath);
-
- /*  BottomNavigationBarItem get item => BottomNavigationBarItem(
-    icon: Image(image: image),
-    activeIcon: Image(image: selectedImage),
+  BottomNavigationBarItem get item => BottomNavigationBarItem(
+    icon: Container(
+      width: imageWidth,
+      height: imageHeight,
+      child: Image(image: image),
+    ),
+    activeIcon: Container(
+      width: imageWidth,
+      height: imageHeight,
+      child: Image(image: selectedImage),
+    ),
     label: label,
   );
- */
-   BottomNavigationBarItem get item => BottomNavigationBarItem(
-        icon: Container(
-          width: imageWidth,
-          height: imageHeight,
-          child: Image(image: image),
-        ),
-        activeIcon: Container(
-          width: imageWidth,
-          height: imageHeight,
-          child: Image(image: selectedImage),
-        ),
-        label: label,
-      );
 
 
   Barchoice({

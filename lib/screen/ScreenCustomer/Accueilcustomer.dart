@@ -59,7 +59,7 @@ class _AccueilCustomerState extends State<AccueilCustomer> {
 
   @override
   Widget build(BuildContext context) {
-    final ap = Provider.of<AuthProvider>(context, listen: false);
+    //final ap = Provider.of<AuthProvider>(context, listen: false);
     var size = MediaQuery.of(context).size;
     double width = size.width;
     var height = size.height;
@@ -107,11 +107,11 @@ class _AccueilCustomerState extends State<AccueilCustomer> {
                       "Dalal ak jamm,",
                       style: TextStyle(fontSize: 15, color: myColor1),
                     ),
-                    Text(
+                   /*  Text(
                       '${ap.userModel.firstname} ${ap.userModel.firstname}',
                       style: GoogleFonts.bebasNeue(
                           fontSize: 20, color: Colors.black),
-                    ),
+                    ), */
                   ],
                 ),
               ),
@@ -164,10 +164,10 @@ class _AccueilCustomerState extends State<AccueilCustomer> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      icon(width, height, 'images/box.png', 'livraison',
-                          context, myColor),
-                      icon(width, height, 'images/home.png', 'Depot', context,
-                          myColor),
+                      icon(width, height, 'images/motorbike.png', 'livraison',
+                          context,Colors.white),
+                      icon(width, height, 'images/box.png', 'Depot', context,
+                         Colors.white),
                     ],
                   ),
                   SizedBox(
@@ -177,9 +177,9 @@ class _AccueilCustomerState extends State<AccueilCustomer> {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       icon(width, height, 'images/partners.png', 'Partenaires',
-                          context, myColor),
+                          context,Colors.white),
                       icon(width, height, 'images/money.png', 'Tarif', context,
-                          myColor),
+                         Colors.white),
                     ],
                   ),
                   SizedBox(
@@ -245,24 +245,31 @@ class _AccueilCustomerState extends State<AccueilCustomer> {
 Container icon(double width, double height, String path, String text,
     BuildContext context, Color color) {
   return Container(
-    height: 130,
+    height: 115,
     width: width * 1 / 3,
-    decoration: BoxDecoration(
+   /*  decoration: BoxDecoration(
       borderRadius: BorderRadius.circular(10),
-      color: color,
+      color: Colors.white,
+      border: Border.all(
+      //color: color, // specify the border color here
+      width: 1, // adjust the border width as needed
     ),
+      
+    ), */
     child: ElevatedButton(
       onPressed: () {
         print('hello');
       },
       style: ButtonStyle(
+        elevation: MaterialStatePropertyAll(0),
         backgroundColor:
-            MaterialStateProperty.all(Color.fromRGBO(40, 0, 81, 0.7)),
+        MaterialStateProperty.all(Color.fromRGBO(115, 51, 100, 0.2),),
         shape: MaterialStateProperty.all<RoundedRectangleBorder>(
           RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15),
             side: const BorderSide(
-              color: Color.fromRGBO(40, 0, 81, 0.3),
+              color: Color.fromRGBO(40, 0, 81, 1),
+              width: 1
               //color: Color.fromRGBO(40, 0, 81, 1),
             ),
           ),
@@ -275,8 +282,8 @@ Container icon(double width, double height, String path, String text,
           children: [
             Image.asset(
               path,
-              height: 70,
-              width: 70,
+              height: 45,
+              width: 45,
             ),
             Container(
                 //color: Color.fromRGBO(40, 0, 81, 1) ,

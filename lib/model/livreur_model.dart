@@ -1,8 +1,9 @@
+import 'dart:ffi';
 
 class LivreurModel {
   String firstname;
   String lastname;
-  String email;
+  String? email;
   String address;
   String profilePermis;
   int status;
@@ -15,14 +16,15 @@ class LivreurModel {
   LivreurModel({
     required this.firstname,
     required this.lastname,
-    required this.email,
+    this.email,
     required this.address,
     required this.profilePermis,
     required this.createdAt,
     required this.phoneNumber,
     required this.profilePic,
     required this.uid,
-    required this.status 
+    required this.status
+    
   });
 
   // from map
@@ -49,18 +51,12 @@ class LivreurModel {
       "lastname": lastname,
       "email": email,
       "status": status,
-
       "address": address,
       "uid": uid,
       "phoneNumber": phoneNumber,
       "createdAt": createdAt,
       "profilePic": profilePic,
       "profilePermis": profilePermis,
-
-      /*  "profileVoiture": profileVoiture,
-      "profileCG": profileCG,
-      "profileCT": profileCT,
- */
     };
   }
 }

@@ -24,7 +24,7 @@ class CommonMethods {
               Icon(
                 CupertinoIcons.exclamationmark_circle,
                 color: Colors.red,
-                size: 40,
+                size: 30,
               ),
               SizedBox(width: 8),
               Text('Amoulo Connection'),

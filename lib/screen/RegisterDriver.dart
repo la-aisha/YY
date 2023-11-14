@@ -1,23 +1,151 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl_phone_number_input/intl_phone_number_input.dart';
+import 'package:pin_code_fields/pin_code_fields.dart' as pc;
+import 'package:pinput/pinput.dart';
+import 'package:provider/provider.dart';
+import 'package:yy/methods/common_methods.dart';
+import 'package:yy/provider/auth_provider.dart';
+import 'package:yy/screen/ScreenCustomer/HomeScreenCustomer.dart';
+import 'package:yy/utils/utils.dart';
+import 'package:yy/widgets/custom_button.dart';
+import '../model/user_model.dart';
 
 class RegisterDriver extends StatefulWidget {
-  const RegisterDriver({super.key});
-
+  UserModel user;
+  RegisterDriver({super.key, required this.user});
   @override
-  State<RegisterDriver> createState() => _RegisterDriverState();
+  State<RegisterDriver> createState() => _RegisterDriverState(user: user);
 }
 
 class _RegisterDriverState extends State<RegisterDriver> {
-  bool _isObscure = true;
-  bool _isObscure3 = true;
+  UserModel user;
+  _RegisterDriverState({required this.user});
+
+  Color myColor1 = Color.fromRGBO(40, 0, 81, 1);
+  Color myColor2 = Color.fromRGBO(189, 22, 22, 1);
+
+  /* ----- les controllers */
+  TextEditingController phoneController = new TextEditingController();
+  CommonMethods cMethods = CommonMethods();
+
   bool isChecked = false;
+  String otpPin = "";
+  String countryDial = "+221";
+  String verID = " ";
+
+  void sendphonenumber() {
+    final ap = Provider.of<AuthProvider>(context, listen: false);
+    String phonenumber = countryDial + phoneController.text.trim();
+    ap.signInWithPhoneDriver(context, phonenumber, user);
+    print(phonenumber);
+    print(" REGISTER${user.phoneNumber}");
+  }
+
+  checkNetworkAvaible() {
+    cMethods.checkConnectivity(context);
+    sendphonenumber();
+    print(true);
+    user.phoneNumber = phoneController.text.trim();
+    print('the user phone${user.phoneNumber}');
+  }
 
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     var width = size.width;
     var height = size.height;
+
+    Widget stateRegister() {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: width * 0.8,
+            height: 35,
+            child: welcomeText(),
+          ),
+          SizedBox(height: 30),
+          /* Container(
+            width: width * 0.8,
+            height: 35,
+            child: textfield(
+              placeHolder: 'Prenom',
+              controller: firstNameController,
+              isHide: false,
+              textInputType: TextInputType.name,
+            ),
+          ),
+          SizedBox(height: 18),
+          Container(
+            width: width * 0.8,
+            height: 35,
+            child: textfield(
+              placeHolder: 'Nom',
+              controller: lastNameController,
+              isHide: false,
+              textInputType: TextInputType.name,
+            ),
+          ), */
+          SizedBox(height: 18),
+          Container(
+            width: width * 0.8,
+            height: 35,
+            child: txtphone(),
+          ),
+          SizedBox(height: 20),
+          Container(width: width * 0.8, height: 35, child: check()),
+          SizedBox(height: 30),
+          Container(width: width * 0.8, height: 35, child: register()),
+          SizedBox(height: 20),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                "Deja inscrit ?",
+                style: GoogleFonts.poppins(
+                  fontWeight: FontWeight.w400,
+                  color: Color.fromRGBO(0, 0, 0, 0.45),
+                  fontSize: 13,
+                  fontStyle: FontStyle.normal,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              TextButton(
+                onPressed: () {
+                  /* final OTP = Otp();
+            Navigator.of(context).push(
+                MaterialPageRoute(builder: (BuildContext ctx) {
+                  return OTP;
+                })); */
+                },
+                child: Text(
+                  "Se connecter?",
+                  style: GoogleFonts.poppins(
+                    fontWeight: FontWeight.w400,
+                    color: Color.fromRGBO(189, 22, 22, 1),
+                    fontSize: 13,
+                    fontStyle: FontStyle.normal,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: height / 8),
+          Container(
+            width: width * 0.8,
+            height: 35,
+            child: registerGoogle(
+              path: 'images/googleLogo.png',
+              text: "Continuer avec Google",
+            ),
+          ),
+        ],
+      );
+    }
 
     return Scaffold(
       body: Container(
@@ -32,114 +160,7 @@ class _RegisterDriverState extends State<RegisterDriver> {
               child:  */
               SizedBox(height: 30),
               Center(),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                //mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Container(
-                    width: width * 0.8,
-                    height: 35,
-                    child: welcomeText(),
-                  ),
-                  SizedBox(
-                    height: 30,
-                  ),
-                  Container(
-                    width: width * 0.8,
-                    height: 35,
-                    child: textfield(
-                        placeHolder: 'Prenom',
-                        //controller: firstNameController,
-                        isHide: false,
-                        textInputType: TextInputType.name),
-                  ),
-                  SizedBox(
-                    height: 18,
-                  ),
-                  Container(
-                    width: width * 0.8,
-                    height: 35,
-                    child: textfield(
-                        placeHolder: 'Nom',
-                        //controller: firstNameController,
-                        isHide: false,
-                        textInputType: TextInputType.name),
-                  ),
-                  SizedBox(
-                    height: 18,
-                  ),
-                  Container(
-                    width: width * 0.8,
-                    height: 35,
-                    child: textfield(
-                        placeHolder: 'Telephone',
-                        //controller: firstNameController,
-                        isHide: false,
-                        textInputType: TextInputType.number),
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  /*
-                  Container(
-                      width: width * 0.8, height: 35, child: textfieldmdp()),
-                  SizedBox(
-                    height: 12,
-                  ),
-                  Container(
-                      width: width * 0.8, height: 35, child: textfieldmdp2()),
-                  SizedBox(
-                    height: 12,
-                  ), */
-                  Container(width: width * 0.8, height: 35, child: check()),
-                  SizedBox(
-                    height: 30,
-                  ),
-                  Container(width: width * 0.8, height: 35, child: register()),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                    Text(
-                      "Deja inscrit ?",
-                      style: GoogleFonts.poppins(
-                          fontWeight: FontWeight.w400,
-                          color: Color.fromRGBO(0, 0, 0, 0.45),
-                          fontSize: 13,
-                          fontStyle: FontStyle.normal),
-                      textAlign: TextAlign.center,
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        /* final OTP = Otp();
-                        Navigator.of(context).push(
-                            MaterialPageRoute(builder: (BuildContext ctx) {
-                          return OTP;
-                        })); */
-                      },
-                      child: Text(
-                        "Se connecter?",
-                        style: GoogleFonts.poppins(
-                            fontWeight: FontWeight.w400,
-                            color: Color.fromRGBO(189, 22, 22, 1),
-                            fontSize: 13,
-                            fontStyle: FontStyle.normal),
-                        textAlign: TextAlign.center,
-                      ),
-                    )
-                  ]),
-                  // Spacer(),
-                ],
-              ),
-              SizedBox(height: height / 8),
-              Container(
-                  width: width * 0.8,
-                  height: 35,
-                  child: registerGoogle(
-                    path: 'images/googleLogo.png',
-                    text: "Continuer avec Google",
-                  )),
+              stateRegister()
             ],
           ),
         ),
@@ -147,10 +168,138 @@ class _RegisterDriverState extends State<RegisterDriver> {
     );
   }
 
+  TextFormField txtphone() {
+    return TextFormField(
+      cursorColor: Colors.purple,
+      controller: phoneController,
+      style: const TextStyle(
+        fontSize: 18,
+        fontWeight: FontWeight.bold,
+      ),
+      /* onChanged: (value) {
+        setState(() {
+          phoneController.text = value;
+        });
+      }, */
+      decoration: InputDecoration(
+        contentPadding: EdgeInsets.all(1),
+        hintText: "Enter phone number",
+        hintStyle: TextStyle(
+          fontWeight: FontWeight.w500,
+          fontSize: 16,
+          color: Colors.grey.shade600,
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: const BorderSide(color: Colors.black12),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: const BorderSide(color: Colors.black12),
+        ),
+        prefixIcon: Padding(
+          padding: const EdgeInsets.all(3),
+          child: Image.asset(
+            'assets/flags/sn.png', // Replace with the path to the Senegal flag image
+            package: 'intl_phone_number_input',
+            height: 10,
+            width: 10,
+          ),
+        ),
+        suffixIcon: phoneController.text.length > 9
+            ? Container(
+                height: 30,
+                width: 30,
+                margin: const EdgeInsets.all(10.0),
+                decoration: const BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.green,
+                ),
+                child: const Icon(
+                  Icons.done,
+                  color: Colors.white,
+                  size: 20,
+                ),
+              )
+            : null,
+      ),
+    );
+  }
+
+  TextField textfieldnumber(
+      {required String placeHolder,
+      bool isHide = false,
+      controller,
+      TextInputType? textInputType}) {
+    return TextField(
+      controller: controller,
+      decoration: InputDecoration(
+        hoverColor: myColor1,
+        fillColor: myColor1,
+        focusColor: myColor1,
+        labelText: 'Telephone',
+        prefixIcon: Padding(
+          padding: const EdgeInsets.only(top: 5.0),
+          child: Image.asset(
+            'assets/flags/sn.png', // Replace with the path to the Senegal flag image
+            package: 'intl_phone_number_input',
+            height: 24,
+            width: 24,
+          ),
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: BorderSide(
+            color: Color(0xFF1E3148),
+            width: 3.0,
+          ),
+        ),
+        hintText: placeHolder,
+      ),
+      obscureText: isHide,
+      keyboardType: textInputType,
+    );
+  }
+
+  ElevatedButton register() {
+    return ElevatedButton(
+        onPressed: () {
+          if (phoneController.text.isEmpty || phoneController.length != 9) {
+            showSnackBar(context, "Phone number is not correct!");
+          } else if (isChecked == false) {
+            showSnackBar(context, "Accept condition!");
+          } else {
+            //sendphonenumber();
+            checkNetworkAvaible();
+          }
+
+          //print('registerscreen');
+        },
+        child: Text('Inscription',
+            style: GoogleFonts.breeSerif(
+              textStyle: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.normal,
+              ),
+            )),
+        style: ElevatedButton.styleFrom(
+          primary: Color.fromRGBO(189, 22, 22, 1),
+          // Background color
+          onPrimary: Colors.white, // Text color
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10.0), // Border radius
+          ),
+          elevation: 3.0, // Button shadow,
+        ));
+  }
+
   ElevatedButton registerGoogle(
       {String? path, required String text, IconData? icon}) {
     return ElevatedButton(
-      onPressed: () {},
+      onPressed: () {
+        final provider = Provider.of<AuthProvider>(context, listen: false);
+        //provider.googleLogin();
+      },
       child: Row(
         children: [
           Image.asset(
@@ -182,55 +331,6 @@ class _RegisterDriverState extends State<RegisterDriver> {
     );
   }
 
-  ElevatedButton register() {
-    return ElevatedButton(
-        onPressed: () {},
-        child: Text('Inscription',
-            style: GoogleFonts.breeSerif(
-              textStyle: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.normal,
-              ),
-            )),
-        style: ElevatedButton.styleFrom(
-          primary: Color.fromRGBO(189, 22, 22, 1),
-          // Background color
-          onPrimary: Colors.white, // Text color
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10.0), // Border radius
-          ),
-          elevation: 3.0, // Button shadow,
-        ));
-  }
-
-  TextField textfieldmdp() {
-    return TextField(
-      obscureText: _isObscure,
-      decoration: InputDecoration(
-          hintText: 'Mot de passe',
-          labelStyle: GoogleFonts.poppins(
-            fontSize: 16,
-            color: Color.fromRGBO(0, 0, 0, 0.2),
-          ),
-          border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-              borderSide: BorderSide(
-                color: Color(0xFF1E3148),
-                width: 3.0,
-              )),
-          //labelText: 'Password',
-          // this button is used to toggle the password visibility
-          suffixIcon: IconButton(
-              icon: Icon(_isObscure ? Icons.visibility : Icons.visibility_off,
-                  color: Color(0xFFBD1616)),
-              onPressed: () {
-                setState(() {
-                  _isObscure = !_isObscure;
-                });
-              })),
-    );
-  }
-
   Row check() {
     return Row(
       children: [
@@ -246,6 +346,7 @@ class _RegisterDriverState extends State<RegisterDriver> {
             setState(() {
               isChecked = value ?? false;
             });
+            print(value);
           },
         ),
         Text(
@@ -257,43 +358,13 @@ class _RegisterDriverState extends State<RegisterDriver> {
       ],
     );
   }
-
-  TextField textfieldmdp2() {
-    return TextField(
-      obscureText: _isObscure,
-      decoration: InputDecoration(
-          hintText: 'Mot de passe',
-          labelStyle: GoogleFonts.poppins(
-            fontSize: 16,
-            color: Color.fromRGBO(0, 0, 0, 0.2),
-          ),
-          border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-              borderSide: BorderSide(
-                color: Color(0xFF1E3148),
-                width: 3.0,
-              )),
-          //labelText: 'Password',
-          // this button is used to toggle the password visibility
-          suffixIcon: IconButton(
-              icon: Icon(
-                _isObscure3 ? Icons.visibility : Icons.visibility_off,
-                color: Color(0xFFBD1616),
-              ),
-              onPressed: () {
-                setState(() {
-                  _isObscure3 = !_isObscure3;
-                });
-              })),
-    );
-  }
 }
 
 Row welcomeText() {
   return Row(
     children: [
       Text(
-        'BIENVENUE CONVOYEUR,',
+        'BIENVENUE LIVREUR,',
         style: GoogleFonts.breeSerif(
           fontWeight: FontWeight.w700,
           color: Color(0xFFBD1616),
@@ -349,6 +420,7 @@ TextField textfield(
   return TextField(
     controller: controller,
     decoration: InputDecoration(
+        contentPadding: EdgeInsets.all(20.0),
         labelStyle: GoogleFonts.poppins(
           fontSize: 16,
           color: Color.fromRGBO(0, 0, 0, 0.2),

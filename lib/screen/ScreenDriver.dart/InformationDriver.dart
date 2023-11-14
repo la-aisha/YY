@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:yy/model/car_model.dart';
 import 'package:yy/model/convoyeur_model.dart';
+import 'package:yy/model/user_model.dart';
 import 'package:yy/provider/auth_provider.dart';
 import 'package:yy/screen/ScreenCustomer/HomeScreenCustomer.dart';
 import 'package:yy/utils/utils.dart';
@@ -13,14 +14,17 @@ import 'package:yy/utils/utils.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:yy/widgets/buttonwidget.dart';
 
-class Becomedriver extends StatefulWidget {
-  const Becomedriver({Key? key}) : super(key: key);
+class InformationDriver extends StatefulWidget {
+  UserModel user;
+  InformationDriver({required this.user});
 
   @override
-  State<Becomedriver> createState() => _BecomedriverState();
+  State<InformationDriver> createState() => _InformationDriverState(user: user);
 }
 
-class _BecomedriverState extends State<Becomedriver> {
+class _InformationDriverState extends State<InformationDriver> {
+  UserModel user;
+  _InformationDriverState({required this.user});
   int currentStep = 0;
   Color myCustomColor = Color.fromRGBO(40, 0, 81, 1);
   bool isCompleted = false;
@@ -42,6 +46,9 @@ class _BecomedriverState extends State<Becomedriver> {
   final addressController = TextEditingController();
   final emailController = TextEditingController();
 
+  final firstnameController = TextEditingController();
+  final lastnameController = TextEditingController();
+
   @override
   void dispose() {
     super.dispose();
@@ -50,6 +57,8 @@ class _BecomedriverState extends State<Becomedriver> {
     immatriculationController.dispose();
     addressController.dispose();
     emailController.dispose();
+    firstnameController.dispose();
+    lastnameController.dispose();
   }
 
   void selectImage() async {
@@ -78,317 +87,323 @@ class _BecomedriverState extends State<Becomedriver> {
   }
 
   List<Step> getSteps() => [
-        Step(
-          state: currentStep >= 0 ? StepState.complete : StepState.indexed,
-          isActive: currentStep >= 0,
-          title: Text('Infos'),
-          content: Container(
-            child: Column(
-              children: [
-                InkWell(
-                  onTap: () {
-                    selectImage();
-                  },
-                  child: imageConducteur == null
-                      ? CircleAvatar(
-                          child: Image.asset(
-                            'images/driver2.png',
-                            width: 60,
-                            height: 60,
-                          ),
-                          //backgroundColor: Colors.,
-                        )
-                      : CircleAvatar(
-                          backgroundImage: FileImage(imageConducteur!),
-                          radius: 60,
-                        ),
-                ),
-                Container(
-                  width: MediaQuery.of(context).size.width,
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
-                  margin: const EdgeInsets.only(top: 20),
-                  child: Column(
-                    children: [
-                      // name field
-                      textFeld(
-                        hintText: "address",
-                        icon: Icons.home_rounded,
-                        inputType: TextInputType.text,
-                        maxLines: 1,
-                        controller: addressController,
+    Step(
+      state: currentStep >= 0 ? StepState.complete : StepState.indexed,
+      isActive: currentStep >= 0,
+      title: Text('Infos'),
+      content: Container(
+        child: Column(
+          children: [
+            InkWell(
+              onTap: () {
+                selectImage();
+              },
+              child: imageConducteur == null
+                  ? CircleAvatar(
+                      child: Image.asset(
+                        'images/driver2.png',
+                        width: 60,
+                        height: 60,
                       ),
-
-                      // email
-                      textFeld(
-                        hintText: "email",
-                        icon: Icons.email,
-                        inputType: TextInputType.emailAddress,
-                        maxLines: 1,
-                        controller: emailController,
-                      ),
-
-                      /* textFeld(
-                      hintText: "immatriculation",
-                      icon: Icons.numbers,
-                      inputType: TextInputType.text,
-                      maxLines: 1,
-                      controller: typeController,
-                    ), */
-                    ],
-                  ),
-                ),
-              ],
+                      //backgroundColor: Colors.,
+                    )
+                  : CircleAvatar(
+                      backgroundImage: FileImage(imageConducteur!),
+                      radius: 60,
+                    ),
             ),
-          ),
+            Container(
+              width: MediaQuery.of(context).size.width,
+              padding:
+                  const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
+              margin: const EdgeInsets.only(top: 20),
+              child: Column(
+                children: [
+                  textFeld(
+                    hintText: "nom",
+                    icon: Icons.person_2,
+                    inputType: TextInputType.name,
+                    maxLines: 1,
+                    controller: firstnameController,
+                  ),
+                  textFeld(
+                    hintText: "prenom",
+                    icon: Icons.person_2,
+                    inputType: TextInputType.name,
+                    maxLines: 1,
+                    controller: lastnameController,
+                  ),
+                  // name field
+                  textFeld(
+                    hintText: "address",
+                    icon: Icons.home_rounded,
+                    inputType: TextInputType.text,
+                    maxLines: 1,
+                    controller: addressController,
+                  ),
+
+                  // email
+                  textFeld(
+                    hintText: "email",
+                    icon: Icons.email,
+                    inputType: TextInputType.emailAddress,
+                    maxLines: 1,
+                    controller: emailController,
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
-        Step(
-          state: currentStep >= 1 ? StepState.complete : StepState.indexed,
-          isActive: currentStep >= 1,
-          title: Text('Vehicule'),
-          content: Container(
-            child: Column(
-              children: [
-                InkWell(
-                  onTap: () {
-                    selectImageVehicule();
-                  },
-                  child: imagevehicule == null
-                      ? CircleAvatar(
-                          child: Image.asset(
-                          'images/car2.png',
-                          width: 60,
-                          height: 60,
-                        )
-                          //backgroundColor: Colors.,
+      ),
+    ),
+    Step(
+      state: currentStep >= 1 ? StepState.complete : StepState.indexed,
+      isActive: currentStep >= 1,
+      title: Text('Vehicule'),
+      content: Container(
+        child: Column(
+          children: [
+            InkWell(
+              onTap: () {
+                selectImageVehicule();
+              },
+              child: imagevehicule == null
+                  ? CircleAvatar(
+                      child: Image.asset(
+                      'images/car2.png',
+                      width: 60,
+                      height: 60,
+                    )
+                      //backgroundColor: Colors.,
+                      )
+                  : CircleAvatar(
+                      backgroundImage: FileImage(imagevehicule!),
+                      radius: 60,
+                    ),
+            ),
+            Container(
+              width: MediaQuery.of(context).size.width,
+              padding:
+                  const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
+              margin: const EdgeInsets.only(top: 20),
+              child: Column(
+                children: [
+                  // name field
+                  textFeld(
+                    hintText: "chevrolet",
+                    icon: Icons.account_circle,
+                    inputType: TextInputType.text,
+                    maxLines: 1,
+                    controller: nomvehiculeController,
+                  ),
+                  // email
+                  textFeld(
+                    hintText: "type",
+                    icon: Icons.car_crash,
+                    inputType: TextInputType.text,
+                    maxLines: 1,
+                    controller: typeController,
+                  ),
+                  textFeld(
+                    hintText: "immatriculation",
+                    icon: Icons.numbers,
+                    inputType: TextInputType.text,
+                    maxLines: 1,
+                    controller: immatriculationController,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    ),
+    Step(
+      state: currentStep >= 2 ? StepState.complete : StepState.indexed,
+      isActive: currentStep >= 2,
+      title: Text('Pieces'),
+      content: Container(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            /* ButtonWidget(
+              text: 'Select File',
+              icon: Icons.attach_file,
+              onClicked: selectFile,
+            ), */
+            Container(
+              child: Column(
+                children: [
+                  Text('Permis'),
+                  InkWell(
+                    onTap: selectImageP,
+                    child: permisconduire == null
+                        ? Container(
+                            child: Image.asset(
+                              'images/file.png',
+                              width: 80,
+                              height: 80,
+                            ),
+                            //backgroundColor: Colors.,
                           )
-                      : CircleAvatar(
-                          backgroundImage: FileImage(imagevehicule!),
-                          radius: 60,
-                        ),
-                ),
-                Container(
-                  width: MediaQuery.of(context).size.width,
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
-                  margin: const EdgeInsets.only(top: 20),
-                  child: Column(
-                    children: [
-                      // name field
-                      textFeld(
-                        hintText: "chevrolet",
-                        icon: Icons.account_circle,
-                        inputType: TextInputType.text,
-                        maxLines: 1,
-                        controller: nomvehiculeController,
-                      ),
-                      // email
-                      textFeld(
-                        hintText: "type",
-                        icon: Icons.car_crash,
-                        inputType: TextInputType.text,
-                        maxLines: 1,
-                        controller: typeController,
-                      ),
-                      textFeld(
-                        hintText: "immatriculation",
-                        icon: Icons.numbers,
-                        inputType: TextInputType.text,
-                        maxLines: 1,
-                        controller: immatriculationController,
-                      ),
-                    ],
+                        : Container(
+                            width: 80,
+                            height: 80,
+                            decoration: BoxDecoration(
+                                image: DecorationImage(
+                                    image: FileImage(permisconduire!))),
+                          ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
+            Container(
+              child: Column(
+                children: [
+                  Text('CG'),
+                  InkWell(
+                    onTap: selectImagecg,
+                    child: cartegrise == null
+                        ? Container(
+                            child: Image.asset(
+                              'images/file.png',
+                              width: 80,
+                              height: 80,
+                            ),
+                            //backgroundColor: Colors.,
+                          )
+                        : Container(
+                            width: 80,
+                            height: 80,
+                            decoration: BoxDecoration(
+                                image: DecorationImage(
+                                    image: FileImage(cartegrise!))),
+                          ),
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              child: Column(
+                children: [
+                  Text('CT'),
+                  InkWell(
+                    onTap: selectImagect,
+                    child: controletechnique == null
+                        ? Container(
+                            child: Image.asset(
+                              'images/file.png',
+                              width: 80,
+                              height: 80,
+                            ),
+                            //backgroundColor: Colors.,
+                          )
+                        : Container(
+                            width: 80,
+                            height: 80,
+                            decoration: BoxDecoration(
+                                image: DecorationImage(
+                                    image: FileImage(controletechnique!))),
+                          ),
+                  ),
+                ],
+              ),
+            )
+          ],
         ),
-        Step(
-          state: currentStep >= 2 ? StepState.complete : StepState.indexed,
-          isActive: currentStep >= 2,
-          title: Text('Pieces'),
-          content: Container(
+      ),
+    ),
+    Step(
+      state: currentStep >= 3 ? StepState.complete : StepState.indexed,
+      isActive: currentStep >= 3,
+      title: Text('Complete'),
+      content: Container(
+        // color: Color.fromRGBO(40, 0, 81, 0.04),
+        width: 300,
+        height: 100,
+        child: Card(
+            // margin: EdgeInsets.all(5),
+            color: Colors.white10,
+            margin: EdgeInsets.all(10),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              // crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                /* ButtonWidget(
-                  text: 'Select File',
-                  icon: Icons.attach_file,
-                  onClicked: selectFile,
-                ), */
                 Container(
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    //mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Text('Permis'),
-                      InkWell(
-                        onTap: selectImageP,
-                        child: permisconduire == null
-                            ? Container(
-                                child: Image.asset(
-                                  'images/file.png',
-                                  width: 80,
-                                  height: 80,
-                                ),
-                                //backgroundColor: Colors.,
-                              )
-                            : Container(
-                                width: 80,
-                                height: 80,
-                                decoration: BoxDecoration(
-                                    image: DecorationImage(
-                                        image: FileImage(permisconduire!))),
-                              ),
-                      ),
+                      Text('Address: '),
+                      Text('Email: '),
+                      Text('Nom:'),
+                      Text('Type:'),
+                      Text('Immatriculation:'),
                     ],
                   ),
                 ),
                 Container(
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('CG'),
-                      InkWell(
-                        onTap: selectImagecg,
-                        child: cartegrise == null
-                            ? Container(
-                                child: Image.asset(
-                                  'images/file.png',
-                                  width: 80,
-                                  height: 80,
-                                ),
-                                //backgroundColor: Colors.,
-                              )
-                            : Container(
-                                width: 80,
-                                height: 80,
-                                decoration: BoxDecoration(
-                                    image: DecorationImage(
-                                        image: FileImage(cartegrise!))),
-                              ),
-                      ),
+                      Text(' ${addressController.text.toString()}'),
+                      Text(' ${emailController.text.toString()}'),
+                      Text(' ${nomvehiculeController.text.toString()}'),
+                      Text(' ${typeController.text.toString()}'),
+                      Text(' ${immatriculationController.text.toString()}'),
                     ],
                   ),
                 ),
-                Container(
-                  child: Column(
-                    children: [
-                      Text('CT'),
-                      InkWell(
-                        onTap: selectImagect,
-                        child: controletechnique == null
-                            ? Container(
-                                child: Image.asset(
-                                  'images/file.png',
-                                  width: 80,
-                                  height: 80,
-                                ),
-                                //backgroundColor: Colors.,
-                              )
-                            : Container(
-                                width: 80,
-                                height: 80,
-                                decoration: BoxDecoration(
-                                    image: DecorationImage(
-                                        image: FileImage(controletechnique!))),
-                              ),
-                      ),
-                    ],
-                  ),
-                )
-              ],
-            ),
-          ),
-        ),
-        Step(
-          state: currentStep >= 3 ? StepState.complete : StepState.indexed,
-          isActive: currentStep >= 3,
-          title: Text('Complete'),
-          content: Container(
-            // color: Color.fromRGBO(40, 0, 81, 0.04),
-            width: 300,
-            height: 100,
-            child: Card(
-                // margin: EdgeInsets.all(5),
-                color: Colors.white10,
-                margin: EdgeInsets.all(10),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  // crossAxisAlignment: CrossAxisAlignment.start,
+                /* Row(
+                  //crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceAround ,
                   children: [
-                    Container(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        //mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Text('Address: '),
-                          Text('Email: '),
-                          Text('Nom:'),
-                          Text('Type:'),
-                          Text('Immatriculation:'),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(' ${addressController.text.toString()}'),
-                          Text(' ${emailController.text.toString()}'),
-                          Text(' ${nomvehiculeController.text.toString()}'),
-                          Text(' ${typeController.text.toString()}'),
-                          Text(' ${immatriculationController.text.toString()}'),
-                        ],
-                      ),
-                    ),
-                    /* Row(
-                      //crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.spaceAround ,
-                      children: [
-                        Text('Address: '),
-                        Text(' ${addressController.text.toString()}'),
+                    Text('Address: '),
+                    Text(' ${addressController.text.toString()}'),
 
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround ,
-                      children: [
-                        Text('Email: '),
-                        Text(' ${emailController.text.toString()}'),
-
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround ,
-                      children: [
-                        Text('Nom:'),
-                        Text('Nom: ${nomvehiculeController.text.toString()}'),
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround ,
-                      children: [
-                        Text('Type:'),
-                        Text('${typeController.text.toString()}'),
-                      ],
-                    ),
-                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround ,
-                      children: [
-                        Text('Immatriculation:'),
-                        Text('${immatriculationController.text.toString()}'),
-                      ],
-                    ), */
-                    /*  Padding(padding: EdgeInsets.all(5)),
-                    Text('Address: ${addressController.text.toString()}'),
-                    Text('Email: ${emailController.text.toString()}'),
-                    Text('Nom: ${nomvehiculeController.text.toString()}'),
-                    Text('Type: ${typeController.text.toString()}'),
-                    Text('Type: ${immatriculationController.text.toString()}'), */
                   ],
-                )),
-          ),
-        ),
-      ];
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround ,
+                  children: [
+                    Text('Email: '),
+                    Text(' ${emailController.text.toString()}'),
+
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround ,
+                  children: [
+                    Text('Nom:'),
+                    Text('Nom: ${nomvehiculeController.text.toString()}'),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround ,
+                  children: [
+                    Text('Type:'),
+                    Text('${typeController.text.toString()}'),
+                  ],
+                ),
+                  Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround ,
+                  children: [
+                    Text('Immatriculation:'),
+                    Text('${immatriculationController.text.toString()}'),
+                  ],
+                ), */
+                /*  Padding(padding: EdgeInsets.all(5)),
+                Text('Address: ${addressController.text.toString()}'),
+                Text('Email: ${emailController.text.toString()}'),
+                Text('Nom: ${nomvehiculeController.text.toString()}'),
+                Text('Type: ${typeController.text.toString()}'),
+                Text('Type: ${immatriculationController.text.toString()}'), */
+              ],
+            )),
+      ),
+    ),
+];
 
   /* validation */
   bool validateCurrentStep() {
@@ -406,7 +421,10 @@ class _BecomedriverState extends State<Becomedriver> {
   }
 
   bool validateStep0() {
-    if (addressController.text.isNotEmpty && emailController.text.isNotEmpty) {
+    if (firstnameController.text.isNotEmpty &&
+        lastnameController.text.isNotEmpty &&
+        addressController.text.isNotEmpty &&
+        emailController.text.isNotEmpty) {
       return true;
     } else {
       showSnackBar(context, "Veillez remplir tous les champs!");
@@ -455,7 +473,7 @@ class _BecomedriverState extends State<Becomedriver> {
           children: [
             // Spacer(),
             Text(
-              'Convoyeur',
+              'Livreur',
               textAlign: TextAlign.end,
               style: GoogleFonts.poppins(
                   fontWeight: FontWeight.w400, fontSize: 12, color: myColor1),
@@ -660,10 +678,10 @@ class _BecomedriverState extends State<Becomedriver> {
   void storeData() async {
     final ap = Provider.of<AuthProvider>(context, listen: false);
     var status = 0;
-   LivreurModel driverModel =LivreurModel(
-      //bio: bioController.text.trim(),
-      profilePic: "",
-      /* profileVoiture: "",
+    LivreurModel driverModel = LivreurModel(
+        //bio: bioController.text.trim(),
+        profilePic: "",
+        /* profileVoiture: "",
       profilePermis: "",
       profileCG: "",
       profileCT: "", */

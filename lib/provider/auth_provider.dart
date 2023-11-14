@@ -10,6 +10,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:yy/model/car_model.dart';
 import 'package:yy/model/convoyeur_model.dart';
 import 'package:yy/screen/Otp.dart';
+import 'package:yy/screen/OtpDriver.dart';
 import 'package:yy/screen/RegisterCostumer.dart';
 import 'package:yy/screen/ScreenCustomer/HomeScreenCustomer.dart';
 import 'package:yy/utils/utils.dart';
@@ -26,9 +27,9 @@ class AuthProvider extends ChangeNotifier {
   UserModel? _userModel;
   UserModel get userModel => _userModel!;
 
-  ConvoyeurModel? _convoyeurModel;
-  get convoyeurModel => _convoyeurModel!;
-  
+  LivreurModel? _livreurModel;
+  get livreurModel => _livreurModel!;
+
   CarModel? _carModel;
   get carModel => _carModel!;
 
@@ -43,7 +44,8 @@ class AuthProvider extends ChangeNotifier {
   final FirebaseStorage _firebaseStorage = FirebaseStorage.instance;
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
-  Future googleLogin( BuildContext context,
+  Future googleLogin(
+    BuildContext context,
   ) async {
     /*  final googleUser = await googleSignIn.signIn();
     if (googleUser == null) return;
@@ -61,12 +63,9 @@ class AuthProvider extends ChangeNotifier {
       final googleUser = await googleSignIn.signIn();
       if (googleUser == null) return;
       _user = googleUser;
-
       final googleAuth = await googleUser.authentication;
-
       final credential = GoogleAuthProvider.credential(
-       accessToken: googleAuth.accessToken, idToken: googleAuth.idToken);
-
+          accessToken: googleAuth.accessToken, idToken: googleAuth.idToken);
       await FirebaseAuth.instance.signInWithCredential(credential);
       notifyListeners();
       Navigator.push(context,
@@ -74,8 +73,6 @@ class AuthProvider extends ChangeNotifier {
     } catch (error) {
       // Handle the error here
       print('Error during Google login: $error');
-
-
     }
   }
 
@@ -96,38 +93,76 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void signInWithPhone(
-      BuildContext context, String phonenumber, UserModel user) async {
+   void signInWithPhoneDriver(
+    BuildContext context, String phonenumber, UserModel? user) async {
     try {
       _userModel = user;
-      await _firebaseAuth.verifyPhoneNumber(
-          phoneNumber: phonenumber,
-          verificationCompleted: (PhoneAuthCredential phoneauthcrediential) {
-            _firebaseAuth.signInWithCredential(phoneauthcrediential);
-          },
-          verificationFailed: (error) {
-            throw Exception(error.message);
-          },
-          codeSent: (verificationId, forceResendingToken) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => Otp(
-                  verificationId: verificationId,
-                  user: _userModel ??
-                      UserModel(
-                        firstname: "",
-                        lastname: "",
-                        createdAt: "",
-                        phoneNumber: "",
-                        uid: "",
-                      ),
-                ),
+    await _firebaseAuth.verifyPhoneNumber(
+        phoneNumber: phonenumber,
+        verificationCompleted: (PhoneAuthCredential phoneauthcrediential) {
+          _firebaseAuth.signInWithCredential(phoneauthcrediential);
+        },
+        verificationFailed: (error) {
+          throw Exception(error.message);
+        },
+        codeSent: (verificationId, forceResendingToken) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => OtpDriver(
+                verificationId: verificationId,
+                user: _userModel ??
+                  UserModel(
+                    firstname: "",
+                    lastname: "",
+                    createdAt: "",
+                    phoneNumber: "",
+                    uid: "",
+                  ),
               ),
-            );
-          },
-          codeAutoRetrievalTimeout: (verificationId) {});
-    } on FirebaseAuthException catch (e) {
+            ),
+          );
+        },
+        codeAutoRetrievalTimeout: (verificationId) {});
+  } on FirebaseAuthException catch (e) {
+      showSnackBar(context, e.message.toString());
+    }
+  }
+
+ 
+
+  void signInWithPhone(
+    BuildContext context, String phonenumber, UserModel? user) async {
+    try {
+      _userModel = user;
+    await _firebaseAuth.verifyPhoneNumber(
+        phoneNumber: phonenumber,
+        verificationCompleted: (PhoneAuthCredential phoneauthcrediential) {
+          _firebaseAuth.signInWithCredential(phoneauthcrediential);
+        },
+        verificationFailed: (error) {
+          throw Exception(error.message);
+        },
+        codeSent: (verificationId, forceResendingToken) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => Otp(
+                verificationId: verificationId,
+                user: _userModel ??
+                  UserModel(
+                    firstname: "",
+                    lastname: "",
+                    createdAt: "",
+                    phoneNumber: "",
+                    uid: "",
+                  ),
+              ),
+            ),
+          );
+        },
+        codeAutoRetrievalTimeout: (verificationId) {});
+  } on FirebaseAuthException catch (e) {
       showSnackBar(context, e.message.toString());
     }
   }
@@ -136,58 +171,59 @@ class AuthProvider extends ChangeNotifier {
       {required BuildContext context,
       required String verificationId,
       required String userOtp,
-      required Function onSuccess}) async {
+      Function?onSuccess,
+      }) async {
     _isloading = true;
     notifyListeners();
     try {
       PhoneAuthCredential creds = PhoneAuthProvider.credential(
-          verificationId: verificationId, smsCode: userOtp);
+      verificationId: verificationId, smsCode: userOtp);
       User? user = (await _firebaseAuth.signInWithCredential(creds)).user;
       if (user != null) {
         _uid = user.uid;
-        onSuccess();
+        onSuccess!();
+        //onSuccessDriver!();
       }
     } on FirebaseAuthException catch (e) {
       showSnackBar(context, e.message.toString());
     }
   }
-
   // DATABASE OPERTAIONS
-  Future checkExistingUser(BuildContext context) async {
+  Future<bool> checkExistingUser() async {
     DocumentSnapshot snapshot =
-        await _firebaseFirestore.collection("clients").doc(_uid).get();
+      await _firebaseFirestore.collection("clients").doc(_uid).get();
+    
     if (snapshot.exists) {
-      print("USER EXISTS");
-      print(userModel.uid);
-
-     
+      print("user user");
       return true;
-
-      
     } else {
-      print("NEW USER");
+      print("new USER");
       return false;
     }
   }
-
+  // DATABASE OPERTAIONS
+  Future<bool> checkExistingDriver() async {
+    DocumentSnapshot snapshotdriver =
+      await _firebaseFirestore.collection("drivers").doc(_uid).get();
+    if (snapshotdriver.exists) {
+      print("driver exist");
+      return true;
+    } else {
+      print("new driver");
+      return false;
+    }
+  }
   void saveUserDataToFirebase({
     required BuildContext context,
     required UserModel userModel,
     // required File profilePic,
     required Function onSuccess,
+    Function? onFailure,
   }) async {
     _isloading = true;
     notifyListeners();
     try {
-      // uploading image to firebase storage.
-      /*  await storeFileToStorage("profilePic/$_uid", profilePic).then((value) {
-        userModel.profilePic = value;
-        userModel.createdAt = DateTime.now().millisecondsSinceEpoch.toString();
-        userModel.phoneNumber = _firebaseAuth.currentUser!.phoneNumber!;
-        userModel.uid = _firebaseAuth.currentUser!.phoneNumber!;
-      }); */
       _userModel = userModel;
-
       // uploading to database
       await _firebaseFirestore
           .collection("clients")
@@ -202,13 +238,15 @@ class AuthProvider extends ChangeNotifier {
       showSnackBar(context, e.message.toString());
       _isloading = false;
       notifyListeners();
+      if (onFailure != null) {
+        onFailure();
+      }
     }
   }
-
   //save customer
-   void saveDriverDataToFirebase({
+  void saveDriverDataToFirebase({
     required BuildContext context,
-    required ConvoyeurModel convoyeurModel,
+    required LivreurModel livreurModel,
     required CarModel carModel,
     required File profilePic,
     required File profileVoiture,
@@ -217,64 +255,66 @@ class AuthProvider extends ChangeNotifier {
     required File CT,
     required Function onSuccess,
     Function? onFailure, // New parameter for handling failure
-
   }) async {
     _isloading = true;
     notifyListeners();
     try {
       // uploading image to firebase storage.
-       await storeFileToStorage("profilePic/$_uid", profilePic).then((value) {
-       convoyeurModel.profilePic = value;
-       convoyeurModel.createdAt = DateTime.now().millisecondsSinceEpoch.toString();
-       convoyeurModel.phoneNumber = _firebaseAuth.currentUser!.phoneNumber!;
-       convoyeurModel.uid = _firebaseAuth.currentUser!.phoneNumber!;
-      }); 
-       // uploading image to firebase storage.
-        await storeFileToStorage("profileVoiture/$_uid", profileVoiture).then((value) {
-       convoyeurModel.profilePic = value;
-       convoyeurModel.createdAt = DateTime.now().millisecondsSinceEpoch.toString();
-       convoyeurModel.phoneNumber = _firebaseAuth.currentUser!.phoneNumber!;
-       convoyeurModel.uid = _firebaseAuth.currentUser!.phoneNumber!;
-      });  
-       await storeFileToStorage("permis/$_uid", permis).then((value) {
-       convoyeurModel.profilePermis = value;
-       convoyeurModel.createdAt = DateTime.now().millisecondsSinceEpoch.toString();
-       convoyeurModel.phoneNumber = _firebaseAuth.currentUser!.phoneNumber!;
-       convoyeurModel.uid = _firebaseAuth.currentUser!.phoneNumber!;
-      }); 
-       await storeFileToStorage("ct/$_uid", CT).then((value) {
+      await storeFileToStorage("profilePic/$_uid", profilePic).then((value) {
+        livreurModel.profilePic = value;
+        livreurModel.createdAt =
+            DateTime.now().millisecondsSinceEpoch.toString();
+        livreurModel.phoneNumber = _firebaseAuth.currentUser!.phoneNumber!;
+        livreurModel.uid = _firebaseAuth.currentUser!.phoneNumber!;
+      });
+      // uploading image to firebase storage.
+      await storeFileToStorage("profileVoiture/$_uid", profileVoiture)
+          .then((value) {
+        livreurModel.profilePic = value;
+        livreurModel.createdAt =
+            DateTime.now().millisecondsSinceEpoch.toString();
+        livreurModel.phoneNumber = _firebaseAuth.currentUser!.phoneNumber!;
+        livreurModel.uid = _firebaseAuth.currentUser!.phoneNumber!;
+      });
+      await storeFileToStorage("permis/$_uid", permis).then((value) {
+        livreurModel.profilePermis = value;
+        livreurModel.createdAt =
+            DateTime.now().millisecondsSinceEpoch.toString();
+        livreurModel.phoneNumber = _firebaseAuth.currentUser!.phoneNumber!;
+        livreurModel.uid = _firebaseAuth.currentUser!.phoneNumber!;
+      });
+      await storeFileToStorage("ct/$_uid", CT).then((value) {
         carModel.profileCT = value;
         carModel.createdAt = DateTime.now().millisecondsSinceEpoch.toString();
         //carModel.phoneNumber = _firebaseAuth.currentUser!.phoneNumber!;
         carModel.uid = _firebaseAuth.currentUser!.phoneNumber!;
-      }); 
-       await storeFileToStorage("cg/$_uid", CG).then((value) {
+      });
+      await storeFileToStorage("cg/$_uid", CG).then((value) {
         carModel.profileCG = value;
         carModel.createdAt = DateTime.now().millisecondsSinceEpoch.toString();
         //carModel.phoneNumber = _firebaseAuth.currentUser!.phoneNumber!;
         carModel.uid = _firebaseAuth.currentUser!.phoneNumber!;
-      });  
-       await storeFileToStorage("cg/$_uid", profileVoiture).then((value) {
+      });
+      await storeFileToStorage("cg/$_uid", profileVoiture).then((value) {
         carModel.profileVoiture = value;
         carModel.createdAt = DateTime.now().millisecondsSinceEpoch.toString();
         //carModel.phoneNumber = _firebaseAuth.currentUser!.phoneNumber!;
         carModel.uid = _firebaseAuth.currentUser!.phoneNumber!;
-      });  
-      _convoyeurModel =convoyeurModel;
+      });
+      _livreurModel = livreurModel;
       _carModel = carModel;
-
 
       // uploading to database
       await _firebaseFirestore
           .collection("drivers")
           .doc(_uid)
-          .set(convoyeurModel.toMap())
+          .set(livreurModel.toMap())
           .then((value) {
         onSuccess();
         _isloading = false;
         notifyListeners();
       });
-       // uploading to database
+      // uploading to database
       await _firebaseFirestore
           .collection("cars")
           .doc(_uid)
@@ -288,24 +328,44 @@ class AuthProvider extends ChangeNotifier {
       showSnackBar(context, e.message.toString());
       _isloading = false;
       notifyListeners();
-
       if (onFailure != null) {
-      onFailure(); 
-    }
+        onFailure();
+      }
     }
   }
   //store date
-   Future<String> storeFileToStorage(String ref, File file) async {
+  Future<String> storeFileToStorage(String ref, File file) async {
     UploadTask uploadTask = _firebaseStorage.ref().child(ref).putFile(file);
     TaskSnapshot snapshot = await uploadTask;
     String downloadUrl = await snapshot.ref.getDownloadURL();
     return downloadUrl;
   }
-
   // STORING DATA LOCALLY
   Future saveUserDataToSP() async {
     SharedPreferences s = await SharedPreferences.getInstance();
     await s.setString("user_model", jsonEncode(userModel.toMap()));
+  }
+
+  Future getDataFromFirestoreDriver() async {
+    await _firebaseFirestore
+        .collection("driver")
+        .doc(_firebaseAuth.currentUser!.uid)
+        .get()
+        .then((DocumentSnapshot snapshot) {
+      _livreurModel = LivreurModel(
+        firstname: snapshot['firstname'],
+        lastname: snapshot['lastname'],
+        createdAt: snapshot['createdAt'],
+        uid: snapshot['uid'],
+        phoneNumber: snapshot['phoneNumber'],
+        email: snapshot['email'],
+        address: snapshot['address'],
+        profilePermis: snapshot['profilePermis'],
+        profilePic: snapshot['profilePic'],
+        status: snapshot['status'],
+      );
+      _uid = userModel.uid;
+    });
   }
 
   Future getDataFromFirestore() async {
@@ -327,7 +387,6 @@ class AuthProvider extends ChangeNotifier {
     });
   }
 
-
   Future getDataFromSP() async {
     SharedPreferences s = await SharedPreferences.getInstance();
     String data = s.getString("user_model") ?? '';
@@ -335,6 +394,4 @@ class AuthProvider extends ChangeNotifier {
     _uid = _userModel!.uid;
     notifyListeners();
   }
-
-
 }

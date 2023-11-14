@@ -6,28 +6,28 @@ import 'package:pin_code_fields/pin_code_fields.dart' as pc;
 import 'package:pinput/pinput.dart';
 import 'package:provider/provider.dart';
 import 'package:yy/methods/common_methods.dart';
+import 'package:yy/model/user_model.dart';
 import 'package:yy/provider/auth_provider.dart';
 import 'package:yy/screen/ScreenCustomer/HomeScreenCustomer.dart';
 import 'package:yy/utils/utils.dart';
 import 'package:yy/widgets/custom_button.dart';
-import '../model/user_model.dart';
 
-class RegisterCostumer extends StatefulWidget {
+class NumberDriver extends StatefulWidget {
   UserModel user;
-  RegisterCostumer({super.key, required this.user});
+  NumberDriver({super.key, required this.user});
+
   @override
-  State<RegisterCostumer> createState() => _RegisterCostumerState(user: user);
+  State<NumberDriver> createState() => _NumberDriverState(user: user);
 }
 
-class _RegisterCostumerState extends State<RegisterCostumer> {
+class _NumberDriverState extends State<NumberDriver> {
   UserModel user;
-  _RegisterCostumerState({required this.user});
 
-  Color myColor1 = Color.fromRGBO(40, 0, 81, 1);
-  Color myColor2 = Color.fromRGBO(189, 22, 22, 1);
+  _NumberDriverState({required this.user});
 
   /* ----- les controllers */
   TextEditingController phoneController = new TextEditingController();
+
   CommonMethods cMethods = CommonMethods();
 
   bool isChecked = false;
@@ -38,17 +38,15 @@ class _RegisterCostumerState extends State<RegisterCostumer> {
   void sendphonenumber() {
     final ap = Provider.of<AuthProvider>(context, listen: false);
     String phonenumber = countryDial + phoneController.text.trim();
-    ap.signInWithPhone(context, phonenumber, user);
-    print(phonenumber);
-    print(" REGISTER${user.phoneNumber}");
+   // ap.signInWithPhone(context, phonenumber);
+    //print(phonenumber);
+    //print(" REGISTER ${user.firstname} ${user.lastname}${user.phoneNumber}");
   }
 
   checkNetworkAvaible() {
     cMethods.checkConnectivity(context);
     sendphonenumber();
     print(true);
-    user.phoneNumber = phoneController.text.trim();
-    print('the user phone${user.phoneNumber}');
   }
 
   @override
@@ -68,32 +66,13 @@ class _RegisterCostumerState extends State<RegisterCostumer> {
             child: welcomeText(),
           ),
           SizedBox(height: 30),
-          /* Container(
-            width: width * 0.8,
-            height: 35,
-            child: textfield(
-              placeHolder: 'Prenom',
-              controller: firstNameController,
-              isHide: false,
-              textInputType: TextInputType.name,
-            ),
-          ),
+         
           SizedBox(height: 18),
           Container(
             width: width * 0.8,
             height: 35,
-            child: textfield(
-              placeHolder: 'Nom',
-              controller: lastNameController,
-              isHide: false,
-              textInputType: TextInputType.name,
-            ),
-          ), */
-          SizedBox(height: 18),
-          Container(
-            width: width * 0.8,
-            height: 35,
-            child: txtphone(),
+            child: textfieldnumber(
+                placeHolder: '+221', controller: phoneController),
           ),
           SizedBox(height: 20),
           Container(width: width * 0.8, height: 35, child: check()),
@@ -168,112 +147,28 @@ class _RegisterCostumerState extends State<RegisterCostumer> {
     );
   }
 
-  TextFormField txtphone() {
-    return TextFormField(
-      cursorColor: Colors.purple,
-      controller: phoneController,
-      style: const TextStyle(
-        fontSize: 18,
-        fontWeight: FontWeight.bold,
-      ),
-      /* onChanged: (value) {
-        setState(() {
-          phoneController.text = value;
-        });
-      }, */
-      decoration: InputDecoration(
-        contentPadding: EdgeInsets.all(1),
-        hintText: "Enter phone number",
-        hintStyle: TextStyle(
-          fontWeight: FontWeight.w500,
-          fontSize: 16,
-          color: Colors.grey.shade600,
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-          borderSide: const BorderSide(color: Colors.black12),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-          borderSide: const BorderSide(color: Colors.black12),
-        ),
-        prefixIcon: Padding(
-          padding: const EdgeInsets.all(3),
-          child: Image.asset(
-            'assets/flags/sn.png', // Replace with the path to the Senegal flag image
-            package: 'intl_phone_number_input',
-            height: 10,
-            width: 10,
-          ),
-        ),
-        suffixIcon: phoneController.text.length > 9
-            ? Container(
-                height: 30,
-                width: 30,
-                margin: const EdgeInsets.all(10.0),
-                decoration: const BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.green,
-                ),
-                child: const Icon(
-                  Icons.done,
-                  color: Colors.white,
-                  size: 20,
-                ),
-              )
-            : null,
-      ),
-    );
-  }
-
-  TextField textfieldnumber(
-      {required String placeHolder,
-      bool isHide = false,
-      controller,
-      TextInputType? textInputType}) {
-    return TextField(
-      controller: controller,
-      decoration: InputDecoration(
-        hoverColor: myColor1,
-        fillColor: myColor1,
-        focusColor: myColor1,
-        labelText: 'Telephone',
-        prefixIcon: Padding(
-          padding: const EdgeInsets.only(top: 5.0),
-          child: Image.asset(
-            'assets/flags/sn.png', // Replace with the path to the Senegal flag image
-            package: 'intl_phone_number_input',
-            height: 24,
-            width: 24,
-          ),
-        ),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-          borderSide: BorderSide(
-            color: Color(0xFF1E3148),
-            width: 3.0,
-          ),
-        ),
-        hintText: placeHolder,
-      ),
-      obscureText: isHide,
-      keyboardType: textInputType,
-    );
-  }
-
   ElevatedButton register() {
     return ElevatedButton(
         onPressed: () {
-          if (phoneController.text.isEmpty || phoneController.length != 9) {
+         /*  user = UserModel(
+            //firstname: firstNameController.text,
+            //lastname: lastNameController.text,
+            phoneNumber: phoneController.text.trim(),
+            createdAt: '',
+            uid: phoneController.text.trim(),
+          );
+          if (phoneController.text.isEmpty ||
+              phoneController.length != 9) {
             showSnackBar(context, "Phone number is not correct!");
           } else if (isChecked == false) {
             showSnackBar(context, "Accept condition!");
           } else {
             //sendphonenumber();
             checkNetworkAvaible();
-          }
+          } */
 
           //print('registerscreen');
+          //print(user.firstname);
         },
         child: Text('Inscription',
             style: GoogleFonts.breeSerif(
@@ -300,7 +195,7 @@ class _RegisterCostumerState extends State<RegisterCostumer> {
         final provider = Provider.of<AuthProvider>(context, listen: false);
         //provider.googleLogin();
       },
-      child: Row(
+      child:  Row(
         children: [
           Image.asset(
             '$path',
@@ -321,13 +216,13 @@ class _RegisterCostumerState extends State<RegisterCostumer> {
         ],
       ),
       style: ButtonStyle(
-          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-            RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-              side: const BorderSide(color: Color(0xFF1E3148), width: 2),
-            ),
-          ),
-          backgroundColor: MaterialStateProperty.all(Colors.white)),
+      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+        RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+          side: const BorderSide(color: Color(0xFF1E3148), width: 2),
+        ),
+      ),
+      backgroundColor: MaterialStateProperty.all(Colors.white)),
     );
   }
 
@@ -336,11 +231,9 @@ class _RegisterCostumerState extends State<RegisterCostumer> {
       children: [
         Checkbox(
           checkColor:
-              isChecked ? Colors.white : null, // Red background when checked
+           isChecked ? Colors.white : null, // Red background when checked
           activeColor: Colors.red,
-          //hoverColor: Color.fromRGBO(40, 0, 81, 1),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-
           value: isChecked,
           onChanged: (value) {
             setState(() {
@@ -406,12 +299,9 @@ Center logoContainer() {
     ],
   )
 
-      // height: 100, width: 208, child: Image.asset('images/yobal.png')),
-      );
+  );
 }
-
 /* ---- champs text --- */
-
 TextField textfield(
     {required String placeHolder,
     bool isHide = false,
@@ -432,6 +322,38 @@ TextField textfield(
               color: Color(0xFF1E3148),
               width: 3.0,
             ))),
+    obscureText: isHide,
+    keyboardType: textInputType,
+  );
+}
+
+TextField textfieldnumber(
+    {required String placeHolder,
+    bool isHide = false,
+    controller,
+    TextInputType? textInputType}) {
+  return TextField(
+    controller: controller,
+    decoration: InputDecoration(
+      labelText: 'Telephone',
+      prefixIcon: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Image.asset(
+          'assets/flags/sn.png', // Replace with the path to the Senegal flag image
+          package: 'intl_phone_number_input',
+          height: 24,
+          width: 24,
+        ),
+      ),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(10),
+        borderSide: BorderSide(
+          color: Color(0xFF1E3148),
+          width: 3.0,
+        ),
+      ),
+      hintText: placeHolder,
+    ),
     obscureText: isHide,
     keyboardType: textInputType,
   );

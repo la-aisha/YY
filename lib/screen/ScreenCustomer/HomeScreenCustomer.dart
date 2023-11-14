@@ -68,7 +68,7 @@ class _HomescreencustomerState extends State<Homescreencustomer> {
 
   @override
   Widget build(BuildContext context) {
-    final ap = Provider.of<AuthProvider>(context, listen: false);
+    //final ap = Provider.of<AuthProvider>(context, listen: false);
     var size = MediaQuery.of(context).size;
     double width = size.width;
     var height = size.height;
@@ -130,26 +130,26 @@ Container icon(double width, double height, String path, String text,
               width: 70,
             ),
             Container(
-                //color: Color.fromRGBO(40, 0, 81, 1) ,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(5),
-                  color: Color.fromRGBO(40, 0, 81, 1),
-                ),
-                width: width,
-                child: Center(
-                  child: Text(
-                    text,
-                    style: GoogleFonts.montserrat(
-                      textStyle: TextStyle(
-                        fontSize: 15,
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        //decoration: TextDecoration.underline,
-                        // decorationColor: Color.fromRGBO(40, 0, 81, 1),
-                      ),
-                    ),
+            //color: Color.fromRGBO(40, 0, 81, 1) ,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(5),
+              color: Color.fromRGBO(40, 0, 81, 1),
+            ),
+            width: width,
+            child: Center(
+              child: Text(
+                text,
+                style: GoogleFonts.montserrat(
+                  textStyle: TextStyle(
+                    fontSize: 15,
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    //decoration: TextDecoration.underline,
+                    // decorationColor: Color.fromRGBO(40, 0, 81, 1),
                   ),
-                ))
+                ),
+              ),
+            ))
           ],
         ),
       ),
