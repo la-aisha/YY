@@ -14,12 +14,13 @@ class InformationCustomer extends StatefulWidget {
   InformationCustomer({super.key, required this.user});
 
   @override
-  State<InformationCustomer> createState() => _InformationCustomerState(user : user);
+  State<InformationCustomer> createState() =>
+      _InformationCustomerState(user: user);
 }
 
 class _InformationCustomerState extends State<InformationCustomer> {
   UserModel? user;
-  _InformationCustomerState({ required this.user});
+  _InformationCustomerState({required this.user});
   TextEditingController firstnameController = new TextEditingController();
   TextEditingController lastnameController = new TextEditingController();
 
@@ -43,7 +44,7 @@ class _InformationCustomerState extends State<InformationCustomer> {
 
   storeData() {
     //print('this is ${user!.phoneNumber}');
-    final ap = Provider.of<AuthProvider>(context, listen: false);
+    final ap = Provider.of<MyAuthProvider>(context, listen: false);
     UserModel userModel = UserModel(
       firstname: firstnameController.text.trim(),
       lastname: lastnameController.text.trim(),

@@ -24,7 +24,7 @@ class _WelcomeState extends State<Welcome> {
     //Color myColor = Color(0xFF1E3148);
     Color myColor1 = Color.fromRGBO(40, 0, 81, 1);
     Color myColor2 = Color.fromRGBO(189, 22, 22, 1);
-    final ap = Provider.of<AuthProvider>(context, listen: false);
+    final ap = Provider.of<MyAuthProvider>(context, listen: false);
 
     Container client(double width, double height) {
       return Container(
@@ -39,22 +39,22 @@ class _WelcomeState extends State<Welcome> {
           onPressed: () async {
             if (ap.isSignedIn == true) {
               await ap.getDataFromSP().whenComplete(() => Navigator.of(context)
-              .push(MaterialPageRoute(
-              builder: (context) => Homescreencustomer())));
+                  .push(MaterialPageRoute(
+                      builder: (context) => Homescreencustomer())));
 
               /*  Navigator.of(context).push(MaterialPageRoute(
               builder: (context) => Homescreencustomer())); */
             } else {
               Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => RegisterCostumer(
-                      user: new UserModel(
-                          firstname: "",
-                          lastname: "",
-                          createdAt: "",
-                          phoneNumber: "",
-                          uid: ""),
-                    )));
-          }
+                  builder: (context) => RegisterCostumer(
+                        user: new UserModel(
+                            firstname: "",
+                            lastname: "",
+                            createdAt: "",
+                            phoneNumber: "",
+                            uid: ""),
+                      )));
+            }
           },
           style: ButtonStyle(
               shape: MaterialStateProperty.all<RoundedRectangleBorder>(
@@ -68,44 +68,45 @@ class _WelcomeState extends State<Welcome> {
 
     Container livreur(double width, double height) {
       return Container(
-      width: width * 3 / 4,
-      height: height,
-      child: ElevatedButton(
-        child: Text(
-          'Je suis un livreur',
-          style: GoogleFonts.poppins(
-            fontWeight: FontWeight.w400,
-            fontSize: 12,
-            color:
-                Color.fromRGBO(40, 0, 81, 1), // Set your desired color here
-          ),
-        ),
-        onPressed: () {
-          ap.isSignedIn == true // then display shared pref data
-          ? Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => Homescreendriver()))
-          : Navigator.of(context)
-          .push(MaterialPageRoute(builder: (context) => RegisterDriver( user:  new UserModel(
-            firstname: "",
-            lastname: "",
-            createdAt: "",
-            phoneNumber: "",
-            uid: ""),
-          )));
-        },
-        style: ButtonStyle(
-          backgroundColor: MaterialStateProperty.all(Colors.white),
-          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-            RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(15),
-              side: const BorderSide(
-                color: Color.fromRGBO(40, 0, 81, 1),
-                //color: Color.fromRGBO(40, 0, 81, 1),
+          width: width * 3 / 4,
+          height: height,
+          child: ElevatedButton(
+            child: Text(
+              'Je suis un livreur',
+              style: GoogleFonts.poppins(
+                fontWeight: FontWeight.w400,
+                fontSize: 12,
+                color:
+                    Color.fromRGBO(40, 0, 81, 1), // Set your desired color here
               ),
             ),
-          ),
-        ),
-      ));
+            onPressed: () {
+              ap.isSignedIn == true // then display shared pref data
+                  ? Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => Homescreendriver()))
+                  : Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => RegisterDriver(
+                            user: new UserModel(
+                                firstname: "",
+                                lastname: "",
+                                createdAt: "",
+                                phoneNumber: "",
+                                uid: ""),
+                          )));
+            },
+            style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.all(Colors.white),
+              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15),
+                  side: const BorderSide(
+                    color: Color.fromRGBO(40, 0, 81, 1),
+                    //color: Color.fromRGBO(40, 0, 81, 1),
+                  ),
+                ),
+              ),
+            ),
+          ));
     }
 
     return Scaffold(

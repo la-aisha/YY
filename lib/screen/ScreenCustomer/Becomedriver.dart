@@ -658,12 +658,12 @@ class _BecomedriverState extends State<Becomedriver> {
 
   // store user data to database
   void storeData() async {
-    final ap = Provider.of<AuthProvider>(context, listen: false);
+    final ap = Provider.of<MyAuthProvider>(context, listen: false);
     var status = 0;
-   LivreurModel driverModel =LivreurModel(
-      //bio: bioController.text.trim(),
-      profilePic: "",
-      /* profileVoiture: "",
+    LivreurModel driverModel = LivreurModel(
+        //bio: bioController.text.trim(),
+        profilePic: "",
+        /* profileVoiture: "",
       profilePermis: "",
       profileCG: "",
       profileCT: "", */

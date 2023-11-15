@@ -13,11 +13,18 @@ import 'package:yy/screen/ScreenCustomer/livraison/Destinationcustomer.dart';
 import 'package:yy/screen/SplashScreen.dart';
 import 'package:yy/screen/Welcome.dart';
 import 'firebase_options.dart';
+import 'package:firebase_app_check/firebase_app_check.dart';
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
+  );
+   await FirebaseAppCheck.instance.activate(
+    webProvider: ReCaptchaV3Provider('recaptcha-v3-site-key'),
+
+    androidProvider: AndroidProvider.debug,
   );
   final prefs = await SharedPreferences.getInstance();
   final showOnboarding = prefs.getBool('ON_BOARDING') ?? true;

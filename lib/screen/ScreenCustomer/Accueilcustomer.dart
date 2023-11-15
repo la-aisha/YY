@@ -59,7 +59,7 @@ class _AccueilCustomerState extends State<AccueilCustomer> {
 
   @override
   Widget build(BuildContext context) {
-    //final ap = Provider.of<AuthProvider>(context, listen: false);
+    //final ap = Provider.of<MyAuthProvider>(context, listen: false);
     var size = MediaQuery.of(context).size;
     double width = size.width;
     var height = size.height;
@@ -107,7 +107,7 @@ class _AccueilCustomerState extends State<AccueilCustomer> {
                       "Dalal ak jamm,",
                       style: TextStyle(fontSize: 15, color: myColor1),
                     ),
-                   /*  Text(
+                    /*  Text(
                       '${ap.userModel.firstname} ${ap.userModel.firstname}',
                       style: GoogleFonts.bebasNeue(
                           fontSize: 20, color: Colors.black),
@@ -165,9 +165,9 @@ class _AccueilCustomerState extends State<AccueilCustomer> {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       icon(width, height, 'images/motorbike.png', 'livraison',
-                          context,Colors.white),
+                          context, Colors.white),
                       icon(width, height, 'images/box.png', 'Depot', context,
-                         Colors.white),
+                          Colors.white),
                     ],
                   ),
                   SizedBox(
@@ -177,9 +177,9 @@ class _AccueilCustomerState extends State<AccueilCustomer> {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       icon(width, height, 'images/partners.png', 'Partenaires',
-                          context,Colors.white),
+                          context, Colors.white),
                       icon(width, height, 'images/money.png', 'Tarif', context,
-                         Colors.white),
+                          Colors.white),
                     ],
                   ),
                   SizedBox(
@@ -247,7 +247,7 @@ Container icon(double width, double height, String path, String text,
   return Container(
     height: 115,
     width: width * 1 / 3,
-   /*  decoration: BoxDecoration(
+    /*  decoration: BoxDecoration(
       borderRadius: BorderRadius.circular(10),
       color: Colors.white,
       border: Border.all(
@@ -262,16 +262,15 @@ Container icon(double width, double height, String path, String text,
       },
       style: ButtonStyle(
         elevation: MaterialStatePropertyAll(0),
-        backgroundColor:
-        MaterialStateProperty.all(Color.fromRGBO(115, 51, 100, 0.2),),
+        backgroundColor: MaterialStateProperty.all(
+          Color.fromRGBO(115, 51, 100, 0.2),
+        ),
         shape: MaterialStateProperty.all<RoundedRectangleBorder>(
           RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15),
-            side: const BorderSide(
-              color: Color.fromRGBO(40, 0, 81, 1),
-              width: 1
-              //color: Color.fromRGBO(40, 0, 81, 1),
-            ),
+            side: const BorderSide(color: Color.fromRGBO(40, 0, 81, 1), width: 1
+                //color: Color.fromRGBO(40, 0, 81, 1),
+                ),
           ),
         ),
       ),

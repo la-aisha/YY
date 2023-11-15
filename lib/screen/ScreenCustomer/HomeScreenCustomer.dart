@@ -22,7 +22,7 @@ class Homescreencustomer extends StatefulWidget {
 }
 
 class _HomescreencustomerState extends State<Homescreencustomer> {
- int currentIndex = 1;
+  int currentIndex = 1;
   List<Barchoice> items = [];
 
   void barTapedd(int index) {
@@ -37,38 +37,32 @@ class _HomescreencustomerState extends State<Homescreencustomer> {
 
     items = [
       Barchoice(
-        label: "livraison",
-        imagePath: 'images/locbar2.png',
-        selectedImagePath: 'images/locbar1.png',
-        page: DestinationCustomer(),
-        imageWidth: 30.0,
-        imageHeight: 30
-
-      ),
+          label: "livraison",
+          imagePath: 'images/locbar2.png',
+          selectedImagePath: 'images/locbar1.png',
+          page: DestinationCustomer(),
+          imageWidth: 30.0,
+          imageHeight: 30),
       Barchoice(
-        label: "accueil",
-        imagePath: 'images/homebar2.png',
-        selectedImagePath: 'images/homebar1.png',
-        page: AccueilCustomer(),
-        imageWidth: 30.0,
-        imageHeight: 30
-      ),
+          label: "accueil",
+          imagePath: 'images/homebar2.png',
+          selectedImagePath: 'images/homebar1.png',
+          page: AccueilCustomer(),
+          imageWidth: 30.0,
+          imageHeight: 30),
       Barchoice(
-        label: "message",
-        imagePath: 'images/emailbar2.png',
-        selectedImagePath: 'images/emailbar1.png',
-        page: Container(),
-        imageWidth: 30.0,
-        imageHeight: 30
-
-      ),
+          label: "message",
+          imagePath: 'images/emailbar2.png',
+          selectedImagePath: 'images/emailbar1.png',
+          page: Container(),
+          imageWidth: 30.0,
+          imageHeight: 30),
     ];
   }
 
-
   @override
   Widget build(BuildContext context) {
-    //final ap = Provider.of<AuthProvider>(context, listen: false);
+    //final ap = Provider.of<MyAuthProvider>(context, listen: false);
     var size = MediaQuery.of(context).size;
     double width = size.width;
     var height = size.height;
@@ -82,14 +76,13 @@ class _HomescreencustomerState extends State<Homescreencustomer> {
       'images/slider.png',
     ];
     return Scaffold(
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: currentIndex,
-        items: items.map((i) => i.item).toList(),
-        onTap: barTapedd,
-        iconSize: 10,
-      ),
-      body:items[currentIndex].page 
-    );
+        bottomNavigationBar: BottomNavigationBar(
+          currentIndex: currentIndex,
+          items: items.map((i) => i.item).toList(),
+          onTap: barTapedd,
+          iconSize: 10,
+        ),
+        body: items[currentIndex].page);
   }
 }
 
@@ -130,26 +123,26 @@ Container icon(double width, double height, String path, String text,
               width: 70,
             ),
             Container(
-            //color: Color.fromRGBO(40, 0, 81, 1) ,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(5),
-              color: Color.fromRGBO(40, 0, 81, 1),
-            ),
-            width: width,
-            child: Center(
-              child: Text(
-                text,
-                style: GoogleFonts.montserrat(
-                  textStyle: TextStyle(
-                    fontSize: 15,
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    //decoration: TextDecoration.underline,
-                    // decorationColor: Color.fromRGBO(40, 0, 81, 1),
-                  ),
+                //color: Color.fromRGBO(40, 0, 81, 1) ,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(5),
+                  color: Color.fromRGBO(40, 0, 81, 1),
                 ),
-              ),
-            ))
+                width: width,
+                child: Center(
+                  child: Text(
+                    text,
+                    style: GoogleFonts.montserrat(
+                      textStyle: TextStyle(
+                        fontSize: 15,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        //decoration: TextDecoration.underline,
+                        // decorationColor: Color.fromRGBO(40, 0, 81, 1),
+                      ),
+                    ),
+                  ),
+                ))
           ],
         ),
       ),

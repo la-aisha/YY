@@ -68,59 +68,56 @@ class _OtpDriverState extends State<OtpDriver> {
     );
   }
 
-  void verifyOtp(BuildContext context, String userOtp, {bool isDriver = false}) {
-  final ap = Provider.of<AuthProvider>(context, listen: false);
-  UserModel user = UserModel(
-    firstname: '',
-    lastname: "",
-    createdAt: "",
-    phoneNumber: userModel!.phoneNumber,
-    uid: ""
-  );
-  
- 
-  Function onSuccess = () {
-    // checking whether user exists in the db
-    ap.checkExistingDriver().then((value) {
-      if (value == true) {
-        // user exists in our app
-        ap.getDataFromFirestore().then((value) {
-          ap.saveUserDataToSP().then((value) {
-            ap.setSignIn().then((value) {
-              Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const Homescreendriver(),
-                ),
-                (route) => false
-              );
+  void verifyOtp(BuildContext context, String userOtp,
+      {bool isDriver = false}) {
+    final ap = Provider.of<MyAuthProvider>(context, listen: false);
+    UserModel user = UserModel(
+        firstname: '',
+        lastname: "",
+        createdAt: "",
+        phoneNumber: userModel!.phoneNumber,
+        uid: "");
+
+    Function onSuccess = () {
+      // checking whether user exists in the db
+      ap.checkExistingDriver().then((value) {
+        if (value == true) {
+          // user exists in our app
+          ap.getDataFromFirestore().then((value) {
+            ap.saveUserDataToSP().then((value) {
+              ap.setSignIn().then((value) {
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const Homescreendriver(),
+                    ),
+                    (route) => false);
+              });
             });
           });
-        });
-      } else {
-        print('la valeur de phone est ${user?.phoneNumber}');
-        Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(
-            builder: (context) => InformationDriver(user: user)
-          ),
-          (route) => false
-        );
-      }
-    });
-  };
+        } else {
+          print('la valeur de phone est ${user?.phoneNumber}');
+          Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => InformationDriver(user: user)),
+              (route) => false);
+        }
+      });
+    };
 
-  ap.verifyOtp(
-    context: context,
-    verificationId: widget.verificationId,
-    userOtp: userOtp,
-    onSuccess:  onSuccess,
-  );
-}
+    ap.verifyOtp(
+      context: context,
+      verificationId: widget.verificationId,
+      userOtp: userOtp,
+      onSuccess: onSuccess,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final isloading =
-        Provider.of<AuthProvider>(context, listen: true).isLoading;
+        Provider.of<MyAuthProvider>(context, listen: true).isLoading;
     var size = MediaQuery.of(context).size;
     var width = size.width;
     var height = size.height;

@@ -63,6 +63,7 @@ dependencies:
   permission_handler: ^11.0.1
   geolocator: ^10.1.0
   loading_animation_widget: ^1.2.0+4
+  firebase_app_check: ^0.2.1+4
 
 
 

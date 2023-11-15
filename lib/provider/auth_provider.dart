@@ -17,7 +17,7 @@ import 'package:yy/utils/utils.dart';
 
 import '../model/user_model.dart';
 
-class AuthProvider extends ChangeNotifier {
+class MyAuthProvider extends ChangeNotifier {
   bool _isSignedIn = false;
   bool get isSignedIn => _isSignedIn;
 
@@ -53,18 +53,18 @@ class AuthProvider extends ChangeNotifier {
 
     final googleAuth = await googleUser.authentication;
 
-    final credential = GoogleAuthProvider.credential(
+    final credential = GoogleMyAuthProvider.credential(
     accessToken: googleAuth.accessToken, idToken: googleAuth.idToken);
 
     await FirebaseAuth.instance.signInWithCredential(credential);
     notifyListeners(); */
 
-    try {
+   /*  try {
       final googleUser = await googleSignIn.signIn();
       if (googleUser == null) return;
       _user = googleUser;
       final googleAuth = await googleUser.authentication;
-      final credential = GoogleAuthProvider.credential(
+      final credential = GoogleMyAuthProvider.credential(
           accessToken: googleAuth.accessToken, idToken: googleAuth.idToken);
       await FirebaseAuth.instance.signInWithCredential(credential);
       notifyListeners();
@@ -74,9 +74,9 @@ class AuthProvider extends ChangeNotifier {
       // Handle the error here
       print('Error during Google login: $error');
     }
-  }
+  } */
 
-  AuthProvider() {
+  MyAuthProvider() {
     checksignin();
   }
 
@@ -93,91 +93,89 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-   void signInWithPhoneDriver(
-    BuildContext context, String phonenumber, UserModel? user) async {
+  void signInWithPhoneDriver(
+      BuildContext context, String phonenumber, UserModel? user) async {
     try {
       _userModel = user;
-    await _firebaseAuth.verifyPhoneNumber(
-        phoneNumber: phonenumber,
-        verificationCompleted: (PhoneAuthCredential phoneauthcrediential) {
-          _firebaseAuth.signInWithCredential(phoneauthcrediential);
-        },
-        verificationFailed: (error) {
-          throw Exception(error.message);
-        },
-        codeSent: (verificationId, forceResendingToken) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => OtpDriver(
-                verificationId: verificationId,
-                user: _userModel ??
-                  UserModel(
-                    firstname: "",
-                    lastname: "",
-                    createdAt: "",
-                    phoneNumber: "",
-                    uid: "",
-                  ),
+      await _firebaseAuth.verifyPhoneNumber(
+          phoneNumber: phonenumber,
+          verificationCompleted: (PhoneAuthCredential phoneauthcrediential) {
+            _firebaseAuth.signInWithCredential(phoneauthcrediential);
+          },
+          verificationFailed: (error) {
+            throw Exception(error.message);
+          },
+          codeSent: (verificationId, forceResendingToken) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => OtpDriver(
+                  verificationId: verificationId,
+                  user: _userModel ??
+                      UserModel(
+                        firstname: "",
+                        lastname: "",
+                        createdAt: "",
+                        phoneNumber: "",
+                        uid: "",
+                      ),
+                ),
               ),
-            ),
-          );
-        },
-        codeAutoRetrievalTimeout: (verificationId) {});
-  } on FirebaseAuthException catch (e) {
+            );
+          },
+          codeAutoRetrievalTimeout: (verificationId) {});
+    } on FirebaseAuthException catch (e) {
       showSnackBar(context, e.message.toString());
     }
   }
-
- 
 
   void signInWithPhone(
-    BuildContext context, String phonenumber, UserModel? user) async {
+      BuildContext context, String phonenumber, UserModel? user) async {
     try {
       _userModel = user;
-    await _firebaseAuth.verifyPhoneNumber(
-        phoneNumber: phonenumber,
-        verificationCompleted: (PhoneAuthCredential phoneauthcrediential) {
-          _firebaseAuth.signInWithCredential(phoneauthcrediential);
-        },
-        verificationFailed: (error) {
-          throw Exception(error.message);
-        },
-        codeSent: (verificationId, forceResendingToken) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => Otp(
-                verificationId: verificationId,
-                user: _userModel ??
-                  UserModel(
-                    firstname: "",
-                    lastname: "",
-                    createdAt: "",
-                    phoneNumber: "",
-                    uid: "",
-                  ),
+      await _firebaseAuth.verifyPhoneNumber(
+          phoneNumber: phonenumber,
+          verificationCompleted: (PhoneAuthCredential phoneauthcrediential) {
+            _firebaseAuth.signInWithCredential(phoneauthcrediential);
+          },
+          verificationFailed: (error) {
+            throw Exception(error.message);
+          },
+          codeSent: (verificationId, forceResendingToken) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => Otp(
+                  verificationId: verificationId,
+                  user: _userModel ??
+                      UserModel(
+                        firstname: "",
+                        lastname: "",
+                        createdAt: "",
+                        phoneNumber: "",
+                        uid: "",
+                      ),
+                ),
               ),
-            ),
-          );
-        },
-        codeAutoRetrievalTimeout: (verificationId) {});
-  } on FirebaseAuthException catch (e) {
+            );
+          },
+          codeAutoRetrievalTimeout: (verificationId) {});
+    } on FirebaseAuthException catch (e) {
       showSnackBar(context, e.message.toString());
     }
   }
 
-  void verifyOtp(
-      {required BuildContext context,
-      required String verificationId,
-      required String userOtp,
-      Function?onSuccess,
-      }) async {
+  void verifyOtp({
+    required BuildContext context,
+    required String verificationId,
+    required String userOtp,
+    Function? onSuccess,
+  }) async {
     _isloading = true;
     notifyListeners();
     try {
-      PhoneAuthCredential creds = PhoneAuthProvider.credential(
-      verificationId: verificationId, smsCode: userOtp);
+      PhoneAuthCredential creds = PhoneMyAuthProvider.credential(
+          verificationId: verificationId, smsCode: userOtp);
       User? user = (await _firebaseAuth.signInWithCredential(creds)).user;
       if (user != null) {
         _uid = user.uid;
@@ -188,11 +186,12 @@ class AuthProvider extends ChangeNotifier {
       showSnackBar(context, e.message.toString());
     }
   }
+
   // DATABASE OPERTAIONS
   Future<bool> checkExistingUser() async {
     DocumentSnapshot snapshot =
-      await _firebaseFirestore.collection("clients").doc(_uid).get();
-    
+        await _firebaseFirestore.collection("clients").doc(_uid).get();
+
     if (snapshot.exists) {
       print("user user");
       return true;
@@ -201,10 +200,11 @@ class AuthProvider extends ChangeNotifier {
       return false;
     }
   }
+
   // DATABASE OPERTAIONS
   Future<bool> checkExistingDriver() async {
     DocumentSnapshot snapshotdriver =
-      await _firebaseFirestore.collection("drivers").doc(_uid).get();
+        await _firebaseFirestore.collection("drivers").doc(_uid).get();
     if (snapshotdriver.exists) {
       print("driver exist");
       return true;
@@ -213,6 +213,7 @@ class AuthProvider extends ChangeNotifier {
       return false;
     }
   }
+
   void saveUserDataToFirebase({
     required BuildContext context,
     required UserModel userModel,
@@ -243,6 +244,7 @@ class AuthProvider extends ChangeNotifier {
       }
     }
   }
+
   //save customer
   void saveDriverDataToFirebase({
     required BuildContext context,
@@ -333,6 +335,7 @@ class AuthProvider extends ChangeNotifier {
       }
     }
   }
+
   //store date
   Future<String> storeFileToStorage(String ref, File file) async {
     UploadTask uploadTask = _firebaseStorage.ref().child(ref).putFile(file);
@@ -340,6 +343,7 @@ class AuthProvider extends ChangeNotifier {
     String downloadUrl = await snapshot.ref.getDownloadURL();
     return downloadUrl;
   }
+
   // STORING DATA LOCALLY
   Future saveUserDataToSP() async {
     SharedPreferences s = await SharedPreferences.getInstance();

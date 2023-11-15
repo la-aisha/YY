@@ -36,9 +36,9 @@ class _NumberDriverState extends State<NumberDriver> {
   String verID = " ";
 
   void sendphonenumber() {
-    final ap = Provider.of<AuthProvider>(context, listen: false);
+    final ap = Provider.of<MyAuthProvider>(context, listen: false);
     String phonenumber = countryDial + phoneController.text.trim();
-   // ap.signInWithPhone(context, phonenumber);
+    // ap.signInWithPhone(context, phonenumber);
     //print(phonenumber);
     //print(" REGISTER ${user.firstname} ${user.lastname}${user.phoneNumber}");
   }
@@ -66,7 +66,6 @@ class _NumberDriverState extends State<NumberDriver> {
             child: welcomeText(),
           ),
           SizedBox(height: 30),
-         
           SizedBox(height: 18),
           Container(
             width: width * 0.8,
@@ -150,7 +149,7 @@ class _NumberDriverState extends State<NumberDriver> {
   ElevatedButton register() {
     return ElevatedButton(
         onPressed: () {
-         /*  user = UserModel(
+          /*  user = UserModel(
             //firstname: firstNameController.text,
             //lastname: lastNameController.text,
             phoneNumber: phoneController.text.trim(),
@@ -192,10 +191,10 @@ class _NumberDriverState extends State<NumberDriver> {
       {String? path, required String text, IconData? icon}) {
     return ElevatedButton(
       onPressed: () {
-        final provider = Provider.of<AuthProvider>(context, listen: false);
+        final provider = Provider.of<MyAuthProvider>(context, listen: false);
         //provider.googleLogin();
       },
-      child:  Row(
+      child: Row(
         children: [
           Image.asset(
             '$path',
@@ -216,13 +215,13 @@ class _NumberDriverState extends State<NumberDriver> {
         ],
       ),
       style: ButtonStyle(
-      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-        RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
-          side: const BorderSide(color: Color(0xFF1E3148), width: 2),
-        ),
-      ),
-      backgroundColor: MaterialStateProperty.all(Colors.white)),
+          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+            RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+              side: const BorderSide(color: Color(0xFF1E3148), width: 2),
+            ),
+          ),
+          backgroundColor: MaterialStateProperty.all(Colors.white)),
     );
   }
 
@@ -231,7 +230,7 @@ class _NumberDriverState extends State<NumberDriver> {
       children: [
         Checkbox(
           checkColor:
-           isChecked ? Colors.white : null, // Red background when checked
+              isChecked ? Colors.white : null, // Red background when checked
           activeColor: Colors.red,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
           value: isChecked,
@@ -297,10 +296,9 @@ Center logoContainer() {
         ),
       ),
     ],
-  )
-
-  );
+  ));
 }
+
 /* ---- champs text --- */
 TextField textfield(
     {required String placeHolder,

@@ -36,7 +36,7 @@ class _RegisterDriverState extends State<RegisterDriver> {
   String verID = " ";
 
   void sendphonenumber() {
-    final ap = Provider.of<AuthProvider>(context, listen: false);
+    final ap = Provider.of<MyAuthProvider>(context, listen: false);
     String phonenumber = countryDial + phoneController.text.trim();
     ap.signInWithPhoneDriver(context, phonenumber, user);
     print(phonenumber);
@@ -297,7 +297,7 @@ class _RegisterDriverState extends State<RegisterDriver> {
       {String? path, required String text, IconData? icon}) {
     return ElevatedButton(
       onPressed: () {
-        final provider = Provider.of<AuthProvider>(context, listen: false);
+        final provider = Provider.of<MyAuthProvider>(context, listen: false);
         //provider.googleLogin();
       },
       child: Row(
