@@ -83,7 +83,7 @@ class _OtpDriverState extends State<OtpDriver> {
       ap.checkExistingDriver().then((value) {
         if (value == true) {
           // user exists in our app
-          ap.getDataFromFirestore().then((value) {
+          ap.getDataFromFirestoreDriver().then((value) {
             ap.saveUserDataToSP().then((value) {
               ap.setSignIn().then((value) {
                 Navigator.pushAndRemoveUntil(

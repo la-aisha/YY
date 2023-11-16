@@ -76,13 +76,13 @@ class _HomescreencustomerState extends State<Homescreencustomer> {
       'images/slider.png',
     ];
     return Scaffold(
-        bottomNavigationBar: BottomNavigationBar(
-          currentIndex: currentIndex,
-          items: items.map((i) => i.item).toList(),
-          onTap: barTapedd,
-          iconSize: 10,
-        ),
-        body: items[currentIndex].page);
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: currentIndex,
+        items: items.map((i) => i.item).toList(),
+        onTap: barTapedd,
+        iconSize: 10,
+      ),
+      body: items[currentIndex].page);
   }
 }
 

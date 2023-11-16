@@ -19,6 +19,7 @@ class AccueilCustomer extends StatefulWidget {
 }
 
 class _AccueilCustomerState extends State<AccueilCustomer> {
+
   int currentIndex = 1;
   List<Barchoice> items = [];
 
@@ -107,11 +108,11 @@ class _AccueilCustomerState extends State<AccueilCustomer> {
                       "Dalal ak jamm,",
                       style: TextStyle(fontSize: 15, color: myColor1),
                     ),
-                    /*  Text(
+                      /* Text(
                       '${ap.userModel.firstname} ${ap.userModel.firstname}',
                       style: GoogleFonts.bebasNeue(
                           fontSize: 20, color: Colors.black),
-                    ), */
+                    ),  */
                   ],
                 ),
               ),

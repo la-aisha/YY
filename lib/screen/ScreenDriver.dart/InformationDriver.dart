@@ -677,10 +677,8 @@ class _InformationDriverState extends State<InformationDriver> {
 
   Future selectFile() async {
     final result = await FilePicker.platform.pickFiles(allowMultiple: false);
-
     if (result == null) return;
     final path = result.files.single.path!;
-
     setState(() => permisconduire = File(path));
   }
 

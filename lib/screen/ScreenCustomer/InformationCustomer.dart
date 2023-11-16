@@ -54,61 +54,61 @@ class _InformationCustomerState extends State<InformationCustomer> {
     );
     print(userModel.firstname);
     ap.saveUserDataToFirebase(
-        context: context,
-        userModel: userModel,
-        //profilePic: image!,
-        onSuccess: () {
-          ap.saveUserDataToSP().then(
-                (value) => ap.setSignIn().then(
-                      (value) => Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const Homescreencustomer(),
-                          ),
-                          (route) => false),
-                    ),
-              );
-        },
-        onFailure: () {
-          showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return CupertinoAlertDialog(
-                title: Row(
-                  children: [
-                    Icon(
-                      CupertinoIcons.exclamationmark_circle,
-                      color: Colors.red,
-                      size: 30,
-                    ),
-                    SizedBox(width: 8),
-                    Text('Danio am erreur'),
-                  ],
-                ),
-                content: Column(
-                  children: [
-                    SizedBox(height: 16),
-                    Image.asset(
-                      'images/connection.png',
-                      height: 100,
-                      width: 100,
-                    ),
-                    SizedBox(height: 16),
-                    Text('Veillez reessayer plustard'),
-                  ],
-                ),
-                actions: [
-                  CupertinoDialogAction(
-                    child: Text('OK'),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
+      context: context,
+      userModel: userModel,
+      //profilePic: image!,
+      onSuccess: () {
+        ap.saveUserDataToSP().then(
+          (value) => ap.setSignIn().then(
+            (value) => Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const Homescreencustomer(),
+              ),
+            (route) => false),
+          ),
+        );
+      },
+      onFailure: () {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return CupertinoAlertDialog(
+              title: Row(
+                children: [
+                  Icon(
+                    CupertinoIcons.exclamationmark_circle,
+                    color: Colors.red,
+                    size: 30,
                   ),
+                  SizedBox(width: 8),
+                  Text('Danio am erreur'),
                 ],
-              );
-            },
-          );
-        });
+              ),
+              content: Column(
+                children: [
+                  SizedBox(height: 16),
+                  Image.asset(
+                    'images/connection.png',
+                    height: 100,
+                    width: 100,
+                  ),
+                  SizedBox(height: 16),
+                  Text('Veillez reessayer plustard'),
+                ],
+              ),
+              actions: [
+                CupertinoDialogAction(
+                  child: Text('OK'),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      });
   }
 
   @override

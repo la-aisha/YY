@@ -1,6 +1,10 @@
+import 'dart:convert';
+
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:http/http.dart' as http;
 
 class CommonMethods {
   Future<void> checkConnectivity(BuildContext context) async {
@@ -14,6 +18,7 @@ class CommonMethods {
       // Handle connectivity case
     }
   }
+
   void displayAlert(BuildContext context) {
     showDialog(
       context: context,
@@ -58,6 +63,35 @@ class CommonMethods {
   void displaySnackbar(String messageText, BuildContext context) {
     var snackBar = SnackBar(content: Text(messageText));
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
+
+  static sendRequestToApi(String apiUrl) async {
+    http.Response responseApi = await http.get(Uri.parse(apiUrl));
+    try {
+      if (responseApi.statusCode == 200) {
+        var data = responseApi.body;
+        var dataDecode = jsonDecode(data);
+        return dataDecode;
+      } else {
+        return "error";
+      }
+    } catch (errorMsg) {
+      return "error";
+    }
+  }
+
+  //Utilise la fonction send request qui ne doit pas renvoyer d'erreur
+  static Future convertGeo(Position position, BuildContext context) async {
+    String readableAdress = "";
+    String apiGeodingUrl ='https://maps.googleapis.com/maps/api/geocode/json?latlng=${position.latitude},${position.longitude}&key=AIzaSyCyQ3HH4EtUSvkw3NsmT6pb0tYbqqv6Iog';
+    //
+    var responseAPI = await sendRequestToApi(apiGeodingUrl);
+    if (responseAPI != 'error') {
+      readableAdress = responseAPI['results'][0]['formatted_address'];
+      print('readable address :${readableAdress}') ;
+
+    }
+    return readableAdress;
   }
 }
 /* 

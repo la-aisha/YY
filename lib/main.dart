@@ -13,7 +13,7 @@ import 'package:yy/screen/ScreenCustomer/livraison/Destinationcustomer.dart';
 import 'package:yy/screen/SplashScreen.dart';
 import 'package:yy/screen/Welcome.dart';
 import 'firebase_options.dart';
-import 'package:firebase_app_check/firebase_app_check.dart';
+//import 'package:firebase_app_check/firebase_app_check.dart';
 
 
 void main() async {
@@ -21,18 +21,14 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-   await FirebaseAppCheck.instance.activate(
-    webProvider: ReCaptchaV3Provider('recaptcha-v3-site-key'),
-
-    androidProvider: AndroidProvider.debug,
-  );
+  
   final prefs = await SharedPreferences.getInstance();
   final showOnboarding = prefs.getBool('ON_BOARDING') ?? true;
-  /*  await Permission.locationWhenInUse.isDenied.then((valueOfPermission) {
+    await Permission.locationWhenInUse.isDenied.then((valueOfPermission) {
     if (valueOfPermission) {
       Permission.locationWhenInUse.request();
     }
-  }); */
+  }); 
   runApp(App(showOnboarding: showOnboarding));
 }
 
@@ -44,12 +40,12 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
   return MultiProvider(
     providers: [
-      ChangeNotifierProvider<AuthProvider>(create: (_) => AuthProvider()),
+      ChangeNotifierProvider<MyAuthProvider>(create: (_) => MyAuthProvider()),
     ],
     child: MaterialApp(
       debugShowCheckedModeBanner: false,
       // ...
-      home: Welcome(),
+      home: Homescreencustomer(),
     ),
   );
 }
