@@ -9,8 +9,11 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_maps_flutter_platform_interface/google_maps_flutter_platform_interface.dart';
 import 'package:google_maps_flutter_android/google_maps_flutter_android.dart';
+import 'package:provider/provider.dart';
 import 'package:yy/global/global_var.dart';
 import 'package:yy/methods/common_methods.dart';
+import 'package:yy/model/prediction_model.dart';
+import 'package:yy/provider/app_provider.dart';
 import 'package:yy/screen/RegisterCostumer.dart';
 //AIzaSyCyQ3HH4EtUSvkw3NsmT6pb0tYbqqv6Iog
 
@@ -22,6 +25,7 @@ class DestinationCustomer extends StatefulWidget {
 }
 
 class _DestinationCustomerState extends State<DestinationCustomer> {
+  List<PredictionModel> dropoffPrediction = [];
   final departController = new TextEditingController();
   final arriveController = new TextEditingController();
   final Completer<GoogleMapController> googleMapCompleterController =
@@ -59,8 +63,43 @@ class _DestinationCustomerState extends State<DestinationCustomer> {
     await CommonMethods.convertGeo(currentPositonUser!, context);
   }
 
+  // Google place autocomplete
+  searchLocation(String locationName) async {
+    if (locationName.length > 1) {
+      String apiPlacesUrl =
+      'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$locationName&language=fr&types=geocode&key=$googleMapKey&components=country:sn';
+      var responsePlace =  await CommonMethods.sendRequestToApi(apiPlacesUrl);
+      print('prediction test : ${responsePlace['status']}');
+
+      if (responsePlace == "error") {
+        return;
+      }
+      if (responsePlace["status"] == "OK") {
+        var predictionlistJson = responsePlace["predictions"];
+        var predictionList = (predictionlistJson as List)
+        .map((eachplaceprediction) =>
+          PredictionModel.fromJson(eachplaceprediction))
+        .toList();
+
+        setState(() {
+          dropoffPrediction = predictionList;
+        });
+
+        print('prediction result en json : ${predictionlistJson.toString()}');
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    //Afficher la location de l'utilisateur
+     String userAddress = Provider.of<AppProvider>(context, listen: false)
+        .pickupLocation!
+        .readableAdress ??
+    "";
+    print('USER ADDRESS ${userAddress}');
+    departController.text = userAddress; 
+
     var size = MediaQuery.of(context).size;
     double width = size.width;
     var height = size.height;
@@ -451,7 +490,8 @@ class _DestinationCustomerState extends State<DestinationCustomer> {
                               //color: Colors.yellow,
                               width: width * 0.75,
                               height: 50,
-                              child: destination(departController, 'depart')),
+                              child: destinationdepart(
+                                  departController, 'depart')),
                         ],
                       ),
                       Padding(padding: EdgeInsets.only(top: 10)),
@@ -469,7 +509,7 @@ class _DestinationCustomerState extends State<DestinationCustomer> {
                               //color: Colors.yellow,
                               width: width * 0.75,
                               height: 110,
-                              child: destination(arriveController, 'arrive')),
+                              child: destination(arriveController, 'arrive',)),
                         ],
                       ),
                     ],
@@ -540,10 +580,44 @@ class _DestinationCustomerState extends State<DestinationCustomer> {
     );
   }
 
-  Widget destination(TextEditingController controller, String hintText) {
+  Widget destinationdepart(
+    TextEditingController controller,
+    String hintText,
+  ) {
     return Container(
       decoration: BoxDecoration(borderRadius: BorderRadius.circular(30)),
       child: TextField(
+        controller: controller,
+        decoration: InputDecoration(
+            hintText: hintText,
+            fillColor: Color.fromRGBO(40, 0, 81, 0.3),
+            isDense: true,
+            filled: true,
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+              borderSide: const BorderSide(
+                color: Colors.transparent,
+              ),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+              borderSide: const BorderSide(
+                color: Colors.transparent,
+              ),
+            ),
+            border: InputBorder.none),
+      ),
+    );
+  }
+
+  Widget destination(TextEditingController controller, String hintText,
+      ) {
+    return Container(
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(30)),
+      child: TextField(
+        onChanged: (inputText) {
+          searchLocation(inputText);
+        },
         controller: controller,
         decoration: InputDecoration(
             hintText: hintText,

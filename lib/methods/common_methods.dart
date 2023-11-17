@@ -5,8 +5,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
+import 'package:yy/model/address_model.dart';
+import 'package:yy/provider/app_provider.dart';
 
 class CommonMethods {
+  //verifier la connection internet
   Future<void> checkConnectivity(BuildContext context) async {
     var connectionResult = await Connectivity().checkConnectivity();
     if (connectionResult != ConnectivityResult.mobile &&
@@ -19,12 +23,13 @@ class CommonMethods {
     }
   }
 
+  //alert message pour connection
   void displayAlert(BuildContext context) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return CupertinoAlertDialog(
-          title: Row(
+          title: const Row(
             children: [
               Icon(
                 CupertinoIcons.exclamationmark_circle,
@@ -83,13 +88,17 @@ class CommonMethods {
   //Utilise la fonction send request qui ne doit pas renvoyer d'erreur
   static Future convertGeo(Position position, BuildContext context) async {
     String readableAdress = "";
-    String apiGeodingUrl ='https://maps.googleapis.com/maps/api/geocode/json?latlng=${position.latitude},${position.longitude}&key=AIzaSyCyQ3HH4EtUSvkw3NsmT6pb0tYbqqv6Iog';
-    //
+    String apiGeodingUrl =
+    'https://maps.googleapis.com/maps/api/geocode/json?latlng=${position.latitude},${position.longitude}&key=AIzaSyCyQ3HH4EtUSvkw3NsmT6pb0tYbqqv6Iog';
     var responseAPI = await sendRequestToApi(apiGeodingUrl);
     if (responseAPI != 'error') {
       readableAdress = responseAPI['results'][0]['formatted_address'];
-      print('readable address :${readableAdress}') ;
-
+      print('readable address :${readableAdress}');
+      AddressModel address = AddressModel();
+      address.readableAdress = readableAdress;
+      address.latitutePosition = position.latitude;
+      address.longitudePosition = position.longitude;
+      Provider.of<AppProvider>(context ,listen: false).updatePickupLocation(address);
     }
     return readableAdress;
   }

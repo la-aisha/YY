@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:yy/provider/app_provider.dart';
 import 'package:yy/provider/auth_provider.dart';
 import 'package:yy/screen/RegisterCostumer.dart';
 import 'package:yy/screen/RegisterDriver.dart';
@@ -41,6 +42,7 @@ class App extends StatelessWidget {
   return MultiProvider(
     providers: [
       ChangeNotifierProvider<MyAuthProvider>(create: (_) => MyAuthProvider()),
+      ChangeNotifierProvider<AppProvider>(create: (_) => AppProvider()),
     ],
     child: MaterialApp(
       debugShowCheckedModeBanner: false,
