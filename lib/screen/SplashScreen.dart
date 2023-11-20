@@ -22,7 +22,7 @@ class _SplashScreenState extends State<SplashScreen> {
         builder: (BuildContext context) => OnboardScreen())); //permet de rediriger vers une autre page sans retour
     });
   }
-
+  
   
   @override
   Widget build(BuildContext context) {

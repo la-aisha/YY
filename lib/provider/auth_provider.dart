@@ -44,7 +44,7 @@ class MyAuthProvider extends ChangeNotifier {
   final FirebaseStorage _firebaseStorage = FirebaseStorage.instance;
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
-   //store date
+  //store date
   Future<String> storeFileToStorage(String ref, File file) async {
     UploadTask uploadTask = _firebaseStorage.ref().child(ref).putFile(file);
     TaskSnapshot snapshot = await uploadTask;
@@ -52,7 +52,7 @@ class MyAuthProvider extends ChangeNotifier {
     return downloadUrl;
   }
 
-
+  // check if user is already signed in or not
   void checksignin() async {
     final SharedPreferences s = await SharedPreferences.getInstance();
     _isSignedIn = s.getBool("issignedin") ?? false;
@@ -205,7 +205,7 @@ class MyAuthProvider extends ChangeNotifier {
     notifyListeners();
     try {
       PhoneAuthCredential creds = PhoneAuthProvider.credential(
-          verificationId: verificationId, smsCode: userOtp);
+      verificationId: verificationId, smsCode: userOtp);
       User? user = (await _firebaseAuth.signInWithCredential(creds)).user;
       if (user != null) {
         _uid = user.uid;

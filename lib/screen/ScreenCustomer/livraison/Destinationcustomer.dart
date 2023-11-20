@@ -15,6 +15,7 @@ import 'package:yy/methods/common_methods.dart';
 import 'package:yy/model/prediction_model.dart';
 import 'package:yy/provider/app_provider.dart';
 import 'package:yy/screen/RegisterCostumer.dart';
+import 'package:yy/widgets/predictionplace_ui.dart';
 //AIzaSyCyQ3HH4EtUSvkw3NsmT6pb0tYbqqv6Iog
 
 class DestinationCustomer extends StatefulWidget {
@@ -25,6 +26,7 @@ class DestinationCustomer extends StatefulWidget {
 }
 
 class _DestinationCustomerState extends State<DestinationCustomer> {
+  PredictionModel? predictionModel;
   List<PredictionModel> dropoffPrediction = [];
   final departController = new TextEditingController();
   final arriveController = new TextEditingController();
@@ -33,257 +35,12 @@ class _DestinationCustomerState extends State<DestinationCustomer> {
   GoogleMapController? controllerGoogleMap;
   Position? currentPositonUser;
 
-  void updateMapTheme(GoogleMapController controller) {
-    getJsonFileFromThemes("themes/retro_style.json")
-        .then((value) => setGoogleMapStyle(value, controller));
-  }
-
-  Future<String> getJsonFileFromThemes(String mapStylePath) async {
-    ByteData byteData = await rootBundle.load(mapStylePath);
-    var list = byteData.buffer
-        .asInt8List(byteData.offsetInBytes, byteData.lengthInBytes);
-    return utf8.decode(list);
-  }
-
-  setGoogleMapStyle(String googleMapStyle, GoogleMapController controller) {
-    controller.setMapStyle(googleMapStyle);
-  }
-
-  getCurrentLiveLocationOfUser() async {
-    Position positionOfUser = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.bestForNavigation);
-    currentPositonUser = positionOfUser;
-    LatLng positionUser =
-        LatLng(currentPositonUser!.latitude, currentPositonUser!.longitude);
-    CameraPosition cameraPosition =
-        CameraPosition(target: positionUser, zoom: 15);
-    controllerGoogleMap!
-        .animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
-
-    await CommonMethods.convertGeo(currentPositonUser!, context);
-  }
-
-  // Google place autocomplete
-  searchLocation(String locationName) async {
-    if (locationName.length > 1) {
-      String apiPlacesUrl =
-      'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$locationName&language=fr&types=geocode&key=$googleMapKey&components=country:sn';
-      var responsePlace =  await CommonMethods.sendRequestToApi(apiPlacesUrl);
-      print('prediction test : ${responsePlace['status']}');
-
-      if (responsePlace == "error") {
-        return;
-      }
-      if (responsePlace["status"] == "OK") {
-        var predictionlistJson = responsePlace["predictions"];
-        var predictionList = (predictionlistJson as List)
-        .map((eachplaceprediction) =>
-          PredictionModel.fromJson(eachplaceprediction))
-        .toList();
-
-        setState(() {
-          dropoffPrediction = predictionList;
-        });
-
-        print('prediction result en json : ${predictionlistJson.toString()}');
-      }
-    }
-  }
+  //intialiser pour eviter les null check
 
   @override
-  Widget build(BuildContext context) {
-    //Afficher la location de l'utilisateur
-     String userAddress = Provider.of<AppProvider>(context, listen: false)
-        .pickupLocation!
-        .readableAdress ??
-    "";
-    print('USER ADDRESS ${userAddress}');
-    departController.text = userAddress; 
-
-    var size = MediaQuery.of(context).size;
-    double width = size.width;
-    var height = size.height;
-
-    return Scaffold(
-      body: Stack(
-        children: [
-          GoogleMap(
-            mapType: MapType.normal,
-            myLocationEnabled: true,
-            initialCameraPosition: googlePlexInitialPosition,
-            onMapCreated: (GoogleMapController mapController) {
-              controllerGoogleMap = mapController;
-              //updateMapTheme(controllerGoogleMap!);
-              getCurrentLiveLocationOfUser();
-              //await CommontMethod
-              googleMapCompleterController.complete(controllerGoogleMap);
-            },
-          ),
-          Positioned.fill(
-              //height :400 ,
-              top: height * 0.5,
-              child: DraggableScrollableSheet(
-                builder: (_, controller) {
-                  return Stack(
-                    children: [
-                      //Padding(padding: EdgeInsets.only())
-                      Container(
-                        //width: double.infinity,
-                        //height: height/4,
-                        decoration: const BoxDecoration(
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(20),
-                            topRight: Radius.circular(20),
-                          ),
-                          color: Colors.white,
-                          gradient: LinearGradient(
-                              begin: Alignment.topCenter,
-                              colors: [
-                                Color.fromRGBO(40, 0, 81, 1),
-                                //Color.fromRGBO(115, 51, 100, 1),
-                                Color.fromRGBO(115, 51, 100, 1),
-                                Color.fromRGBO(115, 51, 100, 1),
-                              ]),
-                        ),
-                        child: Column(
-                          children: [
-                            const Padding(padding: EdgeInsets.all(5)),
-                            buildDragHandle(),
-                            const Padding(padding: EdgeInsets.all(5)),
-
-                            CircleAvatar(
-                              backgroundColor: Colors.white,
-                              minRadius: 13,
-                              child: Image.asset(
-                                'images/loop.png',
-                                width: 20,
-                                height: 20,
-                              ),
-                            ),
-                            //Spacer(),
-                            Padding(padding: EdgeInsets.all(5)),
-                            /* Text(
-                          'Entrez les positions ...',
-                          style: GoogleFonts.montserrat(
-                            fontWeight: FontWeight.w700,
-                            color: Colors.white,
-                            fontSize: 13,
-                          ),
-                          textAlign: TextAlign.center,
-                        ), */
-                            Padding(padding: EdgeInsets.all(2)),
-                            /*  Text(
-                          'lieu de depart et lieu d arrivee',
-                          style: GoogleFonts.montserrat(
-                            fontWeight: FontWeight.w700,
-                            color: Colors.white,
-                            fontSize: 9,
-                            // decoration: TextDecoration.underline,
-                            //decorationColor: Color(0xFFBD1616),
-                          ),
-                          textAlign: TextAlign.center,
-                        ), */
-                          ],
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 70.0),
-                        child: Container(
-                          decoration: const BoxDecoration(
-                            color: Colors.white,
-                          ),
-                          // height: double.infinity,
-                          width: double.infinity,
-                          child: Padding(
-                              padding: const EdgeInsets.only(top: 20, left: 20),
-                              child: /* Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Image.asset('images/direction1.png', height: 150),
-                            SizedBox(
-                              width: 20,
-                            ), */
-                                  Container(
-                                // width: ,
-                                child: Column(
-                                  // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    Container(
-                                      width: width * 0.7,
-                                      height: 60,
-                                      //color: Color.fromRGBO(40, 0, 81, 10),
-                                      child: ElevatedButton(
-                                          style: ElevatedButton.styleFrom(
-                                              primary: Color.fromRGBO(
-                                                  40, 0, 81, 0.3),
-                                              elevation: 0),
-                                          onPressed: () {
-                                            showModalBottomSheet(
-                                                //isScrollControlled : true ,
-                                                context: context,
-                                                shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.vertical(
-                                                    top: Radius.circular(20.0),
-                                                  ),
-                                                ),
-                                                builder: ((context) {
-                                                  return Container(
-                                                    height:
-                                                        height, // set the height to 7/10 of the screen height
-                                                    //child: modalCourse(width ,height/2)
-                                                    child: modalPosition(
-                                                        width, height),
-                                                  );
-                                                }));
-                                          },
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceEvenly,
-                                            children: [
-                                              Text(
-                                                'voulez vous etre livre ? ',
-                                                style: GoogleFonts.montserrat(
-                                                  fontWeight: FontWeight.w700,
-                                                  color: Colors.black,
-                                                  fontSize: 16,
-                                                ),
-                                              ),
-                                              Image.asset(
-                                                'images/send.png',
-                                                height: 20,
-                                              ),
-                                            ],
-                                          )
-                                          /*  Padding(
-                                        padding: const EdgeInsets.only(left: 2),
-                                        child: Text(
-                                          'lieu de depart ',
-                                          style: GoogleFonts.montserrat(
-                                            fontWeight: FontWeight.w700,
-                                            color: Colors.white,
-                                            fontSize: 13,
-                                          ),
-                                          //textAlign: TextAlign.end,
-                                        ),
-                                      ), */
-                                          ),
-                                    ),
-                                  ],
-                                ),
-                              )
-                              /*   ],
-                        ), */
-                              ),
-                        ),
-                      ),
-                    ],
-                  );
-                },
-              )),
-        ],
-      ),
-    );
+  void initState() {
+    super.initState();
+    //  CommonMethods.convertGeo(currentPositonUser!, context);
   }
 
   Widget modalCourse(double width, double height) {
@@ -471,48 +228,78 @@ class _DestinationCustomerState extends State<DestinationCustomer> {
               width: double.infinity,
               height: double.infinity,
               child: Padding(
-                padding: const EdgeInsets.only(top: 20, left: 20),
+                padding: const EdgeInsets.only(top: 20, left: 10),
                 child: Container(
                   // color: Colors.amber,
-                  child: Column(
-                    children: [
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Image.asset('images/d2.png', height: 30),
-                          ),
-                          SizedBox(
-                            width: 20,
-                          ),
-                          Container(
-                              //color: Colors.yellow,
-                              width: width * 0.75,
-                              height: 50,
-                              child: destinationdepart(
-                                  departController, 'depart')),
-                        ],
-                      ),
-                      Padding(padding: EdgeInsets.only(top: 10)),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Image.asset('images/d1.png', height: 30),
-                          ),
-                          SizedBox(
-                            width: 20,
-                          ),
-                          Container(
-                              //color: Colors.yellow,
-                              width: width * 0.75,
-                              height: 110,
-                              child: destination(arriveController, 'arrive',)),
-                        ],
-                      ),
-                    ],
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Image.asset('images/d2.png', height: 30),
+                            ),
+                            SizedBox(
+                              width: 20,
+                            ),
+                            Container(
+                                //color: Colors.yellow,
+                                width: width * 0.75,
+                                height: 50,
+                                child: destinationdepart(
+                                    departController, 'depart')),
+                          ],
+                        ),
+                        Padding(padding: EdgeInsets.only(top: 10)),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Image.asset('images/d1.png', height: 30),
+                            ),
+                            SizedBox(
+                              width: 20,
+                            ),
+                            Container(
+                                //color: Colors.yellow,
+                                width: width * 0.75,
+                                height: 50,
+                                child: destination(
+                                  arriveController,
+                                  'arrive',
+                                )),
+                          ],
+                        ),
+                        //display predicted places
+                        (dropoffPrediction.length > 0)
+                            ? Padding(
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 8, horizontal: 5),
+                                child: ListView.separated(
+                                    itemBuilder: (context, index) {
+                                      return Card(
+                                        surfaceTintColor:
+                                            Color.fromARGB(40, 0, 81, 1),
+                                        elevation: 0,
+                                        child: PredictionPlaceUI(
+                                          predictionModel:
+                                              dropoffPrediction[index],
+                                        ),
+                                      );
+                                    },
+                                    shrinkWrap: true,
+                                    physics: ClampingScrollPhysics(),
+                                    separatorBuilder:
+                                        (BuildContext context, int index) =>
+                                            SizedBox(height: 2),
+                                    itemCount: dropoffPrediction.length),
+                              )
+                            : Container()
+                      ],
+                    ),
                   ),
                   /*  child: Column(
                       //mainAxisAlignment: MainAxisAlignment.start,
@@ -570,6 +357,293 @@ class _DestinationCustomerState extends State<DestinationCustomer> {
     );
   }
 
+  void updateMapTheme(GoogleMapController controller) {
+    getJsonFileFromThemes("themes/retro_style.json")
+        .then((value) => setGoogleMapStyle(value, controller));
+  }
+
+  Future<String> getJsonFileFromThemes(String mapStylePath) async {
+    ByteData byteData = await rootBundle.load(mapStylePath);
+    var list = byteData.buffer
+        .asInt8List(byteData.offsetInBytes, byteData.lengthInBytes);
+    return utf8.decode(list);
+  }
+
+  setGoogleMapStyle(String googleMapStyle, GoogleMapController controller) {
+    controller.setMapStyle(googleMapStyle);
+  }
+
+  // la position en live avec geolocator
+  /* getCurrentLiveLocationOfUser() async {
+    Position positionOfUser = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.bestForNavigation);
+    currentPositonUser = positionOfUser;
+    LatLng positionUser =LatLng(currentPositonUser!.latitude, currentPositonUser!.longitude);
+    CameraPosition cameraPosition = CameraPosition(target: positionUser, zoom: 15);
+    controllerGoogleMap!.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
+
+    await CommonMethods.convertGeo(currentPositonUser!, context);
+  }  */
+
+  getCurrentLiveLocationOfUser() async {
+    Position positionOfUser = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.bestForNavigation);
+    currentPositonUser = positionOfUser;
+    LatLng positionUser = LatLng(14.7645042, -17.3660286);
+    CameraPosition cameraPosition =
+        CameraPosition(target: positionUser, zoom: 15);
+    controllerGoogleMap!
+        .animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
+
+    await CommonMethods.convertGeo(currentPositonUser!, context);
+  }
+
+  // Google place autocomplete
+  searchLocation(String locationName) async {
+    if (locationName.length > 1) {
+      String apiPlacesUrl =
+          'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$locationName&language=fr&types=&key=$googleMapKey&components=country:sn';
+/*       'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$locationName&language=fr&types=geocode&key=$googleMapKey&components=country:sn';
+ */
+      /*  String apiPlacesUrl =
+        'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$locationName&language=fr&types=(cities)&key=$googleMapKey&components=country:sn';
+      */
+      var responsePlace = await CommonMethods.sendRequestToApi(apiPlacesUrl);
+      print('prediction test : ${responsePlace['status']}');
+      if (responsePlace == "error") {
+        return;
+      }
+      if (responsePlace["status"] == "OK") {
+        var predictionlistJson = responsePlace["predictions"];
+        var predictionList = (predictionlistJson as List)
+            .map((eachplaceprediction) =>
+                PredictionModel.fromJson(eachplaceprediction))
+            .toList();
+        setState(() {
+          dropoffPrediction =
+                  predictionList /* .where((prediction) => prediction.description!.contains(', SN'))
+            .toList() */
+              ;
+        });
+        print('prediction result en json : ${predictionlistJson.toString()}');
+        // Print city predictions for Senegal
+        for (var prediction in predictionList) {
+          print('City: ${prediction.main_text}');
+        }
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    //Afficher la location de l'utilisateur a
+    /*   String userAddress =  Provider.of<AppProvider>(context, listen: false)
+      .pickupLocation!
+      .readableAdress ?? "";
+    print('USER ADDRESS ${userAddress}'); 
+    departController.text = userAddress;      */
+
+    var size = MediaQuery.of(context).size;
+    double width = size.width;
+    var height = size.height;
+
+    return Scaffold(
+      body: Stack(
+        children: [
+          GoogleMap(
+            mapType: MapType.normal,
+            myLocationEnabled: true,
+            initialCameraPosition: googlePlexInitialPosition,
+            onMapCreated: (GoogleMapController mapController) {
+              controllerGoogleMap = mapController;
+              //updateMapTheme(controllerGoogleMap!);
+              getCurrentLiveLocationOfUser();
+              //await CommontMethod
+              googleMapCompleterController.complete(controllerGoogleMap);
+            },
+          ),
+          Positioned.fill(
+              //height :400 ,
+              top: height * 0.5,
+              child: DraggableScrollableSheet(
+                builder: (_, controller) {
+                  return Stack(
+                    children: [
+                      //Padding(padding: EdgeInsets.only())
+                      Container(
+                        //width: double.infinity,
+                        //height: height/4,
+                        decoration: const BoxDecoration(
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(20),
+                            topRight: Radius.circular(20),
+                          ),
+                          color: Colors.white,
+                          gradient: LinearGradient(
+                              begin: Alignment.topCenter,
+                              colors: [
+                                Color.fromRGBO(40, 0, 81, 1),
+                                //Color.fromRGBO(115, 51, 100, 1),
+                                Color.fromRGBO(115, 51, 100, 1),
+                                Color.fromRGBO(115, 51, 100, 1),
+                              ]),
+                        ),
+                        child: Column(
+                          children: [
+                            const Padding(padding: EdgeInsets.all(5)),
+                            buildDragHandle(),
+                            const Padding(padding: EdgeInsets.all(5)),
+
+                            CircleAvatar(
+                              backgroundColor: Colors.white,
+                              minRadius: 13,
+                              child: Image.asset(
+                                'images/loop.png',
+                                width: 20,
+                                height: 20,
+                              ),
+                            ),
+                            //Spacer(),
+                            Padding(padding: EdgeInsets.all(5)),
+                            /* Text(
+                          'Entrez les positions ...',
+                          style: GoogleFonts.montserrat(
+                            fontWeight: FontWeight.w700,
+                            color: Colors.white,
+                            fontSize: 13,
+                          ),
+                          textAlign: TextAlign.center,
+                        ), */
+                            Padding(padding: EdgeInsets.all(2)),
+                            /*  Text(
+                          'lieu de depart et lieu d arrivee',
+                          style: GoogleFonts.montserrat(
+                            fontWeight: FontWeight.w700,
+                            color: Colors.white,
+                            fontSize: 9,
+                            // decoration: TextDecoration.underline,
+                            //decorationColor: Color(0xFFBD1616),
+                          ),
+                          textAlign: TextAlign.center,
+                        ), */
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 70.0),
+                        child: Container(
+                          decoration: const BoxDecoration(
+                            color: Colors.white,
+                          ),
+                          // height: double.infinity,
+                          width: double.infinity,
+                          child: Padding(
+                              padding: const EdgeInsets.only(
+                                  top: 20, left: 20, right: 20),
+                              child: /* Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Image.asset('images/direction1.png', height: 150),
+                            SizedBox(
+                              width: 20,
+                            ), */
+                                  Container(
+                                // width: ,
+                                child: Column(
+                                  // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    ElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                            primary:
+                                                Color.fromRGBO(40, 0, 81, 0.3),
+                                            minimumSize: Size(width / 4, 40),
+                                            maximumSize: Size(width * 0.7, 40),
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(
+                                                      20.0), // Border radius
+                                            ),
+                                            elevation: 0),
+                                        onPressed: () async {
+                                          var ResponseFromModalPositon = await
+                                              showModalBottomSheet(
+                                                  //isScrollControlled : true ,
+                                                  context: context,
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.vertical(
+                                                      top:
+                                                          Radius.circular(20.0),
+                                                    ),
+                                                  ),
+                                                  builder: ((context) {
+                                                    return Container(
+                                                      height:
+                                                          height, // set the height to 7/10 of the screen height
+                                                      //child: modalCourse(width ,height/2)
+                                                      child: modalPosition(
+                                                          width, height),
+                                                    );
+                                                  }));
+                                          if (ResponseFromModalPositon ==  "placeselected") {
+                                            String droppofflocation =
+                                                Provider.of<AppProvider>(
+                                                            context,listen: false)
+                                                        .dropoffLocation!
+                                                        .placeName ??
+                                                    "";
+                                            print(
+                                                "dropoffloaction place name  in modal =" +
+                                                    droppofflocation);
+                                          }
+                                        },
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceEvenly,
+                                          children: [
+                                            Text(
+                                              'voulez vous etre livre ? ',
+                                              style: GoogleFonts.montserrat(
+                                                fontWeight: FontWeight.w700,
+                                                color: Colors.black,
+                                                fontSize: 16,
+                                              ),
+                                            ),
+                                            Image.asset(
+                                              'images/send.png',
+                                              height: 20,
+                                            ),
+                                          ],
+                                        )
+                                        /*  Padding(
+                                        padding: const EdgeInsets.only(left: 2),
+                                        child: Text(
+                                          'lieu de depart ',
+                                          style: GoogleFonts.montserrat(
+                                            fontWeight: FontWeight.w700,
+                                            color: Colors.white,
+                                            fontSize: 13,
+                                          ),
+                                          //textAlign: TextAlign.end,
+                                        ),
+                                      ), */
+                                        )
+                                  ],
+                                ),
+                              )
+                              /*   ],
+                        ), */
+                              ),
+                        ),
+                      ),
+                    ],
+                  );
+                },
+              )),
+        ],
+      ),
+    );
+  }
+
   Widget buildDragHandle() {
     return Center(
       child: Container(
@@ -585,7 +659,7 @@ class _DestinationCustomerState extends State<DestinationCustomer> {
     String hintText,
   ) {
     return Container(
-      decoration: BoxDecoration(borderRadius: BorderRadius.circular(30)),
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(20)),
       child: TextField(
         controller: controller,
         decoration: InputDecoration(
@@ -594,7 +668,7 @@ class _DestinationCustomerState extends State<DestinationCustomer> {
             isDense: true,
             filled: true,
             enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(20),
               borderSide: const BorderSide(
                 color: Colors.transparent,
               ),
@@ -610,10 +684,12 @@ class _DestinationCustomerState extends State<DestinationCustomer> {
     );
   }
 
-  Widget destination(TextEditingController controller, String hintText,
-      ) {
+  Widget destination(
+    TextEditingController controller,
+    String hintText,
+  ) {
     return Container(
-      decoration: BoxDecoration(borderRadius: BorderRadius.circular(30)),
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(20)),
       child: TextField(
         onChanged: (inputText) {
           searchLocation(inputText);
@@ -625,7 +701,7 @@ class _DestinationCustomerState extends State<DestinationCustomer> {
             isDense: true,
             filled: true,
             enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(20),
               borderSide: const BorderSide(
                 color: Colors.transparent,
               ),
