@@ -9,9 +9,11 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_maps_flutter_platform_interface/google_maps_flutter_platform_interface.dart';
 import 'package:google_maps_flutter_android/google_maps_flutter_android.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:yy/global/global_var.dart';
 import 'package:yy/methods/common_methods.dart';
+import 'package:yy/model/choicecar.dart';
 import 'package:yy/model/prediction_model.dart';
 import 'package:yy/provider/app_provider.dart';
 import 'package:yy/screen/RegisterCostumer.dart';
@@ -26,7 +28,14 @@ class DestinationCustomer extends StatefulWidget {
 }
 
 class _DestinationCustomerState extends State<DestinationCustomer> {
+  //final GlobalKey<_DestinationCustomerState> _key = GlobalKey<_DestinationCustomerState>();
+
+  late PersistentBottomSheetController _controller; // <------ Instance variable
+  final _scaffoldKey =
+      GlobalKey<ScaffoldState>(); // <---- Another instance variable
+
   PredictionModel? predictionModel;
+  ChoiceCar? choiceCar;
   List<PredictionModel> dropoffPrediction = [];
   final departController = new TextEditingController();
   final arriveController = new TextEditingController();
@@ -34,6 +43,27 @@ class _DestinationCustomerState extends State<DestinationCustomer> {
       Completer<GoogleMapController>();
   GoogleMapController? controllerGoogleMap;
   Position? currentPositonUser;
+  String? SelectedVehiculeType;
+  bool defaultcar = false;
+  var selected;
+  int selectedcarindex = 0;
+
+  List<ChoiceCar> choiceCars = [
+    ChoiceCar(
+        img: AssetImage('images/carchoice1.png'), type: 'taxi', prix: 3000),
+    ChoiceCar(
+        img: AssetImage('images/carchoice1.png'), type: 'livreur', prix: 2000),
+    ChoiceCar(
+        img: AssetImage('images/carchoice1.png'), type: 'bus', prix: 1000),
+  ];
+
+  void barTapedd(int index) {
+    setState(() {
+      selectedcarindex = index;
+    });
+    print('selected car index is ${selectedcarindex}');
+    // _key.currentState?.reload();
+  }
 
   //intialiser pour eviter les null check
 
@@ -41,6 +71,15 @@ class _DestinationCustomerState extends State<DestinationCustomer> {
   void initState() {
     super.initState();
     //  CommonMethods.convertGeo(currentPositonUser!, context);
+    //startColorChange();
+    barTapedd(selectedcarindex);
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    barTapedd(selectedcarindex);
   }
 
   Widget modalCourse(double width, double height) {
@@ -441,6 +480,100 @@ class _DestinationCustomerState extends State<DestinationCustomer> {
       .readableAdress ?? "";
     print('USER ADDRESS ${userAddress}'); 
     departController.text = userAddress;      */
+    displayUserRideDetailModal(BuildContext context) async {
+      //modal bottom sheet
+      await showModalBottomSheet(
+          context: context,
+          isScrollControlled: true,
+          backgroundColor: Colors.transparent,
+          builder: ((context) => StatefulBuilder(
+                  builder: (BuildContext context, StateSetter setState) {
+                return Stack(
+                  children: [
+                    Container(
+                      height: MediaQuery.of(context).size.height * 0.55,
+                      decoration: const BoxDecoration(
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(20),
+                          topRight: Radius.circular(20),
+                        ),
+                        color: Colors.white,
+                        gradient:
+                            LinearGradient(begin: Alignment.topCenter, colors: [
+                          Color.fromRGBO(40, 0, 81, 1),
+                          //Color.fromRGBO(115, 51, 100, 1),
+                          Color.fromRGBO(115, 51, 100, 1),
+                          Color.fromRGBO(115, 51, 100, 1),
+                        ]),
+                      ),
+                      child: Column(children: [
+                        Padding(padding: EdgeInsets.all(5)),
+                        buildDragHandle(),
+                        Padding(padding: EdgeInsets.all(3)),
+                        CircleAvatar(
+                          backgroundColor: Colors.white,
+                          minRadius: 17,
+                          child: Image.asset(
+                            'images/tap.png',
+                            width: 15,
+                            height: 15,
+                          ),
+                        ),
+                        Text(
+                          '2km',
+                          style: GoogleFonts.montserrat(
+                            fontWeight: FontWeight.w700,
+                            color: Colors.white,
+                            fontSize: 10,
+                          ),
+                        ),
+                      ]),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 70.0),
+                      child: Container(
+                          decoration: const BoxDecoration(
+                            color: Colors.white,
+                          ),
+                          //height: double.infinity,
+                          width: double.infinity,
+                          height: MediaQuery.of(context).size.height * 0.55,
+                          child: Padding(
+                            padding: const EdgeInsets.only(top: 20, left: 10),
+                            child: Container(
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 10, horizontal: 10),
+                                child: Column(
+                                  // mainAxisAlignment: MainAxisAlignment.S,
+                                  children: [
+                                    //Row position depart et arrivee
+                                    departarrivedetail(),
+                                    SizedBox(
+                                      height: 15,
+                                    ),
+                                    cars(),
+                                    SizedBox(
+                                      height: 20,
+                                    ),
+                                    GestureDetector(
+                                        onTap: () {},
+                                        child: Image.asset(
+                                          'images/go1.png',
+                                          width: 70,
+                                        ))
+                                  ],
+                                ),
+                              ),
+                            ),
+                          )),
+                    ),
+                  ],
+                );
+              })));
+    }
+
+    //Listview
 
     var size = MediaQuery.of(context).size;
     double width = size.width;
@@ -505,26 +638,26 @@ class _DestinationCustomerState extends State<DestinationCustomer> {
                             //Spacer(),
                             Padding(padding: EdgeInsets.all(5)),
                             /* Text(
-                          'Entrez les positions ...',
-                          style: GoogleFonts.montserrat(
-                            fontWeight: FontWeight.w700,
-                            color: Colors.white,
-                            fontSize: 13,
-                          ),
-                          textAlign: TextAlign.center,
-                        ), */
+                        'Entrez les positions ...',
+                        style: GoogleFonts.montserrat(
+                          fontWeight: FontWeight.w700,
+                          color: Colors.white,
+                          fontSize: 13,
+                        ),
+                        textAlign: TextAlign.center,
+                      ), */
                             Padding(padding: EdgeInsets.all(2)),
                             /*  Text(
-                          'lieu de depart et lieu d arrivee',
-                          style: GoogleFonts.montserrat(
-                            fontWeight: FontWeight.w700,
-                            color: Colors.white,
-                            fontSize: 9,
-                            // decoration: TextDecoration.underline,
-                            //decorationColor: Color(0xFFBD1616),
-                          ),
-                          textAlign: TextAlign.center,
-                        ), */
+                        'lieu de depart et lieu d arrivee',
+                        style: GoogleFonts.montserrat(
+                          fontWeight: FontWeight.w700,
+                          color: Colors.white,
+                          fontSize: 9,
+                          // decoration: TextDecoration.underline,
+                          //decorationColor: Color(0xFFBD1616),
+                        ),
+                        textAlign: TextAlign.center,
+                      ), */
                           ],
                         ),
                       ),
@@ -539,14 +672,7 @@ class _DestinationCustomerState extends State<DestinationCustomer> {
                           child: Padding(
                               padding: const EdgeInsets.only(
                                   top: 20, left: 20, right: 20),
-                              child: /* Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Image.asset('images/direction1.png', height: 150),
-                            SizedBox(
-                              width: 20,
-                            ), */
-                                  Container(
+                              child: Container(
                                 // width: ,
                                 child: Column(
                                   // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -564,8 +690,8 @@ class _DestinationCustomerState extends State<DestinationCustomer> {
                                             ),
                                             elevation: 0),
                                         onPressed: () async {
-                                          var ResponseFromModalPositon = await
-                                              showModalBottomSheet(
+                                          var ResponseFromModalPositon =
+                                              await showModalBottomSheet(
                                                   //isScrollControlled : true ,
                                                   context: context,
                                                   shape: RoundedRectangleBorder(
@@ -584,16 +710,17 @@ class _DestinationCustomerState extends State<DestinationCustomer> {
                                                           width, height),
                                                     );
                                                   }));
-                                          if (ResponseFromModalPositon ==  "placeselected") {
-                                            String droppofflocation =
-                                                Provider.of<AppProvider>(
-                                                            context,listen: false)
-                                                        .dropoffLocation!
-                                                        .placeName ??
-                                                    "";
-                                            print(
-                                                "dropoffloaction place name  in modal =" +
-                                                    droppofflocation);
+                                          if (ResponseFromModalPositon ==
+                                              "placeselected") {
+                                            /* String droppofflocation =
+                                            Provider.of<AppProvider>( context,
+                                            listen: false)
+                                            .dropoffLocation!
+                                            .placeName ??
+                                            "";
+                                          print(
+                                          "dropoffloaction place name  in modal =" +droppofflocation); */
+                                            displayUserRideDetailModal(context);
                                           }
                                         },
                                         child: Row(
@@ -615,23 +742,23 @@ class _DestinationCustomerState extends State<DestinationCustomer> {
                                           ],
                                         )
                                         /*  Padding(
-                                        padding: const EdgeInsets.only(left: 2),
-                                        child: Text(
-                                          'lieu de depart ',
-                                          style: GoogleFonts.montserrat(
-                                            fontWeight: FontWeight.w700,
-                                            color: Colors.white,
-                                            fontSize: 13,
-                                          ),
-                                          //textAlign: TextAlign.end,
+                                      padding: const EdgeInsets.only(left: 2),
+                                      child: Text(
+                                        'lieu de depart ',
+                                        style: GoogleFonts.montserrat(
+                                          fontWeight: FontWeight.w700,
+                                          color: Colors.white,
+                                          fontSize: 13,
                                         ),
-                                      ), */
+                                        //textAlign: TextAlign.end,
+                                      ),
+                                    ), */
                                         )
                                   ],
                                 ),
                               )
                               /*   ],
-                        ), */
+                      ), */
                               ),
                         ),
                       ),
@@ -644,6 +771,90 @@ class _DestinationCustomerState extends State<DestinationCustomer> {
     );
   }
 
+  Widget cars() {
+    return StatefulBuilder(
+      builder: (BuildContext context, StateSetter setState) {
+        return Container(
+          height: 140,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: choiceCars.length,
+            shrinkWrap: true,
+            itemBuilder: (BuildContext context, int index) {
+              return Padding(
+                padding: const EdgeInsets.all(5.0),
+                child: GestureDetector(
+                  onTap: () {
+                    if (mounted) {
+                      //barTapedd(index);
+                       setState(() {
+                    selectedcarindex = index; // Update selected car index
+                  });
+                      /*  setState(() {
+                        
+                        //SelectedVehiculeType = choiceCars[index].type;
+                        // You can also update other state variables here if needed
+                        // defaultcar = (SelectedVehiculeType == 'taxi');
+                      }); */
+                    }
+                  },
+                  child: Container(
+                    width: MediaQuery.of(context).size.width * 1 / 3,
+                    height: 120,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      gradient: (selectedcarindex == index)
+                          ? LinearGradient(
+                              begin: Alignment.topLeft,
+                              colors: [
+                                Color.fromRGBO(40, 0, 81, 0.3),
+                                Color.fromRGBO(40, 0, 81, 0.3),
+                              ],
+                            )
+                          : LinearGradient(
+                              begin: Alignment.topLeft,
+                              colors: [
+                                Color.fromRGBO(40, 0, 81, 0.1),
+                                Color.fromRGBO(40, 0, 81, 00),
+                              ],
+                            ),
+                    ),
+                    child: Center(
+                      child: Column(
+                        children: [
+                          Image.asset('images/carchoice1.png'),
+                          Text(
+                            choiceCars[index].type.toString(),
+                            style: GoogleFonts.montserrat(
+                              fontWeight: FontWeight.w700,
+                              color: Colors.black54,
+                              fontSize: 13,
+                            ),
+                          ),
+                          SizedBox(
+                            height: 2,
+                          ),
+                          Text(
+                            choiceCars[index].prix.toString(),
+                            style: GoogleFonts.montserrat(
+                              fontWeight: FontWeight.w700,
+                              color: Colors.black,
+                              fontSize: 17,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
+        );
+      }
+    );
+  }
+
   Widget buildDragHandle() {
     return Center(
       child: Container(
@@ -651,6 +862,75 @@ class _DestinationCustomerState extends State<DestinationCustomer> {
         height: 3,
         color: Colors.white,
       ),
+    );
+  }
+
+  Row departarrivedetail() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Image.asset(
+          'images/direction1.png',
+          height: 100,
+        ),
+        SizedBox(
+            width:
+                16), // Add some space between the image and the first container
+        Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            Container(
+              width: 300,
+              height: 40,
+              decoration: BoxDecoration(
+                color: Color.fromRGBO(40, 0, 81, 0.3),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 3),
+                  child: Text(
+                    'position 1',
+                    style: GoogleFonts.montserrat(
+                      fontWeight: FontWeight.w700,
+                      color: Colors.black,
+                      fontSize: 13,
+                    ),
+                    //textAlign: TextAlign.ju,
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(height: 16), // Add some space between the two containers
+            Container(
+              width: 300,
+              height: 40,
+              decoration: BoxDecoration(
+                color: Color.fromRGBO(40, 0, 81, 0.3),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 3),
+                  child: Text(
+                    'position 1',
+                    style: GoogleFonts.montserrat(
+                      fontWeight: FontWeight.w700,
+                      color: Colors.black,
+                      fontSize: 13,
+                    ),
+                    //textAlign: TextAlign.ju,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ],
     );
   }
 

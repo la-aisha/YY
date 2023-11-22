@@ -116,6 +116,7 @@ class MyAuthProvider extends ChangeNotifier {
     _uid = _userModel!.uid;
     notifyListeners();
   }
+
   Future setSignIn() async {
     final SharedPreferences s = await SharedPreferences.getInstance();
     s.setBool("is_signedin", true);
@@ -205,7 +206,7 @@ class MyAuthProvider extends ChangeNotifier {
     notifyListeners();
     try {
       PhoneAuthCredential creds = PhoneAuthProvider.credential(
-      verificationId: verificationId, smsCode: userOtp);
+          verificationId: verificationId, smsCode: userOtp);
       User? user = (await _firebaseAuth.signInWithCredential(creds)).user;
       if (user != null) {
         _uid = user.uid;
@@ -275,86 +276,87 @@ class MyAuthProvider extends ChangeNotifier {
     }
   }
 
-
 //save customer
-void saveDriverDataToFirebase({
-  required BuildContext context,
-  required LivreurModel livreurModel,
-  required CarModel carModel,
-  required File profilePic,
-  required File profileVoiture,
-  required File permis,
-  required File CG,
-  required File CT,
-  required Function onSuccess,
-  Function? onFailure, // New parameter for handling failure
-}) async {
-  _isloading = true;
-  notifyListeners();
-
-  try {
-    // uploading image to firebase storage.
-    String profilePicUrl = await storeFileToStorage("profilePic/$_uid", profilePic);
-
-    // Set properties for livreurModel
-    livreurModel.profilePic = profilePicUrl;
-    livreurModel.createdAt = DateTime.now().millisecondsSinceEpoch.toString();
-    livreurModel.uid = _firebaseAuth.currentUser!.uid;
-
-    // uploading image to firebase storage.
-    String profileVoitureUrl = await storeFileToStorage("profileVoiture/$_uid", profileVoiture);
-
-    // Set properties for livreurModel
-    carModel.profileVoiture = profileVoitureUrl;
-
-    // uploading image to firebase storage.
-    String permisUrl = await storeFileToStorage("permis/$_uid", permis);
-
-    // Set properties for livreurModel
-    livreurModel.profilePermis = permisUrl;
-
-    // uploading image to firebase storage.
-    String CTUrl = await storeFileToStorage("ct/$_uid", CT);
-
-    // Set properties for carModel
-    carModel.profileCT = CTUrl;
-    carModel.createdAt = DateTime.now().millisecondsSinceEpoch.toString();
-    carModel.uid = _firebaseAuth.currentUser!.uid;
-
-    // uploading image to firebase storage.
-    String CGUrl = await storeFileToStorage("cg/$_uid", CG);
-
-    // Set properties for carModel
-    carModel.profileCG = CGUrl;
-
-    // Set properties for carModel
-    carModel.createdAt = DateTime.now().millisecondsSinceEpoch.toString();
-    carModel.uid = _firebaseAuth.currentUser!.uid;
-
-    // uploading to database
-    await _firebaseFirestore
-        .collection("drivers")
-        .doc(_uid)
-        .set(livreurModel.toMap());
-
-    // uploading to database
-    await _firebaseFirestore
-      .collection("cars")
-      .doc(_uid)
-      .set(carModel.toMap());
-    onSuccess();
-  } catch (e) {
-    showSnackBar(context, e.toString());
-      onFailure!();
-    if (onFailure != null) {
-      onFailure();
-    }
-  } finally {
-    _isloading = false;
+  void saveDriverDataToFirebase({
+    required BuildContext context,
+    required LivreurModel livreurModel,
+    required CarModel carModel,
+    required File profilePic,
+    required File profileVoiture,
+    required File permis,
+    required File CG,
+    required File CT,
+    required Function onSuccess,
+    Function? onFailure, // New parameter for handling failure
+  }) async {
+    _isloading = true;
     notifyListeners();
+
+    try {
+      // uploading image to firebase storage.
+      String profilePicUrl =
+          await storeFileToStorage("profilePic/$_uid", profilePic);
+
+      // Set properties for livreurModel
+      livreurModel.profilePic = profilePicUrl;
+      livreurModel.createdAt = DateTime.now().millisecondsSinceEpoch.toString();
+      livreurModel.uid = _firebaseAuth.currentUser!.uid;
+
+      // uploading image to firebase storage.
+      String profileVoitureUrl =
+          await storeFileToStorage("profileVoiture/$_uid", profileVoiture);
+
+      // Set properties for livreurModel
+      carModel.profileVoiture = profileVoitureUrl;
+
+      // uploading image to firebase storage.
+      String permisUrl = await storeFileToStorage("permis/$_uid", permis);
+
+      // Set properties for livreurModel
+      livreurModel.profilePermis = permisUrl;
+
+      // uploading image to firebase storage.
+      String CTUrl = await storeFileToStorage("ct/$_uid", CT);
+
+      // Set properties for carModel
+      carModel.profileCT = CTUrl;
+      carModel.createdAt = DateTime.now().millisecondsSinceEpoch.toString();
+      carModel.uid = _firebaseAuth.currentUser!.uid;
+
+      // uploading image to firebase storage.
+      String CGUrl = await storeFileToStorage("cg/$_uid", CG);
+
+      // Set properties for carModel
+      carModel.profileCG = CGUrl;
+
+      // Set properties for carModel
+      carModel.createdAt = DateTime.now().millisecondsSinceEpoch.toString();
+      carModel.uid = _firebaseAuth.currentUser!.uid;
+
+      // uploading to database
+      await _firebaseFirestore
+          .collection("drivers")
+          .doc(_uid)
+          .set(livreurModel.toMap());
+
+      // uploading to database
+      await _firebaseFirestore
+          .collection("cars")
+          .doc(_uid)
+          .set(carModel.toMap());
+      onSuccess();
+    } catch (e) {
+      showSnackBar(context, e.toString());
+      onFailure!();
+      if (onFailure != null) {
+        onFailure();
+      }
+    } finally {
+      _isloading = false;
+      notifyListeners();
+    }
   }
-}
- /*  //save customer
+  /*  //save customer
   void saveDriverDataToFirebase({
     required BuildContext context,
     required LivreurModel livreurModel,
@@ -447,5 +449,4 @@ void saveDriverDataToFirebase({
 
   */
   // STORING DATA LOCALLY
- 
 }

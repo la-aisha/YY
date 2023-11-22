@@ -19,30 +19,30 @@ class _PredictionPlaceUIState extends State<PredictionPlaceUI> {
   PredictionModel? predictionModel;
   _PredictionPlaceUIState({this.predictionModel});
   var placeId;
-
+  //function to get the clicke place
   fetchClickPlaceDetails(String placeID) async {
+    
+    //attente
     showDialog(
-        barrierDismissible: false,
-        context: context,
-        builder: (BuildContext context) => Dialog(
-              child: Container(
-                padding: EdgeInsets.all(16),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    CircularProgressIndicator(),
-                    SizedBox(height: 16),
-                    Text('Details'),
-                  ],
-                ),
-              ),
-            ));
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) => Dialog(
+      child: Container(
+      padding: EdgeInsets.all(16),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          CircularProgressIndicator(),
+          SizedBox(height: 16),
+          Text('Details'),
+        ],
+      ),
+    ),
+    ));
 
-    String url =
-        'https://maps.googleapis.com/maps/api/place/details/json?place_id=$placeID&key=$googleMapKey';
+    String url ='https://maps.googleapis.com/maps/api/place/details/json?place_id=$placeID&key=$googleMapKey';
     var responseFromPlaceDetailsApi = await CommonMethods.sendRequestToApi(url);
     print("API Response: $responseFromPlaceDetailsApi");
-
     Navigator.of(context).pop();
     if (responseFromPlaceDetailsApi == 'error') {
       return;
@@ -63,7 +63,7 @@ class _PredictionPlaceUIState extends State<PredictionPlaceUI> {
 
       //assign
       // predictionModel = dropoffLocation.;
-      locationname = widget.predictionModel!.place_id.toString();
+      //locationname = widget.predictionModel!.place_id.toString();
       Provider.of<AppProvider>(context, listen: false)
           .updateDropoffLocation(dropoffLocation);
       Navigator.pop(context, 'placeselected');
@@ -77,7 +77,7 @@ class _PredictionPlaceUIState extends State<PredictionPlaceUI> {
           fetchClickPlaceDetails(
             widget.predictionModel!.place_id.toString(),
           );
-          print('dans l evevated button' + widget.predictionModel!.place_id.toString());
+          print('dans l Elevated button' + widget.predictionModel!.place_id.toString());
           /*  print("la place choisie clickedplace: $clickedplace");
           if (clickedplace == 'placeselected') {
             String droppofflocation = await
