@@ -14,6 +14,7 @@ import 'package:provider/provider.dart';
 import 'package:yy/global/global_var.dart';
 import 'package:yy/methods/common_methods.dart';
 import 'package:yy/model/choicecar.dart';
+import 'package:yy/model/directiondetail_model.dart';
 import 'package:yy/model/prediction_model.dart';
 import 'package:yy/provider/app_provider.dart';
 import 'package:yy/screen/RegisterCostumer.dart';
@@ -37,16 +38,88 @@ class _DestinationCustomerState extends State<DestinationCustomer> {
   PredictionModel? predictionModel;
   ChoiceCar? choiceCar;
   List<PredictionModel> dropoffPrediction = [];
-  final departController = new TextEditingController();
+  TextEditingController departController = new TextEditingController();
   final arriveController = new TextEditingController();
   final Completer<GoogleMapController> googleMapCompleterController =
       Completer<GoogleMapController>();
   GoogleMapController? controllerGoogleMap;
   Position? currentPositonUser;
+
   String? SelectedVehiculeType;
   bool defaultcar = false;
   var selected;
   int selectedcarindex = 0;
+
+  DirectionDetail? tripDirectionDetail;
+
+  Row departarrivedetail() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Image.asset(
+          'images/direction1.png',
+          height: 100,
+        ),
+        SizedBox(
+            width:
+                16), // Add some space between the image and the first container
+        Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            Container(
+              width: 300,
+              height: 40,
+              decoration: BoxDecoration(
+                color: Color.fromRGBO(40, 0, 81, 0.3),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 3),
+                  child: Text(
+                    'position 1',
+                    style: GoogleFonts.montserrat(
+                      fontWeight: FontWeight.w700,
+                      color: Colors.black,
+                      fontSize: 13,
+                    ),
+                    //textAlign: TextAlign.ju,
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(height: 16), // Add some space between the two containers
+            Container(
+              width: 300,
+              height: 40,
+              decoration: BoxDecoration(
+                color: Color.fromRGBO(40, 0, 81, 0.3),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 3),
+                  child: Text(
+                    'position 1',
+                    style: GoogleFonts.montserrat(
+                      fontWeight: FontWeight.w700,
+                      color: Colors.black,
+                      fontSize: 13,
+                    ),
+                    //textAlign: TextAlign.ju,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
 
   List<ChoiceCar> choiceCars = [
     ChoiceCar(
@@ -70,9 +143,11 @@ class _DestinationCustomerState extends State<DestinationCustomer> {
   @override
   void initState() {
     super.initState();
-    //  CommonMethods.convertGeo(currentPositonUser!, context);
+    //CommonMethods.convertGeo(currentPositonUser!, context);
     //startColorChange();
     barTapedd(selectedcarindex);
+    //super.initState();
+    //departController = TextEditingController();
   }
 
   @override
@@ -292,25 +367,28 @@ class _DestinationCustomerState extends State<DestinationCustomer> {
                           ],
                         ),
                         Padding(padding: EdgeInsets.only(top: 10)),
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Image.asset('images/d1.png', height: 30),
-                            ),
-                            SizedBox(
-                              width: 20,
-                            ),
-                            Container(
-                                //color: Colors.yellow,
-                                width: width * 0.75,
-                                height: 50,
-                                child: destination(
-                                  arriveController,
-                                  'arrive',
-                                )),
-                          ],
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 20),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Image.asset('images/d1.png', height: 30),
+                              ),
+                              SizedBox(
+                                width: 20,
+                              ),
+                              Container(
+                                  //color: Colors.yellow,
+                                  width: width * 0.75,
+                                  height: 50,
+                                  child: destination(
+                                    arriveController,
+                                    'arrive',
+                                  )),
+                            ],
+                          ),
                         ),
                         //display predicted places
                         (dropoffPrediction.length > 0)
@@ -340,55 +418,6 @@ class _DestinationCustomerState extends State<DestinationCustomer> {
                       ],
                     ),
                   ),
-                  /*  child: Column(
-                      //mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          
-                        ),
-                       /*  Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Image.asset('images/d2.png', height: 30),
-                          ),
-                            SizedBox(
-                              width: 20,
-                            ),
-                            Container(
-                              //color: Colors.yellow,
-                              width: width * 0.75 ,height: 110,
-                              child:destination(departController, 'depart')
-                            ),
-                          ],
-                        ), 
-                        Padding(padding: EdgeInsets.only(top: 10)),
-                        Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Image.asset('images/d1.png', height: 30),
-                          ),
-                            SizedBox(
-                              width: 20,
-                            ),
-                            Container(
-                              //color: Colors.yellow,
-                              width: width * 0.75 ,height: 110,
-                              child:destination(arriveController, 'arrive')
-                                  
-                            ),
-                            
-                          ],
-                  
-                        ), 
-                        //listview de container */
-                      ],
-                    ),
-                  */
                 ),
               )),
         ),
@@ -427,13 +456,17 @@ class _DestinationCustomerState extends State<DestinationCustomer> {
     Position positionOfUser = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.bestForNavigation);
     currentPositonUser = positionOfUser;
-    LatLng positionUser = LatLng(14.7645042, -17.3660286);
+    LatLng positionUser =
+        LatLng(currentPositonUser!.latitude, currentPositonUser!.longitude);
     CameraPosition cameraPosition =
         CameraPosition(target: positionUser, zoom: 15);
     controllerGoogleMap!
         .animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
 
     await CommonMethods.convertGeo(currentPositonUser!, context);
+    var position = await CommonMethods.convertGeo(currentPositonUser!, context);
+    print('test sur readable addres${position}');
+    // var read = await CommonMethods.convertGeo(currentPositonUser!, context);
   }
 
   // Google place autocomplete
@@ -472,15 +505,63 @@ class _DestinationCustomerState extends State<DestinationCustomer> {
     }
   }
 
+  //direction
+  retrieveDirectionDetails() async {
+    var pickupLocation =
+        Provider.of<AppProvider>(context, listen: false).pickupLocation;
+    var dropoflocation =
+        Provider.of<AppProvider>(context, listen: false).dropoffLocation;
+    //recuper les update coords
+    var pickupGeographicCordinates = LatLng(
+        pickupLocation!.latitutePosition!, pickupLocation.longitudePosition!);
+    var dropffGeographicCordinates = LatLng(
+        dropoflocation!.latitutePosition!, dropoflocation.longitudePosition!);
+
+    //show dialog
+    /*  showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) => Dialog(
+      child: Container(
+        padding: EdgeInsets.all(16),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            CircularProgressIndicator(),
+            SizedBox(height: 16),
+            Text('KHaral touti ....'),
+          ],
+        ),
+      ),
+    )
+  ); */
+    //call direction
+    var detailsDirectionApi = await CommonMethods.getdirectionDetailsFromApi(
+        pickupGeographicCordinates, dropffGeographicCordinates);
+    setState(() {
+      print(
+          'les coordonnees geographique pour la :${pickupGeographicCordinates},${dropffGeographicCordinates}');
+
+      tripDirectionDetail = detailsDirectionApi;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    //Afficher la location de l'utilisateur a
-    /*   String userAddress =  Provider.of<AppProvider>(context, listen: false)
-      .pickupLocation!
-      .readableAdress ?? "";
+     // Afficher la location de l'utilisateur a
+       String userAddress =  Provider.of<AppProvider>(context, listen: false)
+      .pickupLocation!.readableAdress ?? "";
     print('USER ADDRESS ${userAddress}'); 
-    departController.text = userAddress;      */
+    departController.text = userAddress;      
+
+    /*   String userAddress = Provider.of<AppProvider>(context, listen: false)
+            .pickupLocation
+            ?.readableAdress ??
+        "Default Address";
+    print('USER ADDRESS: $userAddress');
+    departController.text = userAddress; */
     displayUserRideDetailModal(BuildContext context) async {
+      await retrieveDirectionDetails();
       //modal bottom sheet
       await showModalBottomSheet(
           context: context,
@@ -491,7 +572,7 @@ class _DestinationCustomerState extends State<DestinationCustomer> {
                 return Stack(
                   children: [
                     Container(
-                      height: MediaQuery.of(context).size.height * 0.55,
+                      height: MediaQuery.of(context).size.height * 0.57,
                       decoration: const BoxDecoration(
                         borderRadius: BorderRadius.only(
                           topLeft: Radius.circular(20),
@@ -520,11 +601,13 @@ class _DestinationCustomerState extends State<DestinationCustomer> {
                           ),
                         ),
                         Text(
-                          '2km',
+                          (tripDirectionDetail != null)
+                              ? tripDirectionDetail!.distanceTextString!
+                              : "",
                           style: GoogleFonts.montserrat(
                             fontWeight: FontWeight.w700,
                             color: Colors.white,
-                            fontSize: 10,
+                            fontSize: 13,
                           ),
                         ),
                       ]),
@@ -587,9 +670,10 @@ class _DestinationCustomerState extends State<DestinationCustomer> {
             myLocationEnabled: true,
             initialCameraPosition: googlePlexInitialPosition,
             onMapCreated: (GoogleMapController mapController) {
+              getCurrentLiveLocationOfUser();
               controllerGoogleMap = mapController;
               //updateMapTheme(controllerGoogleMap!);
-              getCurrentLiveLocationOfUser();
+
               //await CommontMethod
               googleMapCompleterController.complete(controllerGoogleMap);
             },
@@ -773,86 +857,85 @@ class _DestinationCustomerState extends State<DestinationCustomer> {
 
   Widget cars() {
     return StatefulBuilder(
-      builder: (BuildContext context, StateSetter setState) {
-        return Container(
-          height: 140,
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            itemCount: choiceCars.length,
-            shrinkWrap: true,
-            itemBuilder: (BuildContext context, int index) {
-              return Padding(
-                padding: const EdgeInsets.all(5.0),
-                child: GestureDetector(
-                  onTap: () {
-                    if (mounted) {
-                      //barTapedd(index);
-                       setState(() {
-                    selectedcarindex = index; // Update selected car index
-                  });
-                      /*  setState(() {
+        builder: (BuildContext context, StateSetter setState) {
+      return Container(
+        height: 140,
+        child: ListView.builder(
+          scrollDirection: Axis.horizontal,
+          itemCount: choiceCars.length,
+          shrinkWrap: true,
+          itemBuilder: (BuildContext context, int index) {
+            return Padding(
+              padding: const EdgeInsets.all(5.0),
+              child: GestureDetector(
+                onTap: () {
+                  if (mounted) {
+                    //barTapedd(index);
+                    setState(() {
+                      selectedcarindex = index; // Update selected car index
+                    });
+                    /*  setState(() {
                         
                         //SelectedVehiculeType = choiceCars[index].type;
                         // You can also update other state variables here if needed
                         // defaultcar = (SelectedVehiculeType == 'taxi');
                       }); */
-                    }
-                  },
-                  child: Container(
-                    width: MediaQuery.of(context).size.width * 1 / 3,
-                    height: 120,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      gradient: (selectedcarindex == index)
-                          ? LinearGradient(
-                              begin: Alignment.topLeft,
-                              colors: [
-                                Color.fromRGBO(40, 0, 81, 0.3),
-                                Color.fromRGBO(40, 0, 81, 0.3),
-                              ],
-                            )
-                          : LinearGradient(
-                              begin: Alignment.topLeft,
-                              colors: [
-                                Color.fromRGBO(40, 0, 81, 0.1),
-                                Color.fromRGBO(40, 0, 81, 00),
-                              ],
-                            ),
-                    ),
-                    child: Center(
-                      child: Column(
-                        children: [
-                          Image.asset('images/carchoice1.png'),
-                          Text(
-                            choiceCars[index].type.toString(),
-                            style: GoogleFonts.montserrat(
-                              fontWeight: FontWeight.w700,
-                              color: Colors.black54,
-                              fontSize: 13,
-                            ),
+                  }
+                },
+                child: Container(
+                  width: MediaQuery.of(context).size.width * 1 / 3,
+                  height: 120,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    gradient: (selectedcarindex == index)
+                        ? LinearGradient(
+                            begin: Alignment.topLeft,
+                            colors: [
+                              Color.fromRGBO(40, 0, 81, 0.2),
+                              Color.fromRGBO(40, 0, 81, 0.2),
+                            ],
+                          )
+                        : LinearGradient(
+                            begin: Alignment.topLeft,
+                            colors: [
+                              Color.fromRGBO(40, 0, 81, 0.1),
+                              Color.fromRGBO(40, 0, 81, 0),
+                            ],
                           ),
-                          SizedBox(
-                            height: 2,
+                  ),
+                  child: Center(
+                    child: Column(
+                      children: [
+                        Image.asset('images/carchoice1.png'),
+                        Text(
+                          choiceCars[index].type.toString(),
+                          style: GoogleFonts.montserrat(
+                            fontWeight: FontWeight.w700,
+                            color: Colors.black54,
+                            fontSize: 13,
                           ),
-                          Text(
-                            choiceCars[index].prix.toString(),
-                            style: GoogleFonts.montserrat(
-                              fontWeight: FontWeight.w700,
-                              color: Colors.black,
-                              fontSize: 17,
-                            ),
+                        ),
+                        SizedBox(
+                          height: 2,
+                        ),
+                        Text(
+                          choiceCars[index].prix.toString(),
+                          style: GoogleFonts.montserrat(
+                            fontWeight: FontWeight.w700,
+                            color: Colors.black,
+                            fontSize: 17,
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
-              );
-            },
-          ),
-        );
-      }
-    );
+              ),
+            );
+          },
+        ),
+      );
+    });
   }
 
   Widget buildDragHandle() {
@@ -862,75 +945,6 @@ class _DestinationCustomerState extends State<DestinationCustomer> {
         height: 3,
         color: Colors.white,
       ),
-    );
-  }
-
-  Row departarrivedetail() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Image.asset(
-          'images/direction1.png',
-          height: 100,
-        ),
-        SizedBox(
-            width:
-                16), // Add some space between the image and the first container
-        Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            Container(
-              width: 300,
-              height: 40,
-              decoration: BoxDecoration(
-                color: Color.fromRGBO(40, 0, 81, 0.3),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 3),
-                  child: Text(
-                    'position 1',
-                    style: GoogleFonts.montserrat(
-                      fontWeight: FontWeight.w700,
-                      color: Colors.black,
-                      fontSize: 13,
-                    ),
-                    //textAlign: TextAlign.ju,
-                  ),
-                ),
-              ),
-            ),
-            SizedBox(height: 16), // Add some space between the two containers
-            Container(
-              width: 300,
-              height: 40,
-              decoration: BoxDecoration(
-                color: Color.fromRGBO(40, 0, 81, 0.3),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 3),
-                  child: Text(
-                    'position 1',
-                    style: GoogleFonts.montserrat(
-                      fontWeight: FontWeight.w700,
-                      color: Colors.black,
-                      fontSize: 13,
-                    ),
-                    //textAlign: TextAlign.ju,
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ],
     );
   }
 

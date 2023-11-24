@@ -6,5 +6,5 @@ class AddressModel {
   String? placeName;
 
   AddressModel(
-   {this.readableAdress, this.latitutePosition, this.longitudePosition ,this.placeId , this.placeName});
+   {this.readableAdress,  this.latitutePosition,  this.longitudePosition ,this.placeId , this.placeName});
 }

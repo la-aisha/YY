@@ -4,10 +4,12 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:yy/global/global_var.dart';
 import 'package:yy/model/address_model.dart';
+import 'package:yy/model/directiondetail_model.dart';
 import 'package:yy/provider/app_provider.dart';
 
 class CommonMethods {
@@ -90,19 +92,96 @@ class CommonMethods {
   static Future convertGeo(Position position, BuildContext context) async {
     String readableAdress = "";
     String apiGeodingUrl =
-    'https://maps.googleapis.com/maps/api/geocode/json?latlng=${position.latitude},${position.longitude}&key=$googleMapKey';
+        'https://maps.googleapis.com/maps/api/geocode/json?latlng=${position.latitude},${position.longitude}&key=$googleMapKey';
     var responseAPI = await sendRequestToApi(apiGeodingUrl);
     if (responseAPI != 'error') {
       readableAdress = responseAPI['results'][0]['formatted_address'];
       print('readable address :${readableAdress}');
-      AddressModel address = AddressModel();
+      AddressModel address = AddressModel(
+          latitutePosition: position.latitude,
+          longitudePosition: position.longitude);
       address.readableAdress = readableAdress;
       address.latitutePosition = position.latitude;
       address.longitudePosition = position.longitude;
-      Provider.of<AppProvider>(context ,listen: false).updatePickupLocation(address);
+      Provider.of<AppProvider>(context, listen: false)
+          .updatePickupLocation(address);
     }
     return readableAdress;
   }
+
+  //direction function
+  static Future<DirectionDetail?> getdirectionDetailsFromApi(
+      LatLng source, LatLng destination) async {
+    String urlDirection =
+        "https://maps.googleapis.com/maps/api/directions/json?destination=${destination.latitude},${destination.longitude}&origin=${source.latitude},${source.longitude}&key=${googleMapKey}";
+
+    var responseDirection = await sendRequestToApi(urlDirection);
+    if (responseDirection == null) {
+      print('Error: No response from the direction API');
+      return null;
+    }
+    print('direction response est :${responseDirection}');
+
+    try {
+      List<dynamic> geocodedWaypoints = responseDirection['geocoded_waypoints'];
+      List<dynamic> routes = responseDirection['routes'];
+
+      if (geocodedWaypoints.isNotEmpty && routes.isNotEmpty) {
+        // Assuming there is only one route in the response for simplicity
+        Map<String, dynamic> route = routes[0];
+
+        List<dynamic> legs = route['legs'];
+        if (legs.isNotEmpty) {
+          Map<String, dynamic> distance = legs[0]['distance'];
+          Map<String, dynamic> duration = legs[0]['duration'];
+
+          DirectionDetail directionDetail = DirectionDetail();
+          directionDetail.distanceTextString = distance['text'].toString();
+          directionDetail.distanceValueDigits = duration['value'];
+
+          directionDetail.durationTextString = duration['text'].toString();
+          directionDetail.durationValueDigits = duration['value'];
+          directionDetail.encodedPoints = route['overview_polyline']['points'];
+
+          print(
+              "Duration: ${directionDetail.durationTextString}, Distance: ${directionDetail.distanceTextString}");
+          return directionDetail;
+        }
+      }
+    } catch (e) {
+      print('Error parsing direction response: $e');
+    }
+
+    print('Error: Invalid response format from the direction API');
+    return null;
+  }
+
+  /*  static Future<DirectionDetail?> getdirectionDetailsFromApi (
+    LatLng source, LatLng destination) async {
+    String urlDirection = "https://maps.googleapis.com/maps/api/directions/json?destination=${destination.latitude}.${destination.longitude}&origin=${source.latitude}.${source.longitude}&key=${googleMapKey}";
+    var responseDirection = await sendRequestToApi(urlDirection);
+    if (responseDirection == 'error') {
+      print('error from getting direction');
+      return null;
+    }
+    DirectionDetail directionDetail = DirectionDetail();
+    //direction
+    directionDetail.distanceTextString =
+        responseDirection['routes']['legs'][0]['distance']['text'].toString();
+    directionDetail.durationTextString =
+        responseDirection['routes']['legs'][0]['distance']['value'];
+    //duration
+    directionDetail.durationTextString =
+        responseDirection['routes']['legs'][0]['duration']['text'];
+    directionDetail.durationValueDigits =
+        responseDirection['routes']['legs'][0]['duration']['text'];
+    //polyline
+    directionDetail.encodedPoints =
+        responseDirection['routes'][0]['overview_polyline']['points'];
+    print("duree is : ${directionDetail.durationTextString} ,distancee is : ${directionDetail.distanceTextString}");
+    return directionDetail;
+  }
+ */
 }
 /* 
 void main() async {
