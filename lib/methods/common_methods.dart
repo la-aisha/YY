@@ -156,32 +156,18 @@ class CommonMethods {
     return null;
   }
 
-  /*  static Future<DirectionDetail?> getdirectionDetailsFromApi (
-    LatLng source, LatLng destination) async {
-    String urlDirection = "https://maps.googleapis.com/maps/api/directions/json?destination=${destination.latitude}.${destination.longitude}&origin=${source.latitude}.${source.longitude}&key=${googleMapKey}";
-    var responseDirection = await sendRequestToApi(urlDirection);
-    if (responseDirection == 'error') {
-      print('error from getting direction');
-      return null;
-    }
-    DirectionDetail directionDetail = DirectionDetail();
-    //direction
-    directionDetail.distanceTextString =
-        responseDirection['routes']['legs'][0]['distance']['text'].toString();
-    directionDetail.durationTextString =
-        responseDirection['routes']['legs'][0]['distance']['value'];
-    //duration
-    directionDetail.durationTextString =
-        responseDirection['routes']['legs'][0]['duration']['text'];
-    directionDetail.durationValueDigits =
-        responseDirection['routes']['legs'][0]['duration']['text'];
-    //polyline
-    directionDetail.encodedPoints =
-        responseDirection['routes'][0]['overview_polyline']['points'];
-    print("duree is : ${directionDetail.durationTextString} ,distancee is : ${directionDetail.distanceTextString}");
-    return directionDetail;
+  //Calulate fareamount princing
+
+  static calculateFareAmount(DirectionDetail directionDetail) {
+    double distanceParKmAmount = 1000;
+    double durationPerMinuteAmount = 100;
+    double baseFareAmount = 500;
+    double totalDistanceFareAmount = (directionDetail.distanceValueDigits! / 1000);
+    double totalDurationFareAmount = (directionDetail.durationValueDigits! / 60);
+    double overAllTotalFareamount = baseFareAmount + totalDurationFareAmount+ totalDurationFareAmount ;
+    return overAllTotalFareamount.toStringAsFixed(1);
+
   }
- */
 }
 /* 
 void main() async {

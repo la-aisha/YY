@@ -636,6 +636,10 @@ class _DestinationCustomerState extends State<DestinationCustomer> {
                                       height: 15,
                                     ),
                                     cars(),
+                                    /* SizedBox(
+                                      height: 20,
+                                    ), */
+                                    //Text((tripDirectionDetail != null)? CommonMethods.calculateFareAmount((tripDirectionDetail!)).toString() : "" ,style: GoogleFonts.montserrat(color: Colors.black , fontSize: 20  ,fontWeight: FontWeight.bold),),
                                     SizedBox(
                                       height: 20,
                                     ),
