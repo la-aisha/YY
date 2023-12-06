@@ -9,6 +9,7 @@ import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:yy/global/global_var.dart';
 import 'package:yy/model/address_model.dart';
+import 'package:yy/model/choicecar.dart';
 import 'package:yy/model/directiondetail_model.dart';
 import 'package:yy/provider/app_provider.dart';
 
@@ -162,11 +163,27 @@ class CommonMethods {
     double distanceParKmAmount = 1000;
     double durationPerMinuteAmount = 100;
     double baseFareAmount = 500;
-    double totalDistanceFareAmount = (directionDetail.distanceValueDigits! / 1000);
-    double totalDurationFareAmount = (directionDetail.durationValueDigits! / 60);
-    double overAllTotalFareamount = baseFareAmount + totalDurationFareAmount+ totalDurationFareAmount ;
-    return overAllTotalFareamount.toStringAsFixed(1);
+    double totalDistanceFareAmount =
+        (directionDetail.distanceValueDigits! / 1000);
+    double totalDurationFareAmount =
+        (directionDetail.durationValueDigits! / 60);
+    double overAllTotalFareamount = baseFareAmount + totalDistanceFareAmount;
 
+
+  List<ChoiceCar> choiceCars = [
+    ChoiceCar(
+        img: AssetImage('images/carchoice1.png'), type: 'taxi', prix: overAllTotalFareamount.toStringAsFixed(1)),
+    ChoiceCar(
+        img: AssetImage('images/carchoice1.png'), type: 'livreur', prix: overAllTotalFareamount.toStringAsFixed(1)),
+    ChoiceCar(
+        img: AssetImage('images/carchoice1.png'), type: 'bus', prix: overAllTotalFareamount.toStringAsFixed(1)),
+  ];
+
+  return choiceCars ;
+
+   // List prix = [];
+
+    //overAllTotalFareamount.toStringAsFixed(1);
   }
 }
 /* 

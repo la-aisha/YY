@@ -29,19 +29,15 @@ class DestinationCustomer extends StatefulWidget {
 }
 
 class _DestinationCustomerState extends State<DestinationCustomer> {
-  //final GlobalKey<_DestinationCustomerState> _key = GlobalKey<_DestinationCustomerState>();
-
   late PersistentBottomSheetController _controller; // <------ Instance variable
-  final _scaffoldKey =
-      GlobalKey<ScaffoldState>(); // <---- Another instance variable
+  final _scaffoldKey = GlobalKey<ScaffoldState>(); // <---- Another instance variable
 
   PredictionModel? predictionModel;
   ChoiceCar? choiceCar;
   List<PredictionModel> dropoffPrediction = [];
   TextEditingController departController = new TextEditingController();
   final arriveController = new TextEditingController();
-  final Completer<GoogleMapController> googleMapCompleterController =
-      Completer<GoogleMapController>();
+  final Completer<GoogleMapController> googleMapCompleterController = Completer<GoogleMapController>();
   GoogleMapController? controllerGoogleMap;
   Position? currentPositonUser;
 
@@ -53,10 +49,6 @@ class _DestinationCustomerState extends State<DestinationCustomer> {
   DirectionDetail? tripDirectionDetail;
 
   Row departarrivedetail() {
-    var dropoff = Provider.of<AppProvider>(context, listen: false).dropoffLocation!.placeName;
-
-     String userAddress =  Provider.of<AppProvider>(context, listen: false)
-      .pickupLocation!.readableAdress ?? "";
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -84,7 +76,7 @@ class _DestinationCustomerState extends State<DestinationCustomer> {
                 child: Padding(
                   padding: const EdgeInsets.only(left: 3),
                   child: Text(
-                    userAddress!,
+                    'position 1',
                     style: GoogleFonts.montserrat(
                       fontWeight: FontWeight.w700,
                       color: Colors.black,
@@ -108,7 +100,7 @@ class _DestinationCustomerState extends State<DestinationCustomer> {
                 child: Padding(
                   padding: const EdgeInsets.only(left: 3),
                   child: Text(
-                    dropoff!,
+                    'position 1',
                     style: GoogleFonts.montserrat(
                       fontWeight: FontWeight.w700,
                       color: Colors.black,
@@ -129,9 +121,9 @@ class _DestinationCustomerState extends State<DestinationCustomer> {
     ChoiceCar(
         img: AssetImage('images/carchoice1.png'), type: 'taxi', prix: 3000),
     ChoiceCar(
-        img: AssetImage('images/carchoice1.png'), type: 'mototaxi', prix: 2000),
+        img: AssetImage('images/carchoice1.png'), type: 'livreur', prix: 2000),
     ChoiceCar(
-        img: AssetImage('images/carchoice1.png'), type: 'skater', prix: 1000),
+        img: AssetImage('images/carchoice1.png'), type: 'bus', prix: 1000),
   ];
 
   void barTapedd(int index) {
@@ -545,19 +537,24 @@ class _DestinationCustomerState extends State<DestinationCustomer> {
     setState(() {
       print(
           'les coordonnees geographique pour la :${pickupGeographicCordinates},${dropffGeographicCordinates}');
-
       tripDirectionDetail = detailsDirectionApi;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    // Afficher la location de l'utilisateur a
+     // Afficher la location de l'utilisateur a
        String userAddress =  Provider.of<AppProvider>(context, listen: false)
       .pickupLocation!.readableAdress ?? "";
     print('USER ADDRESS ${userAddress}'); 
-    departController.text = userAddress;       
+    departController.text = userAddress;      
 
+    /*   String userAddress = Provider.of<AppProvider>(context, listen: false)
+            .pickupLocation
+            ?.readableAdress ??
+        "Default Address";
+    print('USER ADDRESS: $userAddress');
+    departController.text = userAddress; */
     displayUserRideDetailModal(BuildContext context) async {
       await retrieveDirectionDetails();
       //modal bottom sheet
@@ -660,9 +657,6 @@ class _DestinationCustomerState extends State<DestinationCustomer> {
 
     //Listview
 
-    var size = MediaQuery.of(context).size;
-    double width = size.width;
-    var height = size.height;
 
     return Scaffold(
       body: Stack(
@@ -858,13 +852,17 @@ class _DestinationCustomerState extends State<DestinationCustomer> {
   }
 
   Widget cars() {
+    //Text((tripDirectionDetail != null)? CommonMethods.calculateFareAmount((tripDirectionDetail!)).toString() : "" ,style: GoogleFonts.montserrat(color: Colors.black , fontSize: 20  ,fontWeight: FontWeight.bold),),
+    var cars = CommonMethods.calculateFareAmount(tripDirectionDetail!);
     return StatefulBuilder(
         builder: (BuildContext context, StateSetter setState) {
       return Container(
         height: 140,
         child: ListView.builder(
           scrollDirection: Axis.horizontal,
-          itemCount: choiceCars.length,
+          //itemCount: choiceCars.length,
+          itemCount: cars.length,
+
           shrinkWrap: true,
           itemBuilder: (BuildContext context, int index) {
             return Padding(
@@ -910,7 +908,7 @@ class _DestinationCustomerState extends State<DestinationCustomer> {
                       children: [
                         Image.asset('images/carchoice1.png'),
                         Text(
-                          choiceCars[index].type.toString(),
+                          cars[index].type.toString(),
                           style: GoogleFonts.montserrat(
                             fontWeight: FontWeight.w700,
                             color: Colors.black54,
@@ -921,7 +919,7 @@ class _DestinationCustomerState extends State<DestinationCustomer> {
                           height: 2,
                         ),
                         Text(
-                          choiceCars[index].prix.toString(),
+                          cars[index].prix.toString(),
                           style: GoogleFonts.montserrat(
                             fontWeight: FontWeight.w700,
                             color: Colors.black,
@@ -939,7 +937,7 @@ class _DestinationCustomerState extends State<DestinationCustomer> {
       );
     });
   }
-
+   
   Widget buildDragHandle() {
     return Center(
       child: Container(
