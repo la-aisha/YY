@@ -53,6 +53,10 @@ class _DestinationCustomerState extends State<DestinationCustomer> {
   DirectionDetail? tripDirectionDetail;
 
   Row departarrivedetail() {
+    var dropoff = Provider.of<AppProvider>(context, listen: false).dropoffLocation!.placeName;
+
+     String userAddress =  Provider.of<AppProvider>(context, listen: false)
+      .pickupLocation!.readableAdress ?? "";
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -80,7 +84,7 @@ class _DestinationCustomerState extends State<DestinationCustomer> {
                 child: Padding(
                   padding: const EdgeInsets.only(left: 3),
                   child: Text(
-                    'position 1',
+                    userAddress!,
                     style: GoogleFonts.montserrat(
                       fontWeight: FontWeight.w700,
                       color: Colors.black,
@@ -104,7 +108,7 @@ class _DestinationCustomerState extends State<DestinationCustomer> {
                 child: Padding(
                   padding: const EdgeInsets.only(left: 3),
                   child: Text(
-                    'position 1',
+                    dropoff!,
                     style: GoogleFonts.montserrat(
                       fontWeight: FontWeight.w700,
                       color: Colors.black,
@@ -125,9 +129,9 @@ class _DestinationCustomerState extends State<DestinationCustomer> {
     ChoiceCar(
         img: AssetImage('images/carchoice1.png'), type: 'taxi', prix: 3000),
     ChoiceCar(
-        img: AssetImage('images/carchoice1.png'), type: 'livreur', prix: 2000),
+        img: AssetImage('images/carchoice1.png'), type: 'mototaxi', prix: 2000),
     ChoiceCar(
-        img: AssetImage('images/carchoice1.png'), type: 'bus', prix: 1000),
+        img: AssetImage('images/carchoice1.png'), type: 'skater', prix: 1000),
   ];
 
   void barTapedd(int index) {
@@ -548,18 +552,12 @@ class _DestinationCustomerState extends State<DestinationCustomer> {
 
   @override
   Widget build(BuildContext context) {
-     // Afficher la location de l'utilisateur a
+    // Afficher la location de l'utilisateur a
        String userAddress =  Provider.of<AppProvider>(context, listen: false)
       .pickupLocation!.readableAdress ?? "";
     print('USER ADDRESS ${userAddress}'); 
-    departController.text = userAddress;      
+    departController.text = userAddress;       
 
-    /*   String userAddress = Provider.of<AppProvider>(context, listen: false)
-            .pickupLocation
-            ?.readableAdress ??
-        "Default Address";
-    print('USER ADDRESS: $userAddress');
-    departController.text = userAddress; */
     displayUserRideDetailModal(BuildContext context) async {
       await retrieveDirectionDetails();
       //modal bottom sheet
